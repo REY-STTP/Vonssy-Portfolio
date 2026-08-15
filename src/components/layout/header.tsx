@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import type { NavItem, ThemePreference } from "@/types/portfolio";
 import { MenuIcon } from "@/components/icons";
 import { ThemeSelector } from "@/components/ui/theme-selector";
@@ -82,12 +82,15 @@ export function Header({ navItems, theme, onThemeChange }: HeaderProps) {
           </button>
         </div>
 
-        {isMenuOpen && (
-          <MobileNav
-            items={navItems}
-            onSelect={() => setIsMenuOpen(false)}
-          />
-        )}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <MobileNav
+              items={navItems}
+              isOpen={isMenuOpen}
+              onClose={() => setIsMenuOpen(false)}
+            />
+          )}
+        </AnimatePresence>
       </div>
     </motion.header>
   );
