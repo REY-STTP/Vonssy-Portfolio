@@ -1,8 +1,67 @@
-node_modules
-.next
-.env*
-!.env.example
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+/playwright-report/
+/test-results/
+/.playwright-mcp/
+
+# local agent tooling
+/.opencode/
+/opencode.json
+
+# next.js
+/.next/
+/out/
+/.turbo/
+
+# production
+/build
+/dist
+
+# misc
+.DS_Store
+Thumbs.db
+*.pem
+
+# debug & logs
 npm-debug.log*
-.opencode
-.playwright-mcp
-opencode.json
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.log
+
+# env files
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+!.env.example
+
+# vercel
+/.vercel/
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# IDEs and Editors
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

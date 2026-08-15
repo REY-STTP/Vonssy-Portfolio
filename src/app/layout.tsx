@@ -25,13 +25,11 @@ export const viewport: Viewport = {
   ],
 };
 
-const themeScript = `(function(){try{var p=localStorage.getItem('vonssy-theme');if(p!=='light'&&p!=='dark'&&p!=='system')p='system';var d=p==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;var r=document.documentElement;r.dataset.theme=d;r.dataset.themePreference=p;r.style.colorScheme=d;}catch(e){}})();`;
-
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
-      <body className={`${manrope.variable} ${jetbrains.variable}`}>{children}</body>
+      <head suppressHydrationWarning />
+      <body suppressHydrationWarning className={`${manrope.variable} ${jetbrains.variable}`}>{children}</body>
     </html>
   );
 }

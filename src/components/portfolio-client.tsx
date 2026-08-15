@@ -1,23 +1,20 @@
 "use client";
 
 import Image from "next/image";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { AnimatePresence, motion, useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
+import type { MotionValue } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import type { Project } from "@/app/page";
 import {
   ArrowDownIcon,
   ArrowUpRight,
   ArrowUpIcon,
   CloseIcon,
-  CodeIcon,
   GitHubIcon,
   MenuIcon,
   MonitorIcon,
   MoonIcon,
-  NetworkIcon,
-  ShieldIcon,
   SunIcon,
-  TerminalIcon,
 } from "./icons";
 
 type Props = {
@@ -34,12 +31,20 @@ const themes: { value: ThemePreference; label: string; icon: React.ReactNode }[]
   { value: "dark", label: "Use dark theme", icon: <MoonIcon /> },
   { value: "light", label: "Use light theme", icon: <SunIcon /> },
 ];
-const focusAreas = [
-  [<NetworkIcon key="network" />, "Web3 systems"],
-  [<CodeIcon key="code" />, "Python automation"],
-  [<ShieldIcon key="shield" />, "Wallet workflows"],
-  [<TerminalIcon key="terminal" />, "Developer tooling"],
-];
+
+function useClientReducedMotion() {
+  const [reduce, setReduce] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReduce(media.matches);
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
+
+  return reduce;
+}
 
 function applyResolvedTheme(theme: "dark" | "light") {
   const root = document.documentElement;
@@ -56,15 +61,40 @@ export default function PortfolioClient({ projects, philosophy, stack }: Props) 
   const [menu, setMenu] = useState(false);
   const [theme, setTheme] = useState<ThemePreference>("system");
   const [scrollProgress, setScrollProgress] = useState(0);
-  const reduce = useReducedMotion();
+  const [intro, setIntro] = useState(true);
+  const heroRef = useRef<HTMLElement>(null);
+  const dialogCloseRef = useRef<HTMLButtonElement>(null);
+  const reduce = useClientReducedMotion();
   const filtered = active === "All" ? projects : projects.filter((project) => project.category.includes(active));
   const reveal = {
-    hidden: { opacity: 0, y: reduce ? 0 : 14 },
-    show: { opacity: 1, y: 0, transition: { duration: reduce ? 0 : 0.45, ease: "easeOut" as const } },
+    hidden: { opacity: 0, y: reduce ? 0 : 34 },
+    show: { opacity: 1, y: 0, transition: { duration: reduce ? 0 : 0.75, ease: [0.16, 1, 0.3, 1] as const } },
   };
+
+  const { scrollYProgress: heroProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const heroY = useTransform(heroProgress, [0, 1], [0, reduce ? 0 : 110]);
+  const heroScale = useTransform(heroProgress, [0, 1], [1, reduce ? 1 : 0.94]);
+  const smoothHeroY = useSpring(heroY, { stiffness: 90, damping: 24, mass: 0.5 });
+
+  useEffect(() => {
+    let seen = false;
+    try {
+      seen = sessionStorage.getItem("vonssy-intro-seen") === "1";
+      sessionStorage.setItem("vonssy-intro-seen", "1");
+    } catch {
+      // The intro can still run when session storage is unavailable.
+    }
+    if (seen || reduce) {
+      setIntro(false);
+      return;
+    }
+    const timer = window.setTimeout(() => setIntro(false), 1050);
+    return () => window.clearTimeout(timer);
+  }, [reduce]);
 
   useEffect(() => {
     if (!selected) return;
+    dialogCloseRef.current?.focus();
     const onKeyDown = (event: KeyboardEvent) => event.key === "Escape" && setSelected(null);
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
@@ -72,8 +102,15 @@ export default function PortfolioClient({ projects, philosophy, stack }: Props) 
 
   useEffect(() => {
     const root = document.documentElement;
-    const stored = root.dataset.themePreference;
-    if (stored === "system" || stored === "dark" || stored === "light") setTheme(stored);
+    let stored: ThemePreference = "system";
+    try {
+      const preference = localStorage.getItem("vonssy-theme");
+      if (preference === "system" || preference === "dark" || preference === "light") stored = preference;
+    } catch {
+      // System theme remains the fallback when storage is unavailable.
+    }
+    root.dataset.themePreference = stored;
+    setTheme(stored);
 
     const media = window.matchMedia("(prefers-color-scheme: dark)");
     const syncSystemTheme = () => {
@@ -81,7 +118,7 @@ export default function PortfolioClient({ projects, philosophy, stack }: Props) 
       const resolved = media.matches ? "dark" : "light";
       applyResolvedTheme(resolved);
     };
-    applyResolvedTheme(root.dataset.theme === "light" ? "light" : "dark");
+    applyResolvedTheme(stored === "system" ? (media.matches ? "dark" : "light") : stored);
     media.addEventListener("change", syncSystemTheme);
     return () => media.removeEventListener("change", syncSystemTheme);
   }, []);
@@ -123,15 +160,17 @@ export default function PortfolioClient({ projects, philosophy, stack }: Props) 
 
   return (
     <main>
-      <header id="top" className="shell flex items-center justify-between py-7" aria-label="Primary navigation">
-        <a href="#home" className="mono text-sm font-bold tracking-normal">
-          VONSSY<span className="text-accent">.</span>
+      <AnimatePresence>{intro && <IntroOverlay reduce={Boolean(reduce)} />}</AnimatePresence>
+
+      <header id="top" className="site-header shell" aria-label="Primary navigation">
+        <a href="#home" className="brand-mark mono">
+          VONSSY<span className="text-accent">.</span><span className="brand-index">/26</span>
         </a>
         <div className="flex items-center gap-3">
-          <nav className="hidden items-center gap-7 md:flex">
+          <nav className="desktop-nav hidden items-center gap-7 md:flex">
             {navigation.map(([label, id]) => (
-              <a key={id} href={`#${id}`} className="text-xs text-muted transition-colors hover:text-ink">
-                {label}
+              <a key={id} href={`#${id}`} className="nav-link mono">
+                <span>0{navigation.findIndex((item) => item[1] === id) + 1}</span>{label}
               </a>
             ))}
           </nav>
@@ -148,56 +187,64 @@ export default function PortfolioClient({ projects, philosophy, stack }: Props) 
           </button>
         </div>
         {menu && (
-          <nav id="mobile-navigation" className="soft absolute right-4 top-20 z-20 flex w-48 flex-col gap-1 rounded-lg p-2 md:hidden">
+          <motion.nav initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} id="mobile-navigation" className="mobile-nav md:hidden">
             {navigation.map(([label, id]) => (
-              <a key={id} onClick={() => setMenu(false)} href={`#${id}`} className="rounded-md px-4 py-3 text-sm text-muted hover:bg-surface-hi hover:text-ink">
-                {label}
+              <a key={id} onClick={() => setMenu(false)} href={`#${id}`}>
+                <span className="mono">0{navigation.findIndex((item) => item[1] === id) + 1}</span>{label}
               </a>
             ))}
-          </nav>
+          </motion.nav>
         )}
       </header>
 
-      <section id="home" className="border-b border-line-soft pb-20 pt-10 md:pb-24 md:pt-16">
-        <div className="shell grid items-end gap-10 lg:grid-cols-[1.15fr_.85fr] lg:gap-16">
-          <motion.div initial="hidden" animate="show" variants={reveal}>
-            <p className="text-lg font-semibold text-ink">Vonssy <span className="font-normal text-quiet">/ Reyvaldi Zakaria</span></p>
-            <p className="mono mt-3 text-xs leading-5 text-muted">Web3 Builder · Automation Engineer · Software Developer</p>
-            <h1 className="mt-8 max-w-4xl text-[clamp(3.25rem,8vw,6.4rem)] font-extrabold leading-[.94] tracking-normal">
-              Software<br />
-              <span className="text-accent">that does</span><br />
-              things<span className="text-warm">.</span>
+      <section
+        ref={heroRef}
+        id="home"
+        className="hero-section"
+        onPointerMove={(event) => {
+          const rect = event.currentTarget.getBoundingClientRect();
+          event.currentTarget.style.setProperty("--pointer-x", `${event.clientX - rect.left}px`);
+          event.currentTarget.style.setProperty("--pointer-y", `${event.clientY - rect.top}px`);
+        }}
+      >
+        <div className="hero-grid" aria-hidden="true" />
+        <motion.div style={{ y: smoothHeroY, scale: heroScale }} className="shell hero-inner">
+          <motion.div initial="hidden" animate={intro ? "hidden" : "show"} variants={reveal} className="hero-copy">
+            <div className="hero-kicker mono"><span className="availability-dot" /> Available for selected collaborations <span>Indonesia / UTC+7</span></div>
+            <h1 className="hero-title" aria-label="Software that does things">
+              <span className="hero-line"><span>Software</span><small>01</small></span>
+              <span className="hero-line hero-line-accent"><span>that does</span><small>02</small></span>
+              <span className="hero-line"><span>things.</span><small>03</small></span>
             </h1>
-            <p className="mt-7 max-w-xl text-base leading-7 text-soft md:text-lg">
-              I build automation systems, bots, and software that interact with real APIs, wallets, blockchains, and data.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a className="button button-primary" href="#projects">View projects <ArrowUpRight /></a>
-              <a className="button button-ghost" href="https://github.com/vonssy" target="_blank" rel="noreferrer"><GitHubIcon /> GitHub</a>
+            <div className="hero-bottom">
+              <p>I build automation systems, bots, and software that interact with real APIs, wallets, blockchains, and data.</p>
+              <div className="hero-actions-mobile">
+                <a className="button button-primary" href="#projects">Explore work <ArrowUpRight /></a>
+                <a className="button button-ghost" href="https://github.com/vonssy" target="_blank" rel="noreferrer"><GitHubIcon /> GitHub</a>
+              </div>
             </div>
           </motion.div>
 
-          <motion.aside initial="hidden" animate="show" transition={{ delay: reduce ? 0 : 0.1 }} variants={reveal} className="soft rounded-lg p-6 md:p-7" aria-label="Vonssy profile summary">
-            <div className="flex items-center gap-4">
-              <Image src="https://avatars.githubusercontent.com/u/86215416?v=4" alt="Vonssy GitHub avatar" width={60} height={60} className="rounded-lg" priority />
-              <div>
-                <p className="font-bold">Reyvaldi Zakaria</p>
-                <p className="mono mt-1 text-xs text-muted">@vonssy · @REY-STTP</p>
-              </div>
+          <motion.aside initial={{ opacity: 0, scale: reduce ? 1 : 0.88, rotate: reduce ? 0 : 4 }} animate={intro ? {} : { opacity: 1, scale: 1, rotate: 0 }} transition={{ delay: reduce ? 0 : 0.22, duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="profile-orbit" aria-label="Vonssy profile summary">
+            <div className="orbit-copy mono" aria-hidden="true">BUILD · AUTOMATE · ITERATE · SHIP · </div>
+            <div className="profile-photo-wrap">
+              <Image src="https://avatars.githubusercontent.com/u/86215416?v=4" alt="Vonssy GitHub avatar" width={320} height={320} className="profile-photo" priority />
+              <span className="profile-status mono">@vonssy</span>
             </div>
-            <p className="mt-6 text-sm font-semibold">Current practice</p>
-            <ul className="mt-3 grid grid-cols-2 border-t border-line">
-              {focusAreas.map(([icon, label]) => (
-                <li key={label as string} className="flex min-h-16 items-center gap-3 border-b border-line py-3 text-xs text-soft odd:pr-3 even:pl-3">
-                  <span className="text-accent">{icon}</span>{label}
-                </li>
-              ))}
-            </ul>
+            <div className="hero-actions">
+              <a className="button button-primary" href="#projects">Explore work <ArrowUpRight /></a>
+              <a className="button button-ghost" href="https://github.com/vonssy" target="_blank" rel="noreferrer"><GitHubIcon /> GitHub</a>
+            </div>
           </motion.aside>
-        </div>
+        </motion.div>
+        <a href="#manifesto" className="hero-scroll mono"><span>Scroll to inspect</span><ArrowDownIcon /></a>
       </section>
 
-      <section id="about" className="section-pad">
+      <div className="ticker" aria-hidden="true"><div>WEB3 SYSTEMS · PYTHON AUTOMATION · WALLET WORKFLOWS · DEVELOPER TOOLING · WEB3 SYSTEMS · PYTHON AUTOMATION · WALLET WORKFLOWS · DEVELOPER TOOLING ·</div></div>
+
+      <Manifesto reduce={Boolean(reduce)} />
+
+      <motion.section id="about" className="section-pad" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }} variants={reveal}>
         <div className="shell grid gap-12 lg:grid-cols-[.68fr_1.32fr]">
           <h2 className="max-w-md text-4xl font-bold leading-tight tracking-normal md:text-5xl">From fundamentals to automation.</h2>
           <div className="max-w-2xl text-[17px] leading-8 text-soft">
@@ -208,9 +255,9 @@ export default function PortfolioClient({ projects, philosophy, stack }: Props) 
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      <section className="border-y border-line-soft bg-section section-pad">
+      <section className="border-y border-line-soft bg-section section-pad build-section">
         <div className="shell">
           <div className="grid gap-8 lg:grid-cols-[.68fr_1.32fr]">
             <div>
@@ -218,11 +265,11 @@ export default function PortfolioClient({ projects, philosophy, stack }: Props) 
               <p className="mt-4 max-w-sm text-sm leading-6 text-muted">The recurring decisions behind the repositories, not a manifesto.</p>
             </div>
             <div className="grid md:grid-cols-2">
-              {philosophy.map(([title, text]) => (
-                <div key={title} className="border-t border-line py-6 md:odd:pr-7 md:even:pl-7">
-                  <h3 className="font-bold">{title}</h3>
+              {philosophy.map(([title, text], index) => (
+                <motion.div initial={{ opacity: 0, y: reduce ? 0 : 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.5 }} transition={{ delay: reduce ? 0 : index * 0.08, duration: 0.55 }} key={title} className="principle border-t border-line py-6 md:odd:pr-7 md:even:pl-7">
+                  <span className="mono principle-index">0{index + 1}</span><h3 className="font-bold">{title}</h3>
                   <p className="mt-3 text-sm leading-6 text-muted">{text}</p>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -255,6 +302,7 @@ export default function PortfolioClient({ projects, philosophy, stack }: Props) 
           </div>
 
           <motion.div layout className="mt-3 border-b border-line">
+            <AnimatePresence mode="popLayout">
             {filtered.map((project, index) => (
               <motion.button
                 type="button"
@@ -264,9 +312,11 @@ export default function PortfolioClient({ projects, philosophy, stack }: Props) 
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: reduce ? 0 : index * 0.025 }}
                 key={project.name}
-                className="group grid w-full gap-5 border-t border-line py-7 text-left transition-colors hover:bg-row-hover md:grid-cols-[minmax(0,.72fr)_minmax(0,1.35fr)_auto] md:items-center md:px-3"
+                exit={{ opacity: 0, y: reduce ? 0 : -8 }}
+                className="project-row group grid w-full gap-5 border-t border-line py-7 text-left md:grid-cols-[5rem_minmax(0,.72fr)_minmax(0,1.35fr)_auto] md:items-center md:px-3"
                 onClick={() => setSelected(project)}
               >
+                <span className="project-number mono">{(index + 1).toString().padStart(2, "0")}</span>
                 <span>
                   <span className="mono block text-xs text-quiet">@{project.account}</span>
                   <span className="mt-2 block text-xl font-bold text-ink transition-colors group-hover:text-accent-strong md:text-2xl">{project.name}</span>
@@ -281,6 +331,7 @@ export default function PortfolioClient({ projects, philosophy, stack }: Props) 
                 </span>
               </motion.button>
             ))}
+            </AnimatePresence>
           </motion.div>
         </div>
       </section>
@@ -332,12 +383,14 @@ export default function PortfolioClient({ projects, philosophy, stack }: Props) 
         </div>
       </section>
 
-      <footer className="shell flex flex-col gap-4 border-t border-line-soft py-7 text-xs text-quiet sm:flex-row sm:items-center sm:justify-between">
-        <span>Built by Vonssy.</span>
-        <div className="flex flex-wrap gap-5">
-          <a href="https://github.com/vonssy" target="_blank" rel="noreferrer" className="hover:text-ink">GitHub</a>
-          <a href="https://t.me/vonssy_part_2" target="_blank" rel="noreferrer" className="hover:text-ink">Telegram</a>
-          <span className="mono">2026 / systems in motion</span>
+      <footer className="site-footer shell border-t border-line-soft py-7 text-xs text-quiet">
+        <span className="footer-credit">Built by Vonssy.</span>
+        <div className="footer-meta">
+          <div className="footer-links">
+            <a href="https://github.com/vonssy" target="_blank" rel="noreferrer" className="hover:text-ink">GitHub</a>
+            <a href="https://t.me/vonssy_part_2" target="_blank" rel="noreferrer" className="hover:text-ink">Telegram</a>
+          </div>
+          <span className="footer-year mono">2026 / systems in motion</span>
         </div>
       </footer>
 
@@ -361,7 +414,7 @@ export default function PortfolioClient({ projects, philosophy, stack }: Props) 
                   <p className="mono text-xs text-quiet">@{selected.account}</p>
                   <h2 id="project-dialog-title" className="mt-2 text-3xl font-bold tracking-normal md:text-5xl">{selected.name}</h2>
                 </div>
-                <button type="button" aria-label="Close project details" onClick={() => setSelected(null)} className="button button-ghost h-11 w-11 shrink-0 p-0"><CloseIcon /></button>
+                 <button ref={dialogCloseRef} type="button" aria-label="Close project details" onClick={() => setSelected(null)} className="button button-ghost h-11 w-11 shrink-0 p-0"><CloseIcon /></button>
               </div>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-soft">{selected.details.overview}</p>
               <dl className="mt-8 border-b border-line">
@@ -386,6 +439,63 @@ export default function PortfolioClient({ projects, philosophy, stack }: Props) 
       </AnimatePresence>
     </main>
   );
+}
+
+function IntroOverlay({ reduce }: { reduce: boolean }) {
+  return (
+    <motion.div className="intro-overlay" initial={{ y: 0 }} exit={{ y: "-100%" }} transition={{ duration: reduce ? 0 : 0.7, ease: [0.76, 0, 0.24, 1] }}>
+      <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -30, opacity: 0 }} transition={{ duration: reduce ? 0 : 0.45 }}>
+        <span className="mono">PORTFOLIO / 2026</span>
+        <strong>VONSSY<span>.</span></strong>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function Manifesto({ reduce }: { reduce: boolean }) {
+  const ref = useRef<HTMLElement>(null);
+  const words = "I combine code, networks, accounts, and data into software that keeps moving when the happy path ends.".split(" ");
+  const scrollYProgress = useMotionValue(0);
+
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const section = ref.current;
+      if (!section) return;
+      const top = section.getBoundingClientRect().top + window.scrollY;
+      const travel = Math.max(1, section.offsetHeight - window.innerHeight);
+      scrollYProgress.set(Math.min(1, Math.max(0, (window.scrollY - top) / travel)));
+    };
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, [scrollYProgress]);
+
+  return (
+    <section id="manifesto" ref={ref} className="manifesto-section">
+      <div className="shell manifesto-inner">
+        <p className="mono manifesto-label">01 / OPERATING PRINCIPLE</p>
+        <p className="manifesto-copy">
+          {words.map((word, index) => <ManifestoWord key={`${word}-${index}`} word={word} index={index} total={words.length} progress={scrollYProgress} reduce={reduce} />)}
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function ManifestoWord({ word, index, total, progress, reduce }: { word: string; index: number; total: number; progress: MotionValue<number>; reduce: boolean }) {
+  const start = (index / total) * 0.26;
+  const opacity = useTransform(progress, [start, start + 0.08], [0.16, 1]);
+  return <motion.span style={{ opacity: reduce ? 1 : opacity }}>{word} </motion.span>;
 }
 
 function Stat({ value, label }: { value: string; label: string }) {
