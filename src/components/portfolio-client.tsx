@@ -23,6 +23,7 @@ import { ContactSection } from "@/components/sections/contact-section";
 import { IntroOverlay } from "@/components/ui/intro-overlay";
 import { ProjectModal } from "@/components/ui/project-modal";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
+import { ChatWidget } from "@/components/ui/chat-widget";
 
 interface PortfolioClientProps {
   projects: Project[];
@@ -114,6 +115,8 @@ export default function PortfolioClient({
       <Footer />
 
       <ScrollProgress progress={scrollProgress} direction={scrollDirection} />
+
+      <ChatWidget reduceMotion={reduceMotion} />
 
       <ProjectModal
         project={selectedProject}

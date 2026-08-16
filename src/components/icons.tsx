@@ -266,3 +266,45 @@ export function ArrowUpIcon({ size = 18, className, ...props }: IconProps) {
     </svg>
   );
 }
+
+export function ChatIcon({ size = 22, className, ...props }: IconProps) {
+  return (
+    <svg
+      aria-hidden="true"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+    >
+      <path d="M21 12a8 8 0 0 1-8 8H4l2.2-2.2A8 8 0 1 1 21 12Z" />
+      <path d="M8.5 12h.01M12 12h.01M15.5 12h.01" />
+    </svg>
+  );
+}
+
+export function SendIcon({ size = 18, className, ...props }: IconProps) {
+  return (
+    <svg
+      aria-hidden="true"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+    >
+      <path d="m4 12 16-8-6 16-2.5-6.5L4 12Z" />
+      <path d="M11.5 13.5 20 4" />
+    </svg>
+  );
+}

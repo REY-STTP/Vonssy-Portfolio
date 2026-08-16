@@ -12,17 +12,26 @@ interface ProjectsSectionProps {
   reduceMotion: boolean;
 }
 
+const INITIAL_VISIBLE = 10;
+
 export function ProjectsSection({
   projects,
   onSelectProject,
   reduceMotion,
 }: ProjectsSectionProps) {
   const [activeCategory, setActiveCategory] = useState<ProjectCategory>("All");
+  const [showAll, setShowAll] = useState(false);
 
   const filteredProjects =
     activeCategory === "All"
       ? projects
       : projects.filter((project) => project.category.includes(activeCategory));
+
+  const visibleProjects = showAll
+    ? filteredProjects
+    : filteredProjects.slice(0, INITIAL_VISIBLE);
+
+  const hasMore = filteredProjects.length > INITIAL_VISIBLE;
 
   return (
     <section id="projects" className="py-28 md:py-32">
@@ -56,7 +65,10 @@ export function ProjectsSection({
                 role="tab"
                 aria-selected={isActive}
                 key={filter}
-                onClick={() => setActiveCategory(filter)}
+                onClick={() => {
+                  setActiveCategory(filter);
+                  setShowAll(false);
+                }}
                 className={`min-h-11 shrink-0 border-b-2 px-1 pb-3 text-xs font-bold transition-colors ${
                   isActive
                     ? "border-accent text-ink"
@@ -71,7 +83,7 @@ export function ProjectsSection({
 
         <motion.div layout className="mt-3 border-b border-line">
           <AnimatePresence mode="popLayout">
-            {filteredProjects.map((project, index) => (
+            {visibleProjects.map((project, index) => (
               <motion.button
                 type="button"
                 layout
@@ -118,6 +130,19 @@ export function ProjectsSection({
             ))}
           </AnimatePresence>
         </motion.div>
+
+        {hasMore && (
+          <div className="flex justify-center pt-8">
+            <button
+              type="button"
+              onClick={() => setShowAll((value) => !value)}
+              className="button button-ghost"
+              aria-expanded={showAll}
+            >
+              {showAll ? "Show fewer" : `Show all ${filteredProjects.length} projects`}
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );
