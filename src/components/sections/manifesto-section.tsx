@@ -26,9 +26,9 @@ function ManifestoWord({
   progress,
   reduceMotion,
 }: ManifestoWordProps) {
-  // Distribute word animation evenly across progress [0.05, 0.85] with smooth overlap
-  const start = 0.05 + (index / total) * 0.72;
-  const end = Math.min(1, start + 0.09);
+  // Distribute word animation evenly across progress [0.08, 0.88] with generous smooth overlap
+  const start = 0.08 + (index / total) * 0.74;
+  const end = Math.min(0.98, start + 0.14);
   const opacity = useTransform(progress, [start, end], [0.18, 1]);
 
   return (

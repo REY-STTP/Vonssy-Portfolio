@@ -108,7 +108,7 @@ a { color: inherit; text-decoration: none; }
 .hero-scroll { position: absolute; right: 30px; bottom: 28px; display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 9px; text-transform: uppercase; }
 .ticker { overflow: hidden; border-bottom: 1px solid var(--line); background: var(--accent); color: var(--button-text); }
 .ticker div { width: max-content; padding: 11px 0; font-family: var(--font-jetbrains), monospace; font-size: 10px; font-weight: 700; animation: ticker 24s linear infinite; }
-.manifesto-section { min-height: 175vh; background: var(--text); color: var(--bg); }
+.manifesto-section { min-height: 400vh; background: var(--text); color: var(--bg); }
 .manifesto-inner { position: sticky; top: 0; display: flex; min-height: 100vh; flex-direction: column; justify-content: center; padding-top: 80px; padding-bottom: 80px; }
 .manifesto-label { margin-bottom: 38px; color: color-mix(in srgb, var(--bg) 58%, transparent); font-size: 10px; }
 .manifesto-copy { max-width: 1100px; font-size: clamp(2.35rem, 5.7vw, 5.8rem); font-weight: 700; line-height: 1.05; }
@@ -152,7 +152,7 @@ a { color: inherit; text-decoration: none; }
   .profile-orbit { top: 12%; right: -66px; width: 180px; opacity: .3; }
   .hero-scroll { right: 14px; bottom: 22px; }
   .manifesto-copy { font-size: clamp(2.2rem, 11vw, 3.6rem); }
-  .manifesto-section { min-height: 160vh; }
+  .manifesto-section { min-height: 320vh; }
   .site-footer { align-items: flex-start; flex-direction: column; gap: 20px; padding-top: 24px; padding-bottom: 24px; }
   .footer-meta { width: 100%; align-items: flex-start; flex-direction: column; gap: 12px; }
   .footer-links { gap: 18px; }

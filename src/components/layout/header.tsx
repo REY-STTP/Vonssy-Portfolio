@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type FocusEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { NavItem, ThemePreference } from "@/types/portfolio";
 import { MenuIcon } from "@/components/icons";
@@ -11,11 +11,47 @@ interface HeaderProps {
   navItems: NavItem[];
   theme: ThemePreference;
   onThemeChange: (theme: ThemePreference) => void;
+  hideDelayMs?: number;
 }
 
-export function Header({ navItems, theme, onThemeChange }: HeaderProps) {
+const DEFAULT_HIDE_DELAY = 2200;
+
+export function Header({
+  navItems,
+  theme,
+  onThemeChange,
+  hideDelayMs = DEFAULT_HIDE_DELAY,
+}: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+
+  const isHoveredRef = useRef(false);
+  const isMenuOpenRef = useRef(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const scheduleHide = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
+      if (!isHoveredRef.current && !isMenuOpenRef.current && window.scrollY > 50) {
+        setIsVisible(false);
+      }
+    }, hideDelayMs);
+  };
+
+  // Sync menu open state with ref and manage visibility
+  useEffect(() => {
+    isMenuOpenRef.current = isMenuOpen;
+    if (isMenuOpen) {
+      setIsVisible(true);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    } else if (window.scrollY > 50 && !isHoveredRef.current) {
+      scheduleHide();
+    }
+  }, [isMenuOpen, hideDelayMs]);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -24,33 +60,91 @@ export function Header({ navItems, theme, onThemeChange }: HeaderProps) {
       const currentScrollY = window.scrollY;
 
       // Always show at the top of the page
-      if (currentScrollY <= 50) {
+      if (currentScrollY <= 60) {
         setIsVisible(true);
-      } else if (currentScrollY > lastScrollY && currentScrollY - lastScrollY > 6) {
-        // Scrolling down -> hide header to maximize content focus
-        if (!isMenuOpen) {
-          setIsVisible(false);
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
         }
-      } else if (lastScrollY - currentScrollY > 6) {
-        // Scrolling up -> reveal header immediately
+      } else if (currentScrollY > lastScrollY && currentScrollY - lastScrollY > 10) {
+        // Scrolling down -> smoothly fade out header
+        if (!isMenuOpenRef.current && !isHoveredRef.current) {
+          setIsVisible(false);
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+          }
+        }
+      } else if (lastScrollY - currentScrollY > 8) {
+        // Scrolling up -> reveal header immediately and start idle hide timer
         setIsVisible(true);
+        scheduleHide();
       }
 
       lastScrollY = currentScrollY;
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isMenuOpen]);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [hideDelayMs]);
+
+  const handleMouseEnter = () => {
+    isHoveredRef.current = true;
+    setIsVisible(true);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    isHoveredRef.current = false;
+    if (window.scrollY > 60 && !isMenuOpen) {
+      scheduleHide();
+    }
+  };
+
+  const handleFocus = () => {
+    isHoveredRef.current = true;
+    setIsVisible(true);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+  };
+
+  const handleBlur = (e: FocusEvent<HTMLElement>) => {
+    if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+      isHoveredRef.current = false;
+      if (window.scrollY > 60 && !isMenuOpen) {
+        scheduleHide();
+      }
+    }
+  };
+
+  const shouldShow = isVisible || isMenuOpen;
 
   return (
     <motion.header
       id="top"
-      initial={{ y: 0 }}
-      animate={{ y: isVisible || isMenuOpen ? 0 : "-100%" }}
-      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+      initial={{ y: 0, opacity: 1 }}
+      animate={{
+        y: shouldShow ? 0 : -14,
+        opacity: shouldShow ? 1 : 0,
+        pointerEvents: shouldShow ? "auto" : "none",
+      }}
+      transition={{
+        duration: shouldShow ? 0.35 : 0.45,
+        ease: shouldShow ? [0.16, 1, 0.3, 1] : [0.25, 0.1, 0.25, 1],
+      }}
+      style={{ willChange: "transform, opacity" }}
       className="site-header"
       aria-label="Primary navigation"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onFocusCapture={handleFocus}
+      onBlurCapture={handleBlur}
     >
       <div className="shell site-header-inner">
         <a href="#home" className="brand-mark mono">
