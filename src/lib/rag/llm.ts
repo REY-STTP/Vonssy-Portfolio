@@ -11,8 +11,8 @@ export interface LLMChatOptions {
   signal?: AbortSignal;
 }
 
-export const DEFAULT_MODEL = "qwen-3.8-max-free";
-const FALLBACK_MODELS = ["mistral-medium-3-5", "agnes-2.5-flash"];
+export const DEFAULT_MODEL = "agnes-2.5-flash";
+const FALLBACK_MODELS = ["mistral-medium-3-5"];
 
 function baseUrl(): string {
   return process.env.LLM_BASE_URL ?? process.env.NARA_BASE_URL ?? "";
