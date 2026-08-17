@@ -29,7 +29,7 @@ Built adhering to **Clean Code** principles, the repository features strict modu
 ## âœ¨ Key Features
 
 - **ðŸŽ¨ Dynamic Theme Engine**: Seamless switching between `Dark`, `Light`, and `System` color schemes with persistent `localStorage` synchronization and smooth rotation micro-interactions.
-- **ðŸ¤– RAG Chat Assistant**: Floating chat widget powered by a Retrieval-Augmented Generation pipeline. Multilingual embeddings via Google Gemini API retrieve relevant project context, then a Dahl LLM streams answers token-by-token â€” with out-of-scope guardrails, source citations, and `sessionStorage` persistence.
+- **ðŸ¤– RAG Chat Assistant**: Floating chat widget powered by a Retrieval-Augmented Generation pipeline. Multilingual embeddings via Google Gemini API retrieve relevant project context, then an OpenAI-compatible LLM router streams answers token-by-token â€” with out-of-scope guardrails, source citations, and `sessionStorage` persistence.
 - **ðŸ§­ Smart Sticky Header**: Features ultra-clean glassmorphism (*16px backdrop blur*) that automatically slides up on scroll-down to maximize viewport reading room and reveals instantly on scroll-up.
 - **ðŸ“œ Scroll-Linked Manifesto Reveal**: Word-by-word opacity lighting synced proportionally to viewport travel using native Framer Motion `useScroll`.
 - **ðŸ”„ Smart Floating Scroll Progress**: Circular SVG progress gauge that tracks scroll depth, dynamically flips between *Scroll to Bottom* and *Scroll to Top* based on scroll direction, and auto-hides after 2.2s of inactivity.
@@ -97,7 +97,7 @@ src/
 â”‚   â””â”€â”€ use-theme.ts             # Theme state management & system color scheme sync
 â”œâ”€â”€ lib/
 â”‚   â””â”€â”€ rag/
-â”‚       â”œâ”€â”€ dahl.ts              # Dahl API client (chat completions, model fallback)
+â”‚       â”œâ”€â”€ llm.ts              # Generic LLM API client (chat completions, model fallback)
 â”‚       â”œâ”€â”€ embed.ts             # Embedding wrapper (shared by ingest + runtime)
 â”‚       â”œâ”€â”€ prompt.ts            # System prompt, context builder, out-of-scope guardrail
 â”‚       â””â”€â”€ retrieve.ts          # Cosine similarity search + threshold guardrail
@@ -120,8 +120,8 @@ scripts/
 | **Tailwind CSS 3.4** | Utility-first styling and responsive design |
 | **Framer Motion 13** | Physics-based animations, layout transitions, and scroll listeners |
 | **Google Fonts** | `Manrope` (Display / Sans) & `JetBrains Mono` (Code / Numbers) |
-| **Google Gemini Embeddings** | Multilingual embeddings via OpenAI-compatible API (`text-embedding-004`) for RAG retrieval |
-| **Dahl** | OpenAI-compatible LLM provider for streamed chat responses |
+| **Google Gemini Embeddings** | Multilingual embeddings via OpenAI-compatible API (`models/gemini-embedding-001`) for RAG retrieval |
+| **LLM Router** | OpenAI-compatible LLM router for streamed chat responses (swap provider via `LLM_*` env vars) |
 
 ---
 
@@ -129,10 +129,10 @@ scripts/
 
 The floating chat widget answers questions about Vonssy's projects, skills, and contact info through a **Retrieval-Augmented Generation** pipeline:
 
-1. **Ingestion (offline)** â€” `npm run ingest` fetches each repo's README via the GitHub API, merges in curated metadata (description, tags, stars), chunks the content per section, and embeds each chunk into a 768-dimension vector using the Google Gemini Embeddings API (`text-embedding-004`). Results are committed to `src/data/rag/embeddings.json` as part of the build.
+1. **Ingestion (offline)** â€” `npm run ingest` fetches each repo's README via the GitHub API, merges in curated metadata (description, tags, stars), chunks the content per section, and embeds each chunk into a 768-dimension vector using the Google Gemini Embeddings API (`models/gemini-embedding-001`). Results are committed to `src/data/rag/embeddings.json` as part of the build.
 2. **Retrieval (runtime)** â€” the `/api/chat` route embeds the visitor's question via the same Gemini API, then runs a cosine-similarity search over the pre-computed vectors to fetch the top-K relevant chunks.
 3. **Guardrail** â€” if the highest similarity score falls below a threshold (out-of-scope question), the route skips the LLM and returns a friendly default pointing to direct contact instead of hallucinating.
-4. **Generation** â€” otherwise the retrieved chunks are wrapped into a system prompt and streamed token-by-token from a **Dahl** model over SSE (`text/plain`, chunked). The client renders them progressively with a lightweight, XSS-safe Markdown renderer, and auto-switches to a fallback model if the primary is unavailable.
+4. **Generation** â€” otherwise the retrieved chunks are wrapped into a system prompt and streamed token-by-token from the configured **LLM router** model over SSE (`text/plain`, chunked). The client renders them progressively with a lightweight, XSS-safe Markdown renderer, and auto-switches to a fallback model if the primary is unavailable.
 
 The bot never answers beyond its indexed context â€” it says so honestly when information is missing.
 
@@ -168,8 +168,8 @@ npm -v
    NEXT_PUBLIC_SITE_URL=https://your-domain.com
 
    # Required for the RAG chat assistant
-   DAHL_API_KEY=your_dahl_api_key
-   DAHL_BASE_URL=https://inference.dahl.global/v1
+   LLM_API_KEY=your_llm_provider_api_key
+   LLM_BASE_URL=https://router.bynara.id/v1
 
    # Optional but recommended â€” raises GitHub API rate limit during ingestion
    GITHUB_TOKEN=your_github_token

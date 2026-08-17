@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { embedTexts } from "@/lib/rag/embed";
 import { search, MIN_SIMILARITY_THRESHOLD } from "@/lib/rag/retrieve";
 import { buildSystemPrompt, buildUserPrompt, getOutOfScopeMessage } from "@/lib/rag/prompt";
-import { getAvailableModel, streamChat } from "@/lib/rag/dahl";
+import { getAvailableModel, streamChat } from "@/lib/rag/llm";
 
 export const runtime = "nodejs";
 
