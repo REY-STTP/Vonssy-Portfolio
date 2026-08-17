@@ -18,6 +18,17 @@ function baseUrl(): string {
   return process.env.DAHL_BASE_URL ?? "https://inference.dahl.global/v1";
 }
 
+const USER_AGENT =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36";
+
+function defaultHeaders(): Record<string, string> {
+  return {
+    Authorization: `Bearer ${apiKey()}`,
+    "User-Agent": USER_AGENT,
+    Accept: "*/*",
+  };
+}
+
 function apiKey(): string {
   return process.env.DAHL_API_KEY ?? "";
 }
@@ -25,7 +36,7 @@ function apiKey(): string {
 export async function checkModelStatus(model: string, window = "1h"): Promise<DahlModelStatus> {
   const url = `${baseUrl()}/status?model=${encodeURIComponent(model)}&window=${encodeURIComponent(window)}`;
   const res = await fetch(url, {
-    headers: { Authorization: `Bearer ${apiKey()}` },
+    headers: defaultHeaders(),
   });
   if (!res.ok) {
     return { operational: false };
@@ -48,7 +59,7 @@ async function postChat(options: DahlChatOptions): Promise<Response> {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey()}`,
+      ...defaultHeaders(),
     },
     body: JSON.stringify({
       model: options.model,
