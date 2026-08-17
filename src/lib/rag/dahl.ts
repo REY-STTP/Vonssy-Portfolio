@@ -60,19 +60,28 @@ async function postChat(options: DahlChatOptions): Promise<Response> {
 }
 
 export async function streamChat(options: DahlChatOptions): Promise<ReadableStream<Uint8Array>> {
-  let res = await postChat({ ...options, stream: true });
+  const candidates = [options.model, FALLBACK_MODEL];
+  const attempted = new Set<string>();
+  let lastError = "";
 
-  if (res.status === 429 || res.status === 502 || (res.status >= 400 && res.status < 500 && res.status !== 401 && res.status !== 403)) {
-    res = await postChat({ ...options, model: FALLBACK_MODEL, stream: true });
+  for (const model of candidates) {
+    if (attempted.has(model)) continue;
+    attempted.add(model);
+
+    const res = await postChat({ ...options, model, stream: true });
+
+    if (res.ok && res.body) {
+      return res.body;
+    }
+
+    const body = await res.text().catch(() => "");
+    lastError = `model=${model} status=${res.status} ${body.slice(0, 200)}`;
+
+    if (res.status === 401 || res.status === 403) {
+      if (model === options.model) continue;
+      break;
+    }
   }
 
-  if (!res.ok) {
-    throw new Error(`Dahl chat failed with status ${res.status}`);
-  }
-
-  if (!res.body) {
-    throw new Error("Dahl chat response has no body");
-  }
-
-  return res.body;
+  throw new Error(`Dahl chat failed: ${lastError}`);
 }
