@@ -50,7 +50,7 @@ export function ManifestoSection({ reduceMotion }: ManifestoSectionProps) {
   return (
     <section id="manifesto" ref={sectionRef} className="manifesto-section">
       <div className="shell manifesto-inner">
-        <p className="mono manifesto-label">01 / OPERATING PRINCIPLE</p>
+        <p className="mono manifesto-label">OPERATING PRINCIPLE</p>
         <p className="manifesto-copy">
           {words.map((word, index) => (
             <ManifestoWord

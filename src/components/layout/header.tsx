@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import type { NavItem, ThemePreference } from "@/types/portfolio";
 import { MenuIcon } from "@/components/icons";
 import { ThemeSelector } from "@/components/ui/theme-selector";
+import { BrandLogo } from "@/components/ui/brand-logo";
 import { MobileNav } from "./mobile-nav";
 
 interface HeaderProps {
@@ -148,8 +149,11 @@ export function Header({
     >
       <div className="shell site-header-inner">
         <a href="#home" className="brand-mark mono">
-          VONSSY<span className="text-accent">.</span>
-          <span className="brand-index">/26</span>
+          <BrandLogo size={24} className="shrink-0" />
+          <span className="brand-mark-text">
+            VONSSY<span className="text-accent">.</span>
+            <span className="brand-index">/26</span>
+          </span>
         </a>
 
         <div className="flex items-center gap-3">

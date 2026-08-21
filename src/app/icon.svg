@@ -1,4 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#1a1d1a"/>
-  <path d="M15 16h9l8 24 8-24h9L36 49h-8L15 16Z" fill="#a7c59a"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="16" fill="#111411"/>
+  <rect x="1" y="1" width="62" height="62" rx="15" stroke="rgba(232, 235, 227, 0.12)" stroke-width="2"/>
+  
+  <!-- Left Vector Arm -->
+  <path d="M14 16L29 44H34L19 16H14Z" fill="#e8ebe3"/>
+  
+  <!-- Right Vector Arm (Accent Sage) -->
+  <path d="M50 16L35 44H30L45 16H50Z" fill="#a7c59a"/>
+  
+  <!-- Execution Node (Warm Accent) -->
+  <rect x="29" y="44" width="6" height="6" rx="1.5" fill="#cfaa75"/>
 </svg>

@@ -106,7 +106,7 @@ export default function PortfolioClient({
         reduceMotion={reduceMotion}
       />
 
-      <StackSection stack={stack} />
+      <StackSection stack={stack} reduceMotion={reduceMotion} />
 
       <GitHubSection stats={githubStats} />
 

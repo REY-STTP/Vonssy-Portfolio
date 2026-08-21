@@ -65,3 +65,7 @@ next-env.d.ts
 *.njsproj
 *.sln
 *.sw?
+
+# Agents & AI Skills
+.agents/
+skills-lock.json
