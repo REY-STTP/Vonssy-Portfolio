@@ -1,20 +1,31 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 interface AboutSectionProps {
   reduceMotion: boolean;
 }
 
 export function AboutSection({ reduceMotion }: AboutSectionProps) {
-  const revealVariants = {
-    hidden: { opacity: 0, y: reduceMotion ? 0 : 34 },
+  const containerVariants: Variants = {
+    hidden: {},
+    show: {
+      transition: {
+        staggerChildren: reduceMotion ? 0 : 0.15,
+        delayChildren: reduceMotion ? 0 : 0.1,
+      },
+    },
+  };
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: reduceMotion ? 0 : 24 },
     show: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: reduceMotion ? 0 : 0.75,
-        ease: [0.16, 1, 0.3, 1] as const,
+        type: "spring",
+        stiffness: 90,
+        damping: 20,
       },
     },
   };
@@ -22,35 +33,40 @@ export function AboutSection({ reduceMotion }: AboutSectionProps) {
   return (
     <motion.section
       id="about"
-      className="section-pad"
+      className="section-pad relative"
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: 0.15 }}
-      variants={revealVariants}
+      variants={containerVariants}
     >
       <div className="shell grid gap-12 lg:grid-cols-[.68fr_1.32fr]">
-        <h2 className="max-w-md text-4xl font-bold leading-tight tracking-normal md:text-5xl">
+        <motion.h2 
+          variants={itemVariants}
+          className="max-w-md text-4xl font-bold leading-tight tracking-tight md:text-5xl"
+        >
           From fundamentals to automation.
-        </h2>
-        <div className="max-w-2xl text-[17px] leading-8 text-soft">
-          <p>
+        </motion.h2>
+        
+        <div className="max-w-2xl text-[17px] leading-8 text-soft lg:border-l lg:border-line lg:pl-12">
+          <motion.p variants={itemVariants}>
             Vonssy is the builder identity of Reyvaldi Zakaria. The work started
             broad: programming fundamentals, C and C++, JavaScript, PHP, SQL,
             Python, AI and machine learning, and mobile development.
-          </p>
-          <p className="mt-5">
+          </motion.p>
+          <motion.p variants={itemVariants} className="mt-5">
             That path moved through web applications and backend systems into
             software that runs against the real world: wallets, blockchains,
             external APIs, accounts, proxies, and data. The point is not
             collecting technologies. It is combining enough of them to make a
             working system.
-          </p>
-          <div className="mt-8 border-t border-line pt-5">
+          </motion.p>
+          <motion.div variants={itemVariants} className="mt-8 border-t border-line pt-5 relative">
+            <div className="absolute top-0 left-0 w-[5px] h-[5px] bg-accent -translate-y-[3px]" />
             <p className="mono text-xs text-quiet">
               learning → experimenting → building →{" "}
               <span className="text-accent">automating</span>
             </p>
-          </div>
+          </motion.div>
         </div>
       </div>
     </motion.section>

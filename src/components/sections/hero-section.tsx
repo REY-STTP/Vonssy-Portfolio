@@ -86,15 +86,12 @@ export function HeroSection({ reduceMotion, introActive }: HeroSectionProps) {
           <h1 className="hero-title" aria-label="Software that does things">
             <span className="hero-line">
               <span>Software</span>
-              <small>01</small>
             </span>
             <span className="hero-line hero-line-accent">
               <span>that does</span>
-              <small>02</small>
             </span>
             <span className="hero-line">
               <span>things.</span>
-              <small>03</small>
             </span>
           </h1>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import type { Principle } from "@/types/portfolio";
 
 interface PhilosophySectionProps {
@@ -12,42 +12,71 @@ export function PhilosophySection({
   principles,
   reduceMotion,
 }: PhilosophySectionProps) {
+  const containerVariants: Variants = {
+    hidden: {},
+    show: {
+      transition: {
+        staggerChildren: reduceMotion ? 0 : 0.1,
+      },
+    },
+  };
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: reduceMotion ? 0 : 20 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 20,
+      },
+    },
+  };
+
   return (
     <section className="border-y border-line-soft bg-section section-pad build-section">
       <div className="shell">
-        <div className="grid gap-8 lg:grid-cols-[.68fr_1.32fr]">
-          <div>
-            <h2 className="text-4xl font-bold tracking-normal md:text-5xl">
-              How I build
-            </h2>
-            <p className="mt-4 max-w-sm text-sm leading-6 text-muted">
-              The recurring decisions behind the repositories, not a manifesto.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-2">
-            {principles.map((principle, index) => (
-              <motion.div
-                key={principle.title}
-                initial={{ opacity: 0, y: reduceMotion ? 0 : 28 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{
-                  delay: reduceMotion ? 0 : index * 0.08,
-                  duration: 0.55,
-                }}
-                className="principle border-t border-line py-6 md:odd:pr-7 md:even:pl-7"
-              >
-                <span className="mono principle-index">
-                  0{index + 1}
-                </span>
-                <h3 className="font-bold">{principle.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-muted">
+        <div className="mb-16 md:mb-20">
+          <h2 className="text-4xl font-bold tracking-tight md:text-5xl">
+            How I build
+          </h2>
+          <p className="mt-5 max-w-sm text-[15px] leading-7 text-muted">
+            The recurring decisions behind the repositories, not a manifesto.
+          </p>
+        </div>
+        
+        <motion.div 
+          className="flex flex-col border-b border-line"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.1 }}
+          variants={containerVariants}
+        >
+          {principles.map((principle, index) => (
+            <motion.div
+              key={principle.title}
+              variants={itemVariants}
+              className="group relative grid gap-4 border-t border-line py-8 transition-colors duration-300 hover:bg-[var(--row-hover)] sm:grid-cols-[auto_1fr] md:grid-cols-[80px_1fr_1.5fr] md:gap-12 md:py-10 md:px-8 -mx-6 px-6 md:-mx-8"
+            >
+              <div className="absolute left-0 top-0 bottom-0 w-[2px] scale-y-0 bg-accent transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] origin-center group-hover:scale-y-100" />
+              
+              <div className="mono text-[13px] text-muted-deep tabular-nums transition-colors duration-300 group-hover:text-accent mt-1">
+                0{index + 1}
+              </div>
+              
+              <div>
+                <h3 className="font-bold text-lg text-text transition-colors duration-300">{principle.title}</h3>
+              </div>
+              
+              <div>
+                <p className="text-[15px] leading-relaxed text-muted transition-colors duration-300 group-hover:text-soft">
                   {principle.description}
                 </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
