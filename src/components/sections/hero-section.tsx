@@ -79,7 +79,7 @@ export function HeroSection({ reduceMotion, introActive }: HeroSectionProps) {
           className="hero-copy"
         >
           <div className="hero-kicker mono">
-            <span className="availability-dot" /> Available for selected collaborations{" "}
+            <span className="availability-dot" /> Available for collaborations{" "}
             <span>Indonesia / UTC+7</span>
           </div>
 

@@ -229,7 +229,7 @@ a { color: inherit; text-decoration: none; }
   .hero-line small { display: none; }
   .hero-bottom { margin-top: 34px; }
   .hero-bottom > p { font-size: 14px; line-height: 1.7; }
-  .profile-orbit { top: 12%; right: -66px; width: 180px; opacity: .3; }
+  .profile-orbit { top: 12%; right: -20px; width: 180px; opacity: .3; }
   .hero-scroll { right: 14px; bottom: 22px; }
   .manifesto-copy { font-size: clamp(2.2rem, 11vw, 3.6rem); }
   .manifesto-section { min-height: 320vh; }
