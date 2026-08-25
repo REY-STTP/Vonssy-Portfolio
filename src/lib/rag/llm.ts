@@ -52,6 +52,35 @@ export async function streamChat(options: LLMChatOptions): Promise<ReadableStrea
   throw new Error(`LLM chat failed: ${lastError}`);
 }
 
+// Non-streaming completion for internal tasks (e.g. query rewriting).
+export async function completeChat(options: Omit<LLMChatOptions, "stream">): Promise<string> {
+  let lastError = "";
+
+  for (const model of [options.model, ...FALLBACK_MODELS]) {
+    try {
+      const res = await postChat({ ...options, model, stream: false });
+
+      if (!res.ok) {
+        const body = await res.text().catch(() => "");
+        console.error(`LLM completion rejected: model=${model} status=${res.status} body=${body.slice(0, 200)}`);
+        lastError = `model=${model} status=${res.status}`;
+        continue;
+      }
+
+      const json = (await res.json().catch(() => null)) as { choices?: Array<{ message?: { content?: unknown } }> } | null;
+      const content = json?.choices?.[0]?.message?.content;
+      if (typeof content === "string" && content.trim()) {
+        return content.trim();
+      }
+      lastError = `model=${model} empty completion`;
+    } catch (err) {
+      lastError = `model=${model} ${err instanceof Error ? err.message : "unknown error"}`;
+    }
+  }
+
+  throw new Error(`LLM completion failed: ${lastError}`);
+}
+
 // Combines the caller's signal (if any) with a hard timeout so a hung
 // provider connection cannot keep the request open indefinitely.
 function withTimeout(signal?: AbortSignal): { signal: AbortSignal; cancel: () => void } {

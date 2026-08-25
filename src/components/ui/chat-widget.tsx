@@ -132,7 +132,30 @@ export function ChatWidget({ reduceMotion }: ChatWidgetProps) {
                 >
                   <div className="chat-message">
                     {message.role === "assistant" ? (
-                      <ChatMarkdown content={message.content} />
+                      <>
+                        <ChatMarkdown content={message.content} />
+                        {!message.streaming && message.sources && message.sources.length > 0 && (
+                          <div className="chat-sources">
+                            {message.sources.map((source) =>
+                              source.url ? (
+                                <a
+                                  key={source.name}
+                                  href={source.url}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="chat-source-chip"
+                                >
+                                  {source.name}
+                                </a>
+                              ) : (
+                                <span key={source.name} className="chat-source-chip">
+                                  {source.name}
+                                </span>
+                              )
+                            )}
+                          </div>
+                        )}
+                      </>
                     ) : (
                       message.content
                     )}

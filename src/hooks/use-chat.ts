@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { ChatUIMessage } from "@/types/rag";
+import type { ChatUIMessage, SourceRef } from "@/types/rag";
 
 const HISTORY_KEY = "vonssy-chat-history";
 
@@ -65,14 +65,19 @@ export function useChat() {
     });
   }, []);
 
-  const updateLastAssistant = useCallback((delta: string) => {
+  const updateLastAssistant = useCallback((delta: string, sources?: SourceRef[]) => {
     setMessages((prev) => {
       const next = [...prev];
       const last = next[next.length - 1];
       if (last && last.role === "assistant") {
-        next[next.length - 1] = { ...last, content: last.content + delta };
+        next[next.length - 1] = {
+          ...last,
+          content: last.content + delta,
+          // Sources arrive with the first delta — attach them once.
+          ...(sources?.length ? { sources } : {}),
+        };
       } else {
-        next.push({ role: "assistant", content: delta });
+        next.push({ role: "assistant", content: delta, ...(sources?.length ? { sources } : {}) });
       }
       return next;
     });
@@ -90,6 +95,13 @@ export function useChat() {
       const trimmed = text.trim();
       if (!trimmed || isStreaming) return;
 
+      // Snapshot the conversation BEFORE appending this message so the
+      // server gets prior context for follow-up questions.
+      const history = messagesRef.current
+        .filter((m) => !m.streaming)
+        .slice(-6)
+        .map(({ role, content }) => ({ role, content }));
+
       appendMessage({ role: "user", content: trimmed });
       appendMessage({ role: "assistant", content: "", streaming: true });
       setError(null);
@@ -102,7 +114,7 @@ export function useChat() {
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: trimmed }),
+          body: JSON.stringify({ message: trimmed, history }),
           signal: controller.signal,
         });
 
@@ -132,6 +144,22 @@ export function useChat() {
 
         if (!res.body) throw new Error("No response body");
 
+        // Citation sources arrive as a header before streaming starts.
+        let sources: SourceRef[] = [];
+        try {
+          const rawSources = res.headers.get("X-Sources");
+          if (rawSources) {
+            const parsed = JSON.parse(decodeURIComponent(rawSources));
+            if (Array.isArray(parsed)) {
+              sources = parsed.filter(
+                (s): s is SourceRef => s && typeof s === "object" && typeof s.name === "string"
+              );
+            }
+          }
+        } catch {
+          // Malformed header should never break the chat itself.
+        }
+
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
 
@@ -139,7 +167,7 @@ export function useChat() {
           const { done, value } = await reader.read();
           if (done) break;
           const chunk = decoder.decode(value, { stream: true });
-          if (chunk) updateLastAssistant(chunk);
+          if (chunk) updateLastAssistant(chunk, sources);
         }
 
         setMessages((prev) => {

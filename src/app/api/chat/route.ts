@@ -1,15 +1,101 @@
 import { NextRequest } from "next/server";
 import { embedTexts } from "@/lib/rag/embed";
 import { search, MIN_SIMILARITY_THRESHOLD } from "@/lib/rag/retrieve";
-import { buildSystemPrompt, buildUserPrompt, getOutOfScopeMessage, sanitizeUntrusted } from "@/lib/rag/prompt";
-import { DEFAULT_MODEL, streamChat } from "@/lib/rag/llm";
+import {
+  buildRewriteMessages,
+  buildSystemPrompt,
+  buildUserPrompt,
+  getOutOfScopeMessage,
+  sanitizeUntrusted,
+} from "@/lib/rag/prompt";
+import { DEFAULT_MODEL, completeChat, streamChat } from "@/lib/rag/llm";
+import type { ChatMessage, RetrievedChunk, SourceRef } from "@/types/rag";
 
 export const runtime = "nodejs";
+// Streaming LLM responses can be slow — allow up to the Hobby-plan maximum.
+export const maxDuration = 60;
 
 const MAX_MESSAGE_LENGTH = 1000;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX_REQUESTS = 10;
 const RATE_LIMIT_PRUNE_THRESHOLD = 5000;
+
+// Conversation history limits — keeps prompts (and abuse surface) bounded.
+const MAX_HISTORY_MESSAGES = 8;
+const MAX_HISTORY_CONTENT_CHARS = 1500;
+
+// Best-effort answer cache for repeated questions. On Vercel this lives
+// per-instance (resets on cold start), so treat it as a cost optimization,
+// not a correctness layer.
+const ANSWER_CACHE_TTL_MS = 60 * 60 * 1000;
+const ANSWER_CACHE_MAX_ENTRIES = 100;
+const answerCache = new Map<string, { reply: string; sources: SourceRef[]; expiresAt: number }>();
+
+/** Dedupes retrieved chunks into a compact list of source references. */
+function buildSourceRefs(chunks: RetrievedChunk[]): SourceRef[] {
+  const seen = new Set<string>();
+  const sources: SourceRef[] = [];
+  for (const chunk of chunks) {
+    const name = chunk.repoName ?? chunk.source;
+    const key = `${name}|${chunk.url ?? ""}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    sources.push({ name, url: chunk.url });
+  }
+  return sources;
+}
+
+function encodeSourcesHeader(sources: SourceRef[]): string {
+  return encodeURIComponent(JSON.stringify(sources));
+}
+
+function getNormalizedCacheKey(message: string): string {
+  // Collapse internal whitespace so "who  is Vonssy?" and "who is Vonssy?"
+  // share a cache entry; case differences are normalized too.
+  return message.toLowerCase().replace(/\s+/g, " ").trim();
+}
+
+// Parses untrusted history from the request body into safe ChatMessages.
+function parseHistory(raw: unknown): ChatMessage[] {
+  if (!Array.isArray(raw)) return [];
+  const valid = raw.filter(
+    (item): item is { role: "user" | "assistant"; content: string } =>
+      typeof item === "object" &&
+      item !== null &&
+      "role" in item &&
+      "content" in item &&
+      ((item as { role: unknown }).role === "user" || (item as { role: unknown }).role === "assistant") &&
+      typeof (item as { content: unknown }).content === "string"
+  );
+  return valid
+    .slice(-MAX_HISTORY_MESSAGES)
+    .map((m) => ({ role: m.role, content: sanitizeUntrusted(m.content).slice(0, MAX_HISTORY_CONTENT_CHARS) }))
+    .filter((m) => m.content.length > 0);
+}
+
+function getCachedAnswer(key: string): { reply: string; sources: SourceRef[] } | null {
+  const entry = answerCache.get(key);
+  if (!entry) return null;
+  if (Date.now() > entry.expiresAt) {
+    answerCache.delete(key);
+    return null;
+  }
+  // Re-insert to mark this entry as most recently used.
+  answerCache.delete(key);
+  answerCache.set(key, entry);
+  return { reply: entry.reply, sources: entry.sources };
+}
+
+function setCachedAnswer(key: string, reply: string, sources: SourceRef[]): void {
+  const trimmed = reply.trim();
+  if (!trimmed) return;
+  if (answerCache.size >= ANSWER_CACHE_MAX_ENTRIES) {
+    // Evict the least recently used entry.
+    const oldest = answerCache.keys().next().value;
+    if (oldest !== undefined) answerCache.delete(oldest);
+  }
+  answerCache.set(key, { reply: trimmed, sources, expiresAt: Date.now() + ANSWER_CACHE_TTL_MS });
+}
 
 // Fixed-window in-memory rate limiter, keyed by client IP.
 // Sufficient for a single-node deployment; swap for a shared store
@@ -66,7 +152,7 @@ export async function POST(req: NextRequest) {
     return new Response("Forbidden", { status: 403 });
   }
 
-  let body: { message?: string };
+  let body: { message?: string; history?: unknown };
   try {
     body = await req.json();
   } catch {
@@ -85,8 +171,42 @@ export async function POST(req: NextRequest) {
     return new Response("message is required", { status: 400 });
   }
 
+  const history = parseHistory(body.history);
+  const cacheKey = getNormalizedCacheKey(message);
+
+  // The answer cache is only safe for first-turn questions — a follow-up's
+  // answer depends on its conversation context, which rarely repeats exactly.
+  if (history.length === 0) {
+    const cached = getCachedAnswer(cacheKey);
+    if (cached) {
+      // Same shape as the out-of-scope response — the client already
+      // handles full JSON replies (renders them instantly, no stream).
+      return new Response(JSON.stringify({ reply: cached.reply, cached: true }), {
+        headers: { "Content-Type": "application/json", "X-Cache": "HIT", "X-Sources": encodeSourcesHeader(cached.sources) },
+      });
+    }
+  }
+
   try {
-    const [queryVector] = await embedTexts([message]);
+    let searchQuery = message;
+
+    // Multi-turn: resolve references ("what tech does IT use?") into a
+    // standalone query before embedding. Falls back to the raw question
+    // if rewriting fails — retrieval just gets slightly less precise.
+    if (history.length > 0) {
+      try {
+        const rewritten = await completeChat({
+          model: DEFAULT_MODEL,
+          messages: buildRewriteMessages(history, message),
+        });
+        const cleaned = sanitizeUntrusted(rewritten.replace(/^["']+|["']+$/g, "")).slice(0, MAX_MESSAGE_LENGTH);
+        if (cleaned) searchQuery = cleaned;
+      } catch (err) {
+        console.warn("Query rewriting failed, falling back to original question:", err instanceof Error ? err.message : err);
+      }
+    }
+
+    const [queryVector] = await embedTexts([searchQuery]);
     const chunks = search(queryVector, 4);
 
     if (chunks.length === 0 || chunks[0].score < MIN_SIMILARITY_THRESHOLD) {
@@ -101,7 +221,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const messages = [buildSystemPrompt(), buildUserPrompt(message, chunks)];
+    const messages = [buildSystemPrompt(), buildUserPrompt(message, chunks, history)];
+    const sources = buildSourceRefs(chunks);
     const stream = await streamChat({ model: DEFAULT_MODEL, messages, stream: true });
 
     return new Response(
@@ -110,6 +231,7 @@ export async function POST(req: NextRequest) {
           const reader = stream.getReader();
           const decoder = new TextDecoder();
           let buffer = "";
+          let fullReply = "";
           try {
             while (true) {
               const { done, value } = await reader.read();
@@ -126,12 +248,18 @@ export async function POST(req: NextRequest) {
                   const parsed = JSON.parse(data);
                   const delta = parsed?.choices?.[0]?.delta?.content;
                   if (delta) {
+                    fullReply += delta;
                     controller.enqueue(new TextEncoder().encode(delta));
                   }
                 } catch {
                   // ignore malformed chunks
                 }
               }
+            }
+            // Stream finished cleanly — remember first-turn answers so
+            // repeat questions skip the paid APIs entirely.
+            if (history.length === 0) {
+              setCachedAnswer(cacheKey, fullReply, sources);
             }
           } finally {
             reader.releaseLock();
@@ -145,6 +273,8 @@ export async function POST(req: NextRequest) {
           "Cache-Control": "no-cache, no-transform",
           Connection: "keep-alive",
           "X-Accel-Buffering": "no",
+          // Retrieval sources for the client to render as citation chips.
+          "X-Sources": encodeSourcesHeader(sources),
         },
       }
     );

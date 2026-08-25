@@ -7,6 +7,13 @@ export interface ChatUIMessage {
   role: "user" | "assistant";
   content: string;
   streaming?: boolean;
+  sources?: SourceRef[];
+}
+
+/** A retrieval source attached to an assistant reply. */
+export interface SourceRef {
+  name: string;
+  url?: string;
 }
 
 export interface RetrievedChunk {
