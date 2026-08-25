@@ -1,9 +1,5 @@
 import type { ChatMessage } from "@/types/rag";
 
-export interface LLMModelStatus {
-  operational: boolean;
-}
-
 export interface LLMChatOptions {
   model: string;
   messages: ChatMessage[];
@@ -13,13 +9,15 @@ export interface LLMChatOptions {
 
 export const DEFAULT_MODEL = "agnes-2.5-flash";
 const FALLBACK_MODELS = ["mistral-medium-3-5"];
+const MAX_TOKENS = 512;
+const REQUEST_TIMEOUT_MS = 30_000;
 
 function baseUrl(): string {
-  return process.env.LLM_BASE_URL ?? process.env.NARA_BASE_URL ?? "";
+  return process.env.LLM_BASE_URL ?? "";
 }
 
 function apiKey(): string {
-  return process.env.LLM_API_KEY ?? process.env.NARA_API_KEY ?? "";
+  return process.env.LLM_API_KEY ?? "";
 }
 
 function defaultHeaders(): Record<string, string> {
@@ -29,49 +27,69 @@ function defaultHeaders(): Record<string, string> {
   };
 }
 
-export async function getAvailableModel(): Promise<string> {
-  return DEFAULT_MODEL;
-}
-
-async function postChat(options: LLMChatOptions): Promise<Response> {
-  return fetch(`${baseUrl()}/chat/completions`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...defaultHeaders(),
-    },
-    body: JSON.stringify({
-      model: options.model,
-      messages: options.messages,
-      stream: options.stream ?? false,
-    }),
-    signal: options.signal,
-  });
-}
-
 export async function streamChat(options: LLMChatOptions): Promise<ReadableStream<Uint8Array>> {
-  const candidates = [options.model, ...FALLBACK_MODELS];
-  const attempted = new Set<string>();
+  // Try the requested model first, then each fallback in order.
   let lastError = "";
 
-  for (const model of candidates) {
-    if (attempted.has(model)) continue;
-    attempted.add(model);
+  for (const model of [options.model, ...FALLBACK_MODELS]) {
+    try {
+      const res = await postChat({ ...options, model, stream: true });
 
-    const res = await postChat({ ...options, model, stream: true });
+      if (res.ok && res.body) {
+        return res.body;
+      }
 
-    if (res.ok && res.body) {
-      return res.body;
-    }
-
-    const body = await res.text().catch(() => "");
-    lastError = `model=${model} status=${res.status} ${body.slice(0, 200)}`;
-
-    if (res.status === 401 || res.status === 403) {
-      if (model === options.model) continue;
-      break;
+      const body = await res.text().catch(() => "");
+      // Do not propagate provider response bodies into thrown errors —
+      // they may leak endpoint/provider details to the client via the 500 path.
+      console.error(`LLM chat request rejected: model=${model} status=${res.status} body=${body.slice(0, 200)}`);
+      lastError = `model=${model} status=${res.status}`;
+    } catch (err) {
+      lastError = `model=${model} ${err instanceof Error ? err.message : "unknown error"}`;
     }
   }
 
   throw new Error(`LLM chat failed: ${lastError}`);
+}
+
+// Combines the caller's signal (if any) with a hard timeout so a hung
+// provider connection cannot keep the request open indefinitely.
+function withTimeout(signal?: AbortSignal): { signal: AbortSignal; cancel: () => void } {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const onAbort = () => controller.abort();
+  if (signal) {
+    if (signal.aborted) controller.abort();
+    else signal.addEventListener("abort", onAbort, { once: true });
+  }
+  return {
+    signal: controller.signal,
+    cancel: () => {
+      clearTimeout(timer);
+      signal?.removeEventListener("abort", onAbort);
+    },
+  };
+}
+
+async function postChat(options: LLMChatOptions): Promise<Response> {
+  const timeout = withTimeout(options.signal);
+  try {
+    return await fetch(`${baseUrl()}/chat/completions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...defaultHeaders(),
+      },
+      body: JSON.stringify({
+        model: options.model,
+        messages: options.messages,
+        stream: options.stream ?? false,
+        max_tokens: MAX_TOKENS,
+      }),
+      signal: timeout.signal,
+    });
+  } finally {
+    // Headers received (or the request failed) — stop the connect timeout.
+    timeout.cancel();
+  }
 }

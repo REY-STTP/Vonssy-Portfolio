@@ -56,6 +56,9 @@ export default function PortfolioClient({
     }
 
     if (hasSeenIntro || reduceMotion) {
+      // Mount-time hydration from sessionStorage: state must start "active"
+      // on the server and correct after mount, so setState here is intentional.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsIntroActive(false);
       return;
     }

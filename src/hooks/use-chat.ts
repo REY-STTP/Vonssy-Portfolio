@@ -31,16 +31,26 @@ export function useChat() {
 
   useEffect(() => {
     messagesRef.current = messages;
-    if (typeof window !== "undefined") {
+    if (typeof window === "undefined") return;
+
+    // Debounce persistence: token-by-token streaming mutates `messages`
+    // many times per second, and stringify-ing the whole history on every
+    // delta wastes CPU. Only write after the stream settles briefly.
+    const timer = window.setTimeout(() => {
       try {
         sessionStorage.setItem(HISTORY_KEY, JSON.stringify(messages));
       } catch {
         // ignore storage errors
       }
-    }
+    }, 400);
+
+    return () => window.clearTimeout(timer);
   }, [messages]);
 
   useEffect(() => {
+    // Mount-time hydration from sessionStorage: messages must start empty on
+    // the server and restore after mount, so setState here is intentional.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMessages(loadHistory());
   }, []);
 

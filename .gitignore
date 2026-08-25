@@ -1,71 +1,56 @@
 # dependencies
 /node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
 
 # testing
 /coverage
-/playwright-report/
-/test-results/
-/.playwright-mcp/
-
-# local agent tooling
-/.opencode/
-/opencode.json
 
 # next.js
 /.next/
 /out/
-/.turbo/
+next-env.d.ts
+*.tsbuildinfo
 
-# production
+# production builds (non-Next)
 /build
 /dist
 
-# misc
-.DS_Store
-Thumbs.db
-*.pem
-
-# debug & logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-*.log
-
-# env files
+# env files — never commit secrets
 .env
-.env.local
-.env.*.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env*.local
 !.env.example
+
+# logs
+logs/
+*.log
+npm-debug.log*
+
+# tooling caches
+.eslintcache
+.prettiercache
 
 # vercel
 /.vercel/
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+*.pem
 
 # IDEs and Editors
 .vscode/*
 !.vscode/settings.json
 !.vscode/extensions.json
-.idea
+.idea/
 *.suo
-*.ntvs*
-*.njsproj
-*.sln
 *.sw?
 
-# Agents & AI Skills
-.agents/
-skills-lock.json
+# local-only (not required for the web app to run)
+/tests/
+
+# local agent tooling
+/.agents/
+/.opencode/
+/opencode.json
+/skills-lock.json
+/.playwright-mcp/

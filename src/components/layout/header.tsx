@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type FocusEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FocusEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { NavItem, ThemePreference } from "@/types/portfolio";
 import { MenuIcon } from "@/components/icons";
@@ -30,7 +30,7 @@ export function Header({
   const isMenuOpenRef = useRef(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const scheduleHide = () => {
+  const scheduleHide = useCallback(() => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
@@ -39,20 +39,21 @@ export function Header({
         setIsVisible(false);
       }
     }, hideDelayMs);
-  };
+  }, [hideDelayMs]);
 
-  // Sync menu open state with ref and manage visibility
+  // Sync menu open state with ref and manage visibility.
+  // Note: no setIsVisible(true) needed when opening — visibility is
+  // derived below via `isVisible || isMenuOpen`.
   useEffect(() => {
     isMenuOpenRef.current = isMenuOpen;
     if (isMenuOpen) {
-      setIsVisible(true);
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
     } else if (window.scrollY > 50 && !isHoveredRef.current) {
       scheduleHide();
     }
-  }, [isMenuOpen, hideDelayMs]);
+  }, [isMenuOpen, scheduleHide]);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -90,7 +91,7 @@ export function Header({
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [hideDelayMs]);
+  }, [scheduleHide]);
 
   const handleMouseEnter = () => {
     isHoveredRef.current = true;

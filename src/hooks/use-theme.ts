@@ -45,6 +45,9 @@ export function useTheme() {
     }
 
     root.dataset.themePreference = storedPreference;
+    // Mount-time hydration from localStorage: theme must start on the server
+    // default and correct after mount, so setState here is intentional.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTheme(storedPreference);
     applyResolvedTheme(resolveTheme(storedPreference));
 

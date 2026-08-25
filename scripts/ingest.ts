@@ -7,15 +7,51 @@ import type { EmbeddingRecord, RagSource } from "../src/types/rag";
 
 const GH_API = "https://api.github.com";
 const OUT_DIR = path.join(process.cwd(), "src", "data", "rag");
+const GH_MAX_RETRIES = 3;
+const GH_BASE_DELAY_MS = 2_000;
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Retries transient failures (network errors, 403/429 rate limiting)
+// with exponential backoff, honoring Retry-After / x-ratelimit-reset.
+async function fetchWithRetry(url: string, headers: Record<string, string>): Promise<Response> {
+  for (let attempt = 0; attempt <= GH_MAX_RETRIES; attempt++) {
+    let res: Response;
+    try {
+      res = await fetch(url, { headers });
+    } catch (err) {
+      if (attempt === GH_MAX_RETRIES) throw err;
+      const wait = GH_BASE_DELAY_MS * Math.pow(2, attempt);
+      console.warn(`  ! Network error (${err instanceof Error ? err.message : "unknown"}), retrying in ${wait}ms...`);
+      await sleep(wait);
+      continue;
+    }
+
+    if ((res.status === 403 || res.status === 429) && attempt < GH_MAX_RETRIES) {
+      const retryAfterSec = Number(res.headers.get("retry-after"));
+      const resetMs = Number(res.headers.get("x-ratelimit-reset")) * 1000;
+      const wait =
+        (!Number.isNaN(retryAfterSec) && retryAfterSec > 0 ? retryAfterSec * 1000 : 0) ||
+        Math.min(Math.max(resetMs - Date.now(), 0), 60_000) ||
+        GH_BASE_DELAY_MS * Math.pow(2, attempt);
+      console.warn(`  ! GitHub ${res.status} (rate limit?), waiting ${Math.round(wait)}ms before retry ${attempt + 1}/${GH_MAX_RETRIES}...`);
+      await sleep(wait);
+      continue;
+    }
+
+    return res;
+  }
+  throw new Error("GitHub fetch failed after retries");
+}
 
 async function fetchReadme(owner: string, repo: string): Promise<string | null> {
   const token = process.env.GITHUB_TOKEN ?? "";
-  const res = await fetch(`${GH_API}/repos/${owner}/${repo}/readme`, {
-    headers: {
-      Accept: "application/vnd.github+json",
-      "User-Agent": "vonssy-portfolio-ingest",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
+  const res = await fetchWithRetry(`${GH_API}/repos/${owner}/${repo}/readme`, {
+    Accept: "application/vnd.github+json",
+    "User-Agent": "vonssy-portfolio-ingest",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
   });
   if (!res.ok) {
     console.warn(`  ! README not available for ${owner}/${repo} (${res.status})`);
@@ -30,12 +66,10 @@ async function fetchReadme(owner: string, repo: string): Promise<string | null> 
 
 async function fetchRepoMetadata(owner: string, repo: string): Promise<Record<string, unknown> | null> {
   const token = process.env.GITHUB_TOKEN ?? "";
-  const res = await fetch(`${GH_API}/repos/${owner}/${repo}`, {
-    headers: {
-      Accept: "application/vnd.github+json",
-      "User-Agent": "vonssy-portfolio-ingest",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
+  const res = await fetchWithRetry(`${GH_API}/repos/${owner}/${repo}`, {
+    Accept: "application/vnd.github+json",
+    "User-Agent": "vonssy-portfolio-ingest",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
   });
   if (!res.ok) return null;
   const data = await res.json();
@@ -53,7 +87,7 @@ function splitByHeadings(text: string): string[] {
     return splitByParagraphs(text);
   }
   const result: string[] = [];
-  let first = sections[0].trim();
+  const first = sections[0].trim();
   if (first) result.push(first);
   for (let i = 1; i < sections.length; i++) {
     const section = sections[i].trim();
@@ -125,13 +159,9 @@ function chunkText(text: string): string[] {
   return chunks;
 }
 
-function buildSources(): RagSource[] {
-  return manualSources.map((s) => ({ ...s }));
-}
-
 async function main() {
   console.log("Building raw sources...");
-  const sources: RagSource[] = buildSources();
+  const sources: RagSource[] = manualSources.map((s) => ({ ...s }));
 
   for (const repo of ragRepos) {
     console.log(`  Fetching ${repo.owner}/${repo.name}...`);
@@ -161,8 +191,8 @@ async function main() {
 
   console.log("Chunking sources...");
   const chunks: { text: string; metadata: EmbeddingRecord["metadata"] }[] = [];
-  sources.forEach((src, srcIndex) => {
-    chunkText(src.content).forEach((text, chunkIndex) => {
+  sources.forEach((src) => {
+    chunkText(src.content).forEach((text) => {
       chunks.push({
         text,
         metadata: {
@@ -189,11 +219,11 @@ async function main() {
     fs.mkdirSync(OUT_DIR, { recursive: true });
   }
 
-  const sourcesPath = path.join(OUT_DIR, "sources.json");
   const embeddingsPath = path.join(OUT_DIR, "embeddings.json");
 
-  fs.writeFileSync(sourcesPath, JSON.stringify(sources, null, 2));
-  fs.writeFileSync(embeddingsPath, JSON.stringify(records, null, 2));
+  // Minified: this file is imported as a module at runtime — pretty-printing
+  // roughly doubles its size for zero benefit.
+  fs.writeFileSync(embeddingsPath, JSON.stringify(records));
 
   const sizeKB = (fs.statSync(embeddingsPath).size / 1024).toFixed(1);
   console.log(`Done. ${records.length} chunks written to ${embeddingsPath} (${sizeKB} KB).`);

@@ -86,8 +86,7 @@ src/
 │   ├── rag/
 │   │   ├── embeddings.json      # Pre-computed vector embeddings (committed, build-time)
 │   │   ├── manual.ts            # Curated bio/contact sources for ingestion
-│   │   ├── repos.ts             # Typed config of GitHub repos to ingest
-│   │   └── sources.json         # Raw curated content (audit/debug)
+│   │   └── repos.ts             # Typed config of GitHub repos to ingest
 │   ├── site.ts                  # Site config & Schema.org JSON-LD generator
 │   └── stack.ts                 # Categorized technical stack data
 ├── hooks/
@@ -194,7 +193,10 @@ npm -v
 - `npm run build`: Compiles and bundles the production static build.
 - `npm run start`: Runs the built production server locally.
 - `npm run ingest`: Runs the RAG ingestion pipeline — fetches repo READMEs, chunks content, and regenerates `src/data/rag/embeddings.json`.
-- `npm run lint`: Executes TypeScript type check (`tsc --noEmit`) to ensure zero type errors.
+- `npm run lint`: Lints the codebase with ESLint (`eslint-config-next` flat config).
+- `npm run typecheck`: Executes TypeScript type check (`tsc --noEmit`) to ensure zero type errors.
+- `npm run test`: Runs unit tests with the Node.js built-in test runner.
+- `npm run format`: Formats source files with Prettier.
 
 ---
 

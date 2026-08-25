@@ -29,9 +29,10 @@ export function ChatWidget({ reduceMotion }: ChatWidgetProps) {
   }, [messages, isOpen, isStreaming]);
 
   useEffect(() => {
-    if (isOpen) {
-      setTimeout(() => inputRef.current?.focus(), reduceMotion ? 0 : 120);
-    }
+    if (!isOpen) return;
+    const timer = window.setTimeout(() => inputRef.current?.focus(), reduceMotion ? 0 : 120);
+    // Clear pending focus timers so we never touch the DOM after unmount.
+    return () => window.clearTimeout(timer);
   }, [isOpen, reduceMotion]);
 
   useEffect(() => {
@@ -140,23 +141,23 @@ export function ChatWidget({ reduceMotion }: ChatWidgetProps) {
                 </div>
               ))}
 
-              <div className="chat-empty">
-                {messages.length === 0 && (
-                  <p className="text-soft">Ask me anything about Vonssy's projects, skills, and how to contact him.</p>
-                )}
-                <div className="chat-suggestions">
-                  {SUGGESTIONS.map((suggestion) => (
-                    <button
-                      key={suggestion}
-                      type="button"
-                      className="button button-ghost chat-suggestion"
-                      onClick={() => handleSuggestion(suggestion)}
-                    >
-                      {suggestion}
-                    </button>
-                  ))}
+              {messages.length === 0 && (
+                <div className="chat-empty">
+                  <p className="text-soft">Ask me anything about Vonssy&apos;s projects, skills, and how to contact him.</p>
+                  <div className="chat-suggestions">
+                    {SUGGESTIONS.map((suggestion) => (
+                      <button
+                        key={suggestion}
+                        type="button"
+                        className="button button-ghost chat-suggestion"
+                        onClick={() => handleSuggestion(suggestion)}
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {error && (
                 <div className="chat-error">

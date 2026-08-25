@@ -17,21 +17,64 @@ export function ProjectModal({
   reduceMotion,
 }: ProjectModalProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!project) return;
 
+    const previouslyFocused = document.activeElement as HTMLElement | null;
     closeButtonRef.current?.focus();
+
+    const getFocusableElements = (): HTMLElement[] => {
+      const container = containerRef.current;
+      if (!container) return [];
+      return Array.from(
+        container.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      );
+    };
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onClose();
+        return;
+      }
+      if (event.key !== "Tab") return;
+
+      // Keep Tab cycling inside the dialog while it is open.
+      const focusable = getFocusableElements();
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      // Restore focus to the element that opened the dialog.
+      previouslyFocused?.focus();
+    };
   }, [project, onClose]);
+
+  useEffect(() => {
+    if (!project) return;
+
+    // Lock background scroll while the dialog is open.
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [project]);
 
   return (
     <AnimatePresence>
@@ -45,6 +88,7 @@ export function ProjectModal({
           }}
         >
           <motion.div
+            ref={containerRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="project-dialog-title"
