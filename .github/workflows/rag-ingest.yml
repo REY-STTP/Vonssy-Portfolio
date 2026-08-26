@@ -1,0 +1,52 @@
+name: Weekly RAG re-ingest
+
+# Rebuilds the chatbot's embedding index so stars/forks/READMEs stay fresh.
+# If the output changed, commits it — Vercel then auto-deploys from the push.
+
+on:
+  schedule:
+    - cron: "0 3 * * 1" # every Monday 03:00 UTC
+  workflow_dispatch: # manual trigger for testing / ad-hoc re-ingest
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rag-ingest
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Run the script directly (not `npm run ingest`) so we don't rely on a
+      # local .env file; env vars come from repository secrets instead.
+      - name: Rebuild RAG embeddings
+        env:
+          EMBEDDINGS_API_KEY: ${{ secrets.EMBEDDINGS_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx tsx scripts/ingest.ts
+
+      - name: Commit refreshed embeddings (if changed)
+        run: |
+          if [[ -n "$(git status --porcelain src/data/rag/embeddings.json)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add src/data/rag/embeddings.json
+            git commit -m "chore(rag): refresh embeddings index"
+            git push
+          else
+            echo "No embedding changes — skipping commit."
+          fi

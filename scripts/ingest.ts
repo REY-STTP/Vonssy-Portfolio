@@ -2,13 +2,33 @@ import fs from "node:fs";
 import path from "node:path";
 import { ragRepos } from "../src/data/rag/repos";
 import { manualSources } from "../src/data/rag/manual";
-import { embedTexts } from "../src/lib/rag/embed";
+import { embedPassages } from "../src/lib/rag/embed";
 import type { EmbeddingRecord, RagSource } from "../src/types/rag";
 
 const GH_API = "https://api.github.com";
 const OUT_DIR = path.join(process.cwd(), "src", "data", "rag");
 const GH_MAX_RETRIES = 3;
 const GH_BASE_DELAY_MS = 2_000;
+// Auto-discovery accounts + safety cap on pagination.
+const DISCOVERY_OWNERS = ["vonssy", "REY-STTP"] as const;
+const MAX_DISCOVERY_PAGES = 10;
+
+interface DiscoveredRepo {
+  owner: string;
+  name: string;
+  description: string | null;
+  topics: string[];
+  stars: number;
+}
+
+interface WorklistRepo {
+  owner: string;
+  name: string;
+  description: string;
+  tags: string[];
+  /** Curated (showcase) repos get full README ingestion; discovered repos are metadata-only. */
+  full: boolean;
+}
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -79,6 +99,94 @@ async function fetchRepoMetadata(owner: string, repo: string): Promise<Record<st
     language: data.language,
     topics: data.topics,
   };
+}
+
+// Auto-discovery: every public, non-fork, non-archived repo for the owners.
+async function fetchPublicRepos(owner: string): Promise<DiscoveredRepo[]> {
+  const token = process.env.GITHUB_TOKEN ?? "";
+  const headers = {
+    Accept: "application/vnd.github+json",
+    "User-Agent": "vonssy-portfolio-ingest",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+
+  const all: DiscoveredRepo[] = [];
+  let page = 1;
+  while (page <= MAX_DISCOVERY_PAGES) {
+    const res = await fetchWithRetry(
+      `${GH_API}/users/${owner}/repos?type=public&sort=updated&per_page=100&page=${page}`,
+      headers
+    );
+    if (!res.ok) {
+      console.warn(`  ! Repo list unavailable for ${owner} (${res.status}) — skipping remainder`);
+      break;
+    }
+    const data = (await res.json()) as Array<{
+      fork?: boolean;
+      archived?: boolean;
+      name?: string;
+      description?: string | null;
+      topics?: unknown;
+      stargazers_count?: number;
+      owner?: { login?: string };
+    }>;
+    if (!Array.isArray(data) || data.length === 0) break;
+
+    for (const repo of data) {
+      if (!repo.name || repo.fork || repo.archived) continue;
+      // Drop empty shells — no description, no topics, no stars means there
+      // is nothing meaningful for the assistant to say about them.
+      const stars = repo.stargazers_count ?? 0;
+      const description = repo.description ?? null;
+      const topics = Array.isArray(repo.topics) ? repo.topics.filter((t): t is string => typeof t === "string") : [];
+      if (!description && topics.length === 0 && stars < 1) continue;
+      all.push({
+        owner: repo.owner?.login ?? owner,
+        name: repo.name,
+        description,
+        topics,
+        stars,
+      });
+    }
+
+    if (data.length < 100) break;
+    page++;
+  }
+  return all;
+}
+
+/** Merges the curated list with auto-discovered public repos (curated wins on duplicates).
+ *  Every repo that passes the quality filter gets full README ingestion —
+ *  Jina's token-based limits comfortably cover the whole index. */
+async function buildWorklist(): Promise<WorklistRepo[]> {
+  const worklist: WorklistRepo[] = ragRepos.map((repo) => ({
+    owner: repo.owner,
+    name: repo.name,
+    description: repo.description,
+    tags: [...repo.tags],
+    full: true,
+  }));
+
+  const curatedKeys = new Set(worklist.map((r) => `${r.owner}/${r.name}`.toLowerCase()));
+  let added = 0;
+  for (const owner of DISCOVERY_OWNERS) {
+    console.log(`  Discovering public repos for ${owner}...`);
+    for (const discovered of await fetchPublicRepos(owner)) {
+      const key = `${discovered.owner}/${discovered.name}`.toLowerCase();
+      if (curatedKeys.has(key)) continue;
+      curatedKeys.add(key);
+      worklist.push({
+        owner: discovered.owner,
+        name: discovered.name,
+        description: discovered.description ?? "",
+        tags: discovered.topics,
+        full: true,
+      });
+      added++;
+    }
+  }
+  console.log(`  Discovery added ${added} extra repos.`);
+  return worklist;
 }
 
 function splitByHeadings(text: string): string[] {
@@ -160,12 +268,16 @@ function chunkText(text: string): string[] {
 }
 
 async function main() {
+  console.log("Building worklist (curated + discovered)...");
+  const worklist = await buildWorklist();
+
   console.log("Building raw sources...");
   const sources: RagSource[] = manualSources.map((s) => ({ ...s }));
 
-  for (const repo of ragRepos) {
-    console.log(`  Fetching ${repo.owner}/${repo.name}...`);
-    const readme = await fetchReadme(repo.owner, repo.name);
+  for (const repo of worklist) {
+    console.log(`  Fetching ${repo.owner}/${repo.name}${repo.full ? "" : " (meta only)"}...`);
+    // Full README ingestion is reserved for curated showcase repos.
+    const readme = repo.full ? await fetchReadme(repo.owner, repo.name) : null;
     const meta = await fetchRepoMetadata(repo.owner, repo.name);
 
     if (readme) {
@@ -177,7 +289,7 @@ async function main() {
       });
     }
 
-    let metaText = `Repository: ${repo.owner}/${repo.name}\nDescription: ${repo.description}\nTags: ${repo.tags.join(", ")}`;
+    let metaText = `Repository: ${repo.owner}/${repo.name}\nDescription: ${repo.description || "(none)"}\nTags: ${repo.tags.join(", ")}`;
     if (meta) {
       metaText += `\nStars: ${meta.stars}\nForks: ${meta.forks}\nLanguage: ${meta.language}\nTopics: ${(meta.topics as string[]).join(", ")}`;
     }
@@ -204,9 +316,17 @@ async function main() {
     });
   });
 
+  console.log(`Chunked into ${chunks.length} chunks from ${sources.length} sources.`);
+
+  // Dry-run: report discovery/chunking stats without spending Gemini quota.
+  if (process.env.INGEST_DRY_RUN === "1") {
+    console.log("INGEST_DRY_RUN=1 — stopping before embedding. No files written.");
+    return;
+  }
+
   console.log(`Embedding ${chunks.length} chunks...`);
   const texts = chunks.map((c) => c.text);
-  const vectors = await embedTexts(texts);
+  const vectors = await embedPassages(texts);
 
   const records: EmbeddingRecord[] = chunks.map((c, i) => ({
     id: `chunk-${i}`,

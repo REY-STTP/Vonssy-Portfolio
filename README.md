@@ -29,7 +29,7 @@ Built adhering to **Clean Code** principles, the repository features strict modu
 ## ✨ Key Features
 
 - **🎨 Dynamic Theme Engine**: Seamless switching between `Dark`, `Light`, and `System` color schemes with persistent `localStorage` synchronization and smooth rotation micro-interactions.
-- **🤖 RAG Chat Assistant**: Floating chat widget powered by a Retrieval-Augmented Generation pipeline. Multilingual embeddings via Google Gemini API retrieve relevant project context, then an OpenAI-compatible LLM router streams answers token-by-token — with out-of-scope guardrails, source citations, and `sessionStorage` persistence.
+- **🤖 RAG Chat Assistant**: Floating chat widget powered by a Retrieval-Augmented Generation pipeline. Multi-turn conversations with query rewriting, Jina AI task-tuned embeddings for retrieval, an answer cache for instant repeat questions, clickable source citations, an OpenAI-compatible LLM router streaming answers token-by-token, and honest out-of-scope guardrails.
 - **🧭 Smart Sticky Header**: Features ultra-clean glassmorphism (*16px backdrop blur*) that automatically slides up on scroll-down to maximize viewport reading room and reveals instantly on scroll-up.
 - **📜 Scroll-Linked Manifesto Reveal**: Word-by-word opacity lighting synced proportionally to viewport travel using native Framer Motion `useScroll`.
 - **🔄 Smart Floating Scroll Progress**: Circular SVG progress gauge that tracks scroll depth, dynamically flips between *Scroll to Bottom* and *Scroll to Top* based on scroll direction, and auto-hides after 2.2s of inactivity.
@@ -48,9 +48,10 @@ The codebase is organized with a strict **Separation of Concerns (SoC)** to ensu
 src/
 ├── app/
 │   ├── api/
-│   │   └── chat/route.ts        # RAG chat endpoint (Node runtime, SSE streaming)
+│   │   └── chat/route.ts        # RAG chat endpoint (Node runtime, SSE streaming, rate limit, answer cache)
 │   ├── globals.css              # Design tokens, variables, and typography rules
 │   ├── layout.tsx               # Root layout, Google Fonts (Manrope & JetBrains Mono), SEO
+│   ├── opengraph-image.tsx      # Dynamic OG/Twitter card image (next/og)
 │   ├── page.tsx                 # Lean Server Component (renders JSON-LD + Client orchestrator)
 │   ├── robots.ts                # Search engine crawler configuration
 │   └── sitemap.ts               # Dynamic XML sitemap generation
@@ -86,7 +87,7 @@ src/
 │   ├── rag/
 │   │   ├── embeddings.json      # Pre-computed vector embeddings (committed, build-time)
 │   │   ├── manual.ts            # Curated bio/contact sources for ingestion
-│   │   └── repos.ts             # Typed config of GitHub repos to ingest
+│   │   └── repos.ts             # Curated showcase repos (auto-discovery covers the rest)
 │   ├── site.ts                  # Site config & Schema.org JSON-LD generator
 │   └── stack.ts                 # Categorized technical stack data
 ├── hooks/
@@ -96,9 +97,9 @@ src/
 │   └── use-theme.ts             # Theme state management & system color scheme sync
 ├── lib/
 │   └── rag/
-│       ├── llm.ts              # Generic LLM API client (chat completions, model fallback)
-│       ├── embed.ts             # Embedding wrapper (shared by ingest + runtime)
-│       ├── prompt.ts            # System prompt, context builder, out-of-scope guardrail
+│       ├── llm.ts              # Generic LLM API client (streaming + completions, model fallback, timeout)
+│       ├── embed.ts             # Provider-agnostic embedding client (Jina default, task-tuned)
+│       ├── prompt.ts            # System persona/voice, history builder, injection sanitizer, guardrail
 │       └── retrieve.ts          # Cosine similarity search + threshold guardrail
 └── types/
     ├── portfolio.ts             # TypeScript domain interfaces and type definitions
@@ -119,7 +120,7 @@ scripts/
 | **Tailwind CSS 3.4** | Utility-first styling and responsive design |
 | **Framer Motion 13** | Physics-based animations, layout transitions, and scroll listeners |
 | **Google Fonts** | `Manrope` (Display / Sans) & `JetBrains Mono` (Code / Numbers) |
-| **Google Gemini Embeddings** | Multilingual embeddings via OpenAI-compatible API (`models/gemini-embedding-001`) for RAG retrieval |
+| **Embeddings** | Jina AI `jina-embeddings-v3` via OpenAI-compatible API (task-tuned query/passage, Matryoshka dimensions) — configurable via `EMBEDDINGS_*` env vars |
 | **LLM Router** | OpenAI-compatible LLM router for streamed chat responses (swap provider via `LLM_*` env vars) |
 
 ---
@@ -128,10 +129,12 @@ scripts/
 
 The floating chat widget answers questions about Vonssy's projects, skills, and contact info through a **Retrieval-Augmented Generation** pipeline:
 
-1. **Ingestion (offline)** — `npm run ingest` fetches each repo's README via the GitHub API, merges in curated metadata (description, tags, stars), chunks the content per section, and embeds each chunk into a 768-dimension vector using the Google Gemini Embeddings API (`models/gemini-embedding-001`). Results are committed to `src/data/rag/embeddings.json` as part of the build.
-2. **Retrieval (runtime)** — the `/api/chat` route embeds the visitor's question via the same Gemini API, then runs a cosine-similarity search over the pre-computed vectors to fetch the top-K relevant chunks.
-3. **Guardrail** — if the highest similarity score falls below a threshold (out-of-scope question), the route skips the LLM and returns a friendly default pointing to direct contact instead of hallucinating.
-4. **Generation** — otherwise the retrieved chunks are wrapped into a system prompt and streamed token-by-token from the configured **LLM router** model over SSE (`text/plain`, chunked). The client renders them progressively with a lightweight, XSS-safe Markdown renderer, and auto-switches to a fallback model if the primary is unavailable.
+1. **Ingestion (offline / weekly cron)** — the ingestion script auto-discovers **all public repos** from both GitHub accounts (forks & archived excluded), merges them with a curated showcase list, fetches each README via the GitHub API, chunks the content per section, and embeds it with **Jina AI `jina-embeddings-v3`** (1024 dimensions, `retrieval.passage` task tuning). Results are committed to `src/data/rag/embeddings.json`. A scheduled GitHub Action re-runs this weekly so stars, forks, and READMEs never go stale.
+2. **Multi-turn retrieval (runtime)** — `/api/chat` accepts the recent conversation history. Follow-up questions ("*what tech does it use?*") are first rewritten into standalone queries by the LLM, then embedded with `retrieval.query` task tuning and searched against the index by cosine similarity.
+3. **Guardrails** — visitor input is sanitized against prompt-injection markup on the server; if the best similarity score falls below a threshold, the route skips the LLM and honestly says the information isn't available instead of hallucinating.
+4. **Generation** — retrieved context plus conversation history are wrapped into a persona-driven system prompt and streamed token-by-token from the configured **LLM router** model over SSE. The client renders them progressively with an XSS-safe Markdown renderer (links, tables, headings, code) and shows clickable source chips under each answer.
+
+Supporting layers: a per-IP rate limiter protects the endpoint from abuse, an in-memory LRU cache serves repeated questions instantly without spending API calls, and `max_tokens`/timeout caps keep provider costs bounded.
 
 The bot never answers beyond its indexed context — it says so honestly when information is missing.
 
@@ -169,6 +172,12 @@ npm -v
    # Required for the RAG chat assistant
    LLM_API_KEY=your_llm_provider_api_key
    LLM_BASE_URL=https://router.bynara.id/v1
+
+   # Embeddings — defaults target Jina AI (free trial: 10M tokens)
+   EMBEDDINGS_BASE_URL=https://api.jina.ai/v1
+   EMBEDDINGS_MODEL=jina-embeddings-v3
+   EMBEDDINGS_API_KEY=your_jina_api_key
+   EMBEDDINGS_DIMENSIONS=1024
 
    # Optional but recommended — raises GitHub API rate limit during ingestion
    GITHUB_TOKEN=your_github_token
@@ -208,7 +217,7 @@ Updating your portfolio information is fast and simple thanks to the dedicated `
 2. **Personal Info & SEO**: Edit [`src/data/site.ts`](src/data/site.ts) to update your name, avatar, bio, email, and social links.
 3. **Principles & Stack**: Edit [`src/data/philosophy.ts`](src/data/philosophy.ts) and [`src/data/stack.ts`](src/data/stack.ts).
 4. **Navigation & Stats**: Edit [`src/data/navigation.ts`](src/data/navigation.ts).
-5. **Chat assistant sources**: Edit [`src/data/rag/repos.ts`](src/data/rag/repos.ts) (which GitHub repos the bot knows) and [`src/data/rag/manual.ts`](src/data/rag/manual.ts) (bio/contact context), then run `npm run ingest` to rebuild `src/data/rag/embeddings.json`.
+5. **Chat assistant sources**: Edit [`src/data/rag/repos.ts`](src/data/rag/repos.ts) (curated repos that get full-depth knowledge) — other public repos are picked up automatically via discovery. Bio/contact context lives in [`src/data/rag/manual.ts`](src/data/rag/manual.ts). Then run `npm run ingest` to rebuild `src/data/rag/embeddings.json`, or let the weekly GitHub Action do it.
 6. **Chat system prompt & tone**: Edit [`src/lib/rag/prompt.ts`](src/lib/rag/prompt.ts).
 
 ---

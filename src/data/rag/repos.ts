@@ -7,41 +7,25 @@ export interface RepoConfig {
   tags: string[];
 }
 
+/**
+ * Curated repos that get FULL README ingestion for the chat assistant.
+ * Kept in sync with src/data/projects.ts (the public showcase).
+ * Other public repos are still covered via auto-discovery in scripts/ingest.ts.
+ */
 export const ragRepos: RepoConfig[] = [
   {
-    owner: "vonssy",
-    name: "Dawn-BOT",
+    owner: "REY-STTP",
+    name: "Cloud-Storage-App",
     description:
-      "A Dawn Validator manager built around token setup, account handling, proxy rotation, keep-alive pings, and concurrent execution.",
-    tags: ["Python", "Multithreading", "Proxies"],
-  },
-  {
-    owner: "vonssy",
-    name: "PharosTestnet-BOT",
-    description:
-      "Multi-account Web3 automation for Pharos Atlantic Testnet: check-ins, faucet claims, transfers, and proxy-aware execution.",
-    tags: ["Python", "web3.py", "EVM"],
-  },
-  {
-    owner: "vonssy",
-    name: "KiteAi-BOT",
-    description:
-      "A configurable on-chain operations bot spanning staking, rewards, quizzes, AI-agent interactions, multisig wallets, swaps, and bridges.",
-    tags: ["Python", "web3.py", "Multisig"],
-  },
-  {
-    owner: "vonssy",
-    name: "HahaWallet-BOT",
-    description:
-      "Multi-account automation for daily karma claims and quest completion with optional proxy support and rotation.",
-    tags: ["Python", "Accounts", "Proxies"],
+      "A production-ready personal cloud storage platform with private R2 buckets, presigned downloads, and an admin panel backed by real-time analytics.",
+    tags: ["Next.js 16", "TypeScript", "PostgreSQL", "Cloudflare R2"],
   },
   {
     owner: "REY-STTP",
-    name: "Vonssy-AI",
+    name: "Vonssy-Terminal",
     description:
-      "A multi-provider AI chatbot with streamed responses, persistent sessions, OAuth, quotas, and provider fallback.",
-    tags: ["Next.js 16", "TypeScript", "PostgreSQL"],
+      "Read-only EVM multichain wallet analytics across 10 chains: portfolio value, asset breakdowns, and classified activity history.",
+    tags: ["Next.js 16", "TypeScript", "Viem"],
   },
   {
     owner: "REY-STTP",
@@ -52,17 +36,52 @@ export const ragRepos: RepoConfig[] = [
   },
   {
     owner: "REY-STTP",
-    name: "Facial-Expression-Detection-App",
+    name: "Guess-Your-Face",
     description:
-      "An earlier AI and backend project using Face++ to classify uploaded images into seven expression categories.",
-    tags: ["Node.js", "Express", "MongoDB"],
+      "Real-time AI facial detection, comparison, and attribute analysis playground powered by Face++ — zero data retention, fully in-memory processing.",
+    tags: ["Next.js 16", "TypeScript", "Face++"],
+  },
+  {
+    owner: "REY-STTP",
+    name: "Vonssy-AI",
+    description:
+      "A multi-provider AI chatbot with streamed responses, persistent sessions, OAuth, quotas, and provider fallback.",
+    tags: ["Next.js 16", "TypeScript", "PostgreSQL"],
+  },
+  {
+    owner: "REY-STTP",
+    name: "AIS-Frozen-Food",
+    description:
+      "A high-performance landing page and interactive digital catalog for a frozen-food UMKM, with automated WhatsApp ordering built in.",
+    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
+  },
+  {
+    owner: "REY-STTP",
+    name: "desa-sukobubuk",
+    description:
+      "The official website of Desa Sukobubuk: village profile, news, UMKM directory with products, gallery, and a contact pipeline backed by PostgreSQL.",
+    tags: ["Next.js 15", "TypeScript", "Prisma", "PostgreSQL"],
+  },
+  {
+    owner: "REY-STTP",
+    name: "E-Voting",
+    description:
+      "A Web3 e-voting dApp: connect an EVM wallet, cast votes on-chain through ethers.js, and watch results update live behind an admin-guarded session.",
+    tags: ["Next.js 16", "TypeScript", "Ethers.js"],
   },
   {
     owner: "vonssy",
-    name: "Bitverse-BOT",
+    name: "PharosTestnet-BOT",
     description:
-      "Pharos Atlantic network automation for multi-account crypto farming with proxy rotation and automated deposit, withdraw, and trade flows.",
+      "Multi-account Web3 automation for Pharos Atlantic Testnet: check-ins, faucet claims, transfers, and proxy-aware execution.",
     tags: ["Python", "web3.py", "EVM"],
+  },
+  {
+    owner: "vonssy",
+    name: "Dawn-BOT",
+    description:
+      "A Dawn Validator manager built around token setup, account handling, proxy rotation, keep-alive pings, and concurrent execution.",
+    tags: ["Python", "Multithreading", "Proxies"],
   },
   {
     owner: "vonssy",
@@ -73,44 +92,30 @@ export const ragRepos: RepoConfig[] = [
   },
   {
     owner: "vonssy",
-    name: "IntuitionTestnet-BOT",
+    name: "Interlink-BOT",
     description:
-      "Intuition testnet bridge automation with proxy-aware multi-account execution.",
-    tags: ["Python", "web3.py", "Bridge"],
+      "Automated $ITLG token mining across multiple accounts with metric synchronization, proxy rotation, and configurable app-version targeting.",
+    tags: ["Python", "Proxies", "Mining"],
   },
   {
     owner: "vonssy",
-    name: "Faroswap-BOT",
+    name: "X1-Ecochain-BOT",
     description:
-      "Pharos Atlantic swap and liquidity automation with proxy rotation and multi-account farming.",
-    tags: ["Python", "web3.py", "DEX"],
+      "X1 EcoChain airdrop farming automation: daily check-ins, quests, faucet claims, transfers, swaps, liquidity, and token deployment across accounts.",
+    tags: ["Python", "web3.py", "EVM"],
   },
   {
     owner: "vonssy",
-    name: "AutoStaking-BOT",
+    name: "Deltahash-BOT",
     description:
-      "Pharos staking automation covering MockUSD faucet claims and staking operations across multiple accounts.",
-    tags: ["Python", "web3.py", "Staking"],
+      "Automated $DTH mining and social-task completion across multiple accounts using cookie-based sessions with proxy rotation.",
+    tags: ["Python", "Cookie Sessions", "Proxies"],
   },
   {
     owner: "vonssy",
-    name: "Brokex-BOT",
+    name: "Konnex-BOT",
     description:
-      "Brokex protocol trading automation covering faucet claims, position open/close, and liquidity deposits.",
-    tags: ["Python", "web3.py", "Trading"],
-  },
-  {
-    owner: "vonssy",
-    name: "AquaFlux-BOT",
-    description:
-      "AquaFlux NFT minting automation with standard and premium token support, proxy rotation, and multi-account execution.",
-    tags: ["Python", "web3.py", "NFT"],
-  },
-  {
-    owner: "vonssy",
-    name: "3Dos-BOT",
-    description:
-      "3Dos node management with multi-threading, proxy layers, extension integration, and daily check-ins.",
-    tags: ["Python", "Multithreading", "Proxies"],
+      "Konnex Reward Hub points-farming automation with daily check-ins, testnet interactions, dual-wallet configuration, and proxy rotation.",
+    tags: ["Python", "EVM", "Proxies"],
   },
 ];

@@ -161,8 +161,7 @@ export function Header({
           <nav className="desktop-nav hidden items-center gap-7 md:flex">
             {navItems.map((item, index) => (
               <a key={item.id} href={`#${item.id}`} className="nav-link mono">
-                <span>0{index + 1}</span>
-                {item.label}
+                <p>0{index + 1} {item.label}</p>
               </a>
             ))}
           </nav>

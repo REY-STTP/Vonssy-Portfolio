@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { embedTexts } from "@/lib/rag/embed";
+import { embedQueries } from "@/lib/rag/embed";
 import { search, MIN_SIMILARITY_THRESHOLD } from "@/lib/rag/retrieve";
 import {
   buildRewriteMessages,
@@ -14,6 +14,10 @@ import type { ChatMessage, RetrievedChunk, SourceRef } from "@/types/rag";
 export const runtime = "nodejs";
 // Streaming LLM responses can be slow — allow up to the Hobby-plan maximum.
 export const maxDuration = 60;
+
+// Auto-discovery widened the index — retrieve a few extra candidates so the
+// similarity threshold still has strong matches to choose from.
+const RETRIEVAL_TOP_K = 6;
 
 const MAX_MESSAGE_LENGTH = 1000;
 const RATE_LIMIT_WINDOW_MS = 60_000;
@@ -206,8 +210,8 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const [queryVector] = await embedTexts([searchQuery]);
-    const chunks = search(queryVector, 4);
+    const [queryVector] = await embedQueries([searchQuery]);
+    const chunks = search(queryVector, RETRIEVAL_TOP_K);
 
     if (chunks.length === 0 || chunks[0].score < MIN_SIMILARITY_THRESHOLD) {
       const outOfScope = getOutOfScopeMessage();
