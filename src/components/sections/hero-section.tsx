@@ -79,8 +79,9 @@ export function HeroSection({ reduceMotion, introActive }: HeroSectionProps) {
           className="hero-copy"
         >
           <div className="hero-kicker mono">
-            <span className="availability-dot" /> Available for collaborations{" "}
-            <span>Indonesia / UTC+7</span>
+            <span className="availability-dot" />
+            <span className="hero-kicker-primary">Available for collaborations</span>
+            <span className="hero-kicker-location">Indonesia / UTC+7</span>
           </div>
 
           <h1 className="hero-title" aria-label="Software that does things">
@@ -97,37 +98,44 @@ export function HeroSection({ reduceMotion, introActive }: HeroSectionProps) {
 
           <div className="hero-bottom">
             <p>{siteConfig.bio}</p>
-            <div className="hero-actions-mobile">
-              <a className="button button-primary" href="#projects">
-                Explore work <ArrowUpRight />
-              </a>
-              <a
-                className="button button-ghost"
-                href={siteConfig.socialLinks.github}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <GitHubIcon /> GitHub
-              </a>
-            </div>
           </div>
         </motion.div>
 
-        <motion.aside
-          initial={{
-            opacity: 0,
-            scale: reduceMotion ? 1 : 0.88,
-            rotate: reduceMotion ? 0 : 4,
-          }}
-          animate={introActive ? {} : { opacity: 1, scale: 1, rotate: 0 }}
-          transition={{
-            delay: reduceMotion ? 0 : 0.22,
-            duration: 0.8,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-          className="profile-orbit"
-          aria-label="Vonssy profile summary"
-        >
+        <div className="hero-aside">
+          <motion.div
+            initial="hidden"
+            animate={introActive ? "hidden" : "show"}
+            variants={revealVariants}
+            className="hero-actions"
+          >
+            <a className="button button-primary" href="#projects">
+              Explore work <ArrowUpRight />
+            </a>
+            <a
+              className="button button-ghost"
+              href={siteConfig.socialLinks.github}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <GitHubIcon /> GitHub
+            </a>
+          </motion.div>
+
+          <motion.aside
+            initial={{
+              opacity: 0,
+              scale: reduceMotion ? 1 : 0.88,
+              rotate: reduceMotion ? 0 : 4,
+            }}
+            animate={introActive ? {} : { opacity: 1, scale: 1, rotate: 0 }}
+            transition={{
+              delay: reduceMotion ? 0 : 0.22,
+              duration: 0.8,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="profile-orbit"
+            aria-label="Vonssy profile summary"
+          >
           <div className="orbit-copy mono" aria-hidden="true">
             BUILD · AUTOMATE · ITERATE · SHIP ·{" "}
           </div>
@@ -142,20 +150,8 @@ export function HeroSection({ reduceMotion, introActive }: HeroSectionProps) {
             />
             <span className="profile-status mono">@{siteConfig.handle}</span>
           </div>
-          <div className="hero-actions">
-            <a className="button button-primary" href="#projects">
-              Explore work <ArrowUpRight />
-            </a>
-            <a
-              className="button button-ghost"
-              href={siteConfig.socialLinks.github}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <GitHubIcon /> GitHub
-            </a>
-          </div>
         </motion.aside>
+        </div>
       </motion.div>
 
       <a

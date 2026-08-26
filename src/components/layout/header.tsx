@@ -25,6 +25,26 @@ export function Header({
 }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+
+  // Scroll-spy: highlight the section currently in view.
+  useEffect(() => {
+    const sections = navItems
+      .map((item) => document.getElementById(item.id))
+      .filter((el): el is HTMLElement => el !== null);
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActiveSection(entry.target.id);
+        }
+      },
+      { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
+    );
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, [navItems]);
 
   const isHoveredRef = useRef(false);
   const isMenuOpenRef = useRef(false);
@@ -160,7 +180,12 @@ export function Header({
         <div className="flex items-center gap-3">
           <nav className="desktop-nav hidden items-center gap-7 md:flex">
             {navItems.map((item, index) => (
-              <a key={item.id} href={`#${item.id}`} className="nav-link mono">
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                aria-current={activeSection === item.id ? "true" : undefined}
+                className="nav-link mono"
+              >
                 <p>0{index + 1} {item.label}</p>
               </a>
             ))}
@@ -185,6 +210,7 @@ export function Header({
             <MobileNav
               items={navItems}
               isOpen={isMenuOpen}
+              activeId={activeSection}
               onClose={() => setIsMenuOpen(false)}
             />
           )}
