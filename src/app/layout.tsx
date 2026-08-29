@@ -66,6 +66,9 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
   },
   formatDetection: { telephone: false },
+  verification: {
+    google: "googleca0c20b3a88a10d9",
+  },
 };
 
 export const viewport: Viewport = {
