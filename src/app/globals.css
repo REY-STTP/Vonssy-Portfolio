@@ -259,8 +259,8 @@ a.chat-source-chip:hover { color: var(--chat-text); border-color: var(--chat-acc
   .hero-bottom > p { font-size: 14px; line-height: 1.7; }
   .profile-orbit { width: min(58vw, 230px); }
   .hero-scroll { right: 14px; bottom: 22px; }
-  .manifesto-copy { font-size: clamp(2.2rem, 11vw, 3.6rem); }
-  .manifesto-section { min-height: 320vh; }
+  .hero-actions { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .hero-actions::-webkit-scrollbar { display: none; }
   .site-footer { align-items: flex-start; flex-direction: column; gap: 20px; padding-top: 24px; padding-bottom: 24px; }
   .footer-meta { width: 100%; align-items: flex-start; flex-direction: column; gap: 12px; }
   .footer-links { gap: 18px; }
