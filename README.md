@@ -34,7 +34,10 @@ Built adhering to **Clean Code** principles, the repository features strict modu
 - **📜 Scroll-Linked Manifesto Reveal**: Word-by-word opacity lighting synced proportionally to viewport travel using native Framer Motion `useScroll`.
 - **🔄 Smart Floating Scroll Progress**: Circular SVG progress gauge that tracks scroll depth, dynamically flips between *Scroll to Bottom* and *Scroll to Top* based on scroll direction, and auto-hides after 2.2s of inactivity.
 - **📁 Modular Project Showcase**: Interactive categorized project grid with fluid layout animations and an accessible modal dialog complete with keyboard trapping (`Esc` key support). Displays the first 10 projects with a smooth animated *"Show all"* expand toggle.
+- **❓ FAQ Accordion**: Animated expandable FAQ section with smooth height transitions for common visitor questions.
 - **🎬 Staggered Cinematic Intro**: First-visit brand reveal with timed entrance sequence and smooth curtain lift-off.
+- **🏷️ Animated Brand Logo**: Custom SVG brand logo component with smooth entrance animations.
+- **🚫 Custom 404 Page**: Styled not-found page consistent with the portfolio design system.
 - **♿ First-Class Accessibility**: Native `prefers-reduced-motion` detection, ARIA dialog roles, focus management, and keyboard accessibility.
 - **🚀 SEO & Structured Data**: Built-in Schema.org `Person` JSON-LD metadata, dynamic OpenGraph/Twitter cards, automated `sitemap.xml`, and `robots.txt`.
 
@@ -50,7 +53,9 @@ src/
 │   ├── api/
 │   │   └── chat/route.ts        # RAG chat endpoint (Node runtime, SSE streaming, rate limit, answer cache)
 │   ├── globals.css              # Design tokens, variables, and typography rules
+│   ├── icon.svg                 # Favicon / app icon
 │   ├── layout.tsx               # Root layout, Google Fonts (Manrope & JetBrains Mono), SEO
+│   ├── not-found.tsx            # Custom 404 page
 │   ├── opengraph-image.tsx      # Dynamic OG/Twitter card image (next/og)
 │   ├── page.tsx                 # Lean Server Component (renders JSON-LD + Client orchestrator)
 │   ├── robots.ts                # Search engine crawler configuration
@@ -71,8 +76,10 @@ src/
 │   │   ├── projects-section.tsx # Filterable project showcase & table (show-10 + expand)
 │   │   ├── stack-section.tsx    # Technical skills categorization
 │   │   ├── github-section.tsx   # GitHub profiles snapshot & statistics
+│   │   ├── faq-section.tsx      # Expandable FAQ accordion section
 │   │   └── contact-section.tsx  # Direct communication call-to-action
 │   └── ui/
+│       ├── brand-logo.tsx       # Animated SVG brand logo component
 │       ├── chat-markdown.tsx    # Lightweight Markdown renderer (safe React nodes)
 │       ├── chat-widget.tsx      # Floating RAG chat bubble & panel
 │       ├── intro-overlay.tsx    # Timed cinematic intro overlay
@@ -81,6 +88,7 @@ src/
 │       ├── stat-card.tsx        # Reusable GitHub stat card component
 │       └── theme-selector.tsx   # Minimalist animated theme toggle button
 ├── data/
+│   ├── faq.ts                   # FAQ items data
 │   ├── navigation.ts            # Navigation items, project filters, stat items
 │   ├── philosophy.ts            # Software engineering principles data
 │   ├── projects.ts              # Strongly typed project portfolio data
@@ -101,11 +109,15 @@ src/
 │       ├── embed.ts             # Provider-agnostic embedding client (Jina default, task-tuned)
 │       ├── prompt.ts            # System persona/voice, history builder, injection sanitizer, guardrail
 │       └── retrieve.ts          # Cosine similarity search + threshold guardrail
+├── proxy.ts                     # Development proxy configuration
 └── types/
     ├── portfolio.ts             # TypeScript domain interfaces and type definitions
     └── rag.ts                   # RAG/chat runtime types (messages, chunks, records)
 scripts/
 └── ingest.ts                    # Offline RAG ingestion pipeline (npm run ingest)
+.github/
+└── workflows/
+    └── rag-ingest.yml           # Scheduled weekly GitHub Action for RAG re-ingestion
 ```
 
 ---
@@ -114,8 +126,8 @@ scripts/
 
 | Technology | Purpose |
 | :--- | :--- |
-| **Next.js 16** | React Framework (App Router, Turbopack, Static Generation) |
-| **React 19** | UI Library with modern hooks & concurrent features |
+| **Next.js 16.3** | React Framework (App Router, Turbopack, Static Generation) |
+| **React 19.2** | UI Library with modern hooks & concurrent features |
 | **TypeScript 5.8** | Type safety, domain modeling, and static validation |
 | **Tailwind CSS 3.4** | Utility-first styling and responsive design |
 | **Framer Motion 13** | Physics-based animations, layout transitions, and scroll listeners |
@@ -129,7 +141,7 @@ scripts/
 
 The floating chat widget answers questions about Vonssy's projects, skills, and contact info through a **Retrieval-Augmented Generation** pipeline:
 
-1. **Ingestion (offline / weekly cron)** — the ingestion script auto-discovers **all public repos** from both GitHub accounts (forks & archived excluded), merges them with a curated showcase list, fetches each README via the GitHub API, chunks the content per section, and embeds it with **Jina AI `jina-embeddings-v3`** (1024 dimensions, `retrieval.passage` task tuning). Results are committed to `src/data/rag/embeddings.json`. A scheduled GitHub Action re-runs this weekly so stars, forks, and READMEs never go stale.
+1. **Ingestion (offline / weekly cron)** — the ingestion script auto-discovers **all public repos** from both GitHub accounts (forks & archived excluded), merges them with a curated showcase list, fetches each README via the GitHub API, chunks the content per section, and embeds it with **Jina AI `jina-embeddings-v3`** (1024 dimensions, `retrieval.passage` task tuning). Results are committed to `src/data/rag/embeddings.json`. A scheduled GitHub Action (`rag-ingest.yml`) re-runs this weekly so stars, forks, and READMEs never go stale.
 2. **Multi-turn retrieval (runtime)** — `/api/chat` accepts the recent conversation history. Follow-up questions ("*what tech does it use?*") are first rewritten into standalone queries by the LLM, then embedded with `retrieval.query` task tuning and searched against the index by cosine similarity.
 3. **Guardrails** — visitor input is sanitized against prompt-injection markup on the server; if the best similarity score falls below a threshold, the route skips the LLM and honestly says the information isn't available instead of hallucinating.
 4. **Generation** — retrieved context plus conversation history are wrapped into a persona-driven system prompt and streamed token-by-token from the configured **LLM router** model over SSE. The client renders them progressively with an XSS-safe Markdown renderer (links, tables, headings, code) and shows clickable source chips under each answer.
@@ -217,8 +229,9 @@ Updating your portfolio information is fast and simple thanks to the dedicated `
 2. **Personal Info & SEO**: Edit [`src/data/site.ts`](src/data/site.ts) to update your name, avatar, bio, email, and social links.
 3. **Principles & Stack**: Edit [`src/data/philosophy.ts`](src/data/philosophy.ts) and [`src/data/stack.ts`](src/data/stack.ts).
 4. **Navigation & Stats**: Edit [`src/data/navigation.ts`](src/data/navigation.ts).
-5. **Chat assistant sources**: Edit [`src/data/rag/repos.ts`](src/data/rag/repos.ts) (curated repos that get full-depth knowledge) — other public repos are picked up automatically via discovery. Bio/contact context lives in [`src/data/rag/manual.ts`](src/data/rag/manual.ts). Then run `npm run ingest` to rebuild `src/data/rag/embeddings.json`, or let the weekly GitHub Action do it.
-6. **Chat system prompt & tone**: Edit [`src/lib/rag/prompt.ts`](src/lib/rag/prompt.ts).
+5. **FAQ**: Edit [`src/data/faq.ts`](src/data/faq.ts) to add or modify frequently asked questions.
+6. **Chat assistant sources**: Edit [`src/data/rag/repos.ts`](src/data/rag/repos.ts) (curated repos that get full-depth knowledge) — other public repos are picked up automatically via discovery. Bio/contact context lives in [`src/data/rag/manual.ts`](src/data/rag/manual.ts). Then run `npm run ingest` to rebuild `src/data/rag/embeddings.json`, or let the weekly GitHub Action do it.
+7. **Chat system prompt & tone**: Edit [`src/lib/rag/prompt.ts`](src/lib/rag/prompt.ts).
 
 ---
 
