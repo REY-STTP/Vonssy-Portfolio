@@ -67,7 +67,7 @@ export const metadata: Metadata = {
   },
   formatDetection: { telephone: false },
   verification: {
-    google: "googleca0c20b3a88a10d9",
+    google: "0GDhAn2e04C0QlOPsQL285huEN8o4WT9LvJj2XBDlVk",
   },
 };
 

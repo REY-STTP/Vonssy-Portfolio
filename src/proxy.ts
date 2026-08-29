@@ -30,9 +30,9 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Run on pages/routes, but skip internal assets, generated files, and the
-  // Google Search Console verification file so they are never redirected.
+  // Run on pages/routes, but skip internal assets and generated files so
+  // they are never redirected.
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|icon.svg|opengraph-image|robots.txt|sitemap.xml|llms.txt|googleca0c20b3a88a10d9.html).*)",
+    "/((?!_next/static|_next/image|favicon.ico|icon.svg|opengraph-image|robots.txt|sitemap.xml|llms.txt).*)",
   ],
 };
