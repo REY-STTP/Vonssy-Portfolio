@@ -18,6 +18,7 @@ import { PhilosophySection } from "@/components/sections/philosophy-section";
 import { ProjectsSection } from "@/components/sections/projects-section";
 import { StackSection } from "@/components/sections/stack-section";
 import { GitHubSection } from "@/components/sections/github-section";
+import { FaqSection } from "@/components/sections/faq-section";
 import { ContactSection } from "@/components/sections/contact-section";
 
 import { IntroOverlay } from "@/components/ui/intro-overlay";
@@ -112,6 +113,8 @@ export default function PortfolioClient({
       <StackSection stack={stack} reduceMotion={reduceMotion} />
 
       <GitHubSection stats={githubStats} />
+
+      <FaqSection reduceMotion={reduceMotion} />
 
       <ContactSection />
 

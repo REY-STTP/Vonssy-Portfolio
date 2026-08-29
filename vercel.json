@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "https://vonssy-portfolio.web.id/:path*",
+      "destination": "https://www.vonssy-portfolio.web.id/:path*",
+      "permanent": true
+    }
+  ]
+}

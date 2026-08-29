@@ -26,7 +26,7 @@ export function GitHubSection({ stats }: GitHubSectionProps) {
               className="button button-primary"
               href={siteConfig.socialLinks.github}
               target="_blank"
-              rel="noreferrer"
+              rel="me noreferrer"
             >
               <GitHubIcon /> @{siteConfig.handle} <ArrowUpRight />
             </a>
@@ -34,7 +34,7 @@ export function GitHubSection({ stats }: GitHubSectionProps) {
               className="button button-ghost"
               href={siteConfig.socialLinks.githubSecondary}
               target="_blank"
-              rel="noreferrer"
+              rel="me noreferrer"
             >
               @REY-STTP <ArrowUpRight />
             </a>

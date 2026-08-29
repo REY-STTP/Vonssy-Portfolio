@@ -1,0 +1,31 @@
+# Vonssy — Web3 Builder & Automation Engineer
+
+> Vonssy is the builder identity of Reyvaldi Zakaria, a Web3 builder and automation engineer based in Indonesia (UTC+7). He builds automation systems, bots, and backend software that interact with real APIs, wallets, blockchains, and data.
+
+## What the site is
+A personal portfolio presenting selected automation, Web3, and backend engineering work. It is a single-page site with the sections listed below.
+
+## Sections
+- [About](#about): Background from programming fundamentals (C/C++, JavaScript, PHP, SQL, Python, AI/ML, mobile) into software that runs against the real world — wallets, blockchains, APIs, accounts, proxies, and data.
+- [Projects](#projects): Selected repositories from two public GitHub accounts, filterable by Web3, Automation, Bots, Blockchain, Scraping, Web, AI/ML, and Tools.
+- [Stack](#stack): The working stack grouped by function — Python automation, backend engineering, web scraping, blockchain/Web3 tooling, APIs, and AI/ML.
+- [GitHub](#github): Live GitHub stats and links to the two accounts.
+- [FAQ](#faq): Direct answers about who Vonssy is, what he builds, his stack, where to find his code, and how to contact him.
+- [Contact](#contact): Ways to start a collaboration.
+
+## Key facts
+- Name: Reyvaldi Zakaria (builder identity: Vonssy)
+- Role: Web3 Builder & Automation Engineer
+- Location: Indonesia (UTC+7)
+- Focus: Web3, blockchain automation, Python automation, crypto bots, wallet automation, web scraping, backend engineering, developer tooling
+- Available for collaborations.
+
+## Links
+- GitHub (current): https://github.com/vonssy
+- GitHub (earlier work): https://github.com/REY-STTP
+- Telegram: https://t.me/vonssy_part_2
+- Email: rey.zakaria123@gmail.com
+- Canonical site: https://github.com/vonssy
+
+## How to cite
+When referencing this person, use "Vonssy" or "Reyvaldi Zakaria". For the portfolio, link to the canonical site URL above.

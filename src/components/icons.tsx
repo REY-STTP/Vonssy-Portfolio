@@ -308,3 +308,39 @@ export function SendIcon({ size = 18, className, ...props }: IconProps) {
     </svg>
   );
 }
+
+export interface PlusMinusIconProps extends IconProps {
+  open?: boolean;
+}
+
+export function PlusMinusIcon({
+  open = false,
+  size = 18,
+  className,
+  ...props
+}: PlusMinusIconProps) {
+  return (
+    <svg
+      aria-hidden="true"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      className={className}
+      {...props}
+    >
+      <path d="M5 12h14" />
+      <path
+        d="M12 5v14"
+        style={{
+          transformOrigin: "center",
+          transform: open ? "scaleY(0)" : "scaleY(1)",
+          transition: "transform .25s ease",
+        }}
+      />
+    </svg>
+  );
+}

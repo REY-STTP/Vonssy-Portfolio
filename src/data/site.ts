@@ -19,15 +19,22 @@ export const siteConfig = {
     "Web scraping",
     "Backend engineering",
   ],
+  location: "Indonesia",
+  timezone: "UTC+7",
 };
 
 export function getPersonJsonLd() {
+  const personId = `${siteConfig.siteUrl}/#person`;
+
   return {
     "@context": "https://schema.org",
     "@type": "Person",
+    "@id": personId,
     name: siteConfig.name,
     alternateName: "Vonssy",
     url: siteConfig.siteUrl,
+    description: siteConfig.bio,
+    email: siteConfig.email,
     image: siteConfig.avatarUrl,
     jobTitle: siteConfig.jobTitle,
     sameAs: [
@@ -36,5 +43,30 @@ export function getPersonJsonLd() {
       siteConfig.socialLinks.telegram,
     ],
     knowsAbout: siteConfig.skills,
+    knowsLanguage: ["en", "id"],
+    homeLocation: {
+      "@type": "Place",
+      name: siteConfig.location,
+      address: {
+        "@type": "PostalAddress",
+        addressCountry: siteConfig.location,
+      },
+    },
+  };
+}
+
+export function getWebSiteJsonLd() {
+  const personId = `${siteConfig.siteUrl}/#person`;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${siteConfig.siteUrl}/#website`,
+    name: "Vonssy",
+    url: siteConfig.siteUrl,
+    description: siteConfig.tagline,
+    inLanguage: "en",
+    author: { "@id": personId },
+    publisher: { "@id": personId },
   };
 }
