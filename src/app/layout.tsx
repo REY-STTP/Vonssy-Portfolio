@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     template: "%s | Vonssy",
   },
   description:
-    "Vonssy (Reyvaldi Zakaria) builds Web3 and blockchain automation systems, bots, and backend software that interact with real APIs, wallets, on-chain data, and networks. Based in Indonesia (UTC+7).",
+    "Vonssy (Reyvaldi Zakaria) — Web3 builder & automation engineer in Indonesia (UTC+7). Builds bots, wallet automation and backend systems for Web3 workflows.",
   keywords: [
     "Vonssy",
     "Reyvaldi Zakaria",
