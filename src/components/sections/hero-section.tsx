@@ -115,7 +115,7 @@ export function HeroSection({ reduceMotion, introActive }: HeroSectionProps) {
               className="button button-ghost"
               href={siteConfig.socialLinks.github}
               target="_blank"
-              rel="me noreferrer"
+              rel="me noopener noreferrer"
             >
               <GitHubIcon /> GitHub
             </a>

@@ -9,7 +9,7 @@ export function Footer() {
           <a
             href={siteConfig.socialLinks.github}
             target="_blank"
-            rel="me noreferrer"
+            rel="me noopener noreferrer"
             className="hover:text-ink"
           >
             GitHub
@@ -17,7 +17,7 @@ export function Footer() {
           <a
             href={siteConfig.socialLinks.telegram}
             target="_blank"
-            rel="me noreferrer"
+            rel="me noopener noreferrer"
             className="hover:text-ink"
           >
             Telegram

@@ -94,6 +94,8 @@ export function getWebSiteJsonLd() {
   };
 }
 
+const PROFILE_DATE_MODIFIED = "2026-08-31T00:00:00+07:00";
+
 export function getProfilePageJsonLd() {
   const personId = `${siteConfig.siteUrl}/#person`;
   return {
@@ -107,7 +109,7 @@ export function getProfilePageJsonLd() {
     isPartOf: { "@id": `${siteConfig.siteUrl}/#website` },
     mainEntity: { "@id": personId },
     dateCreated: "2024-01-01T00:00:00+07:00",
-    dateModified: new Date().toISOString(),
+    dateModified: PROFILE_DATE_MODIFIED,
   };
 }
 

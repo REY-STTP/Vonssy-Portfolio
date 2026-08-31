@@ -11,6 +11,8 @@ import {
 } from "@/data/site";
 import { faqItems } from "@/data/faq";
 
+export const revalidate = 86400;
+
 function jsonLdScript(data: unknown) {
   const structuredDataString = JSON.stringify(data).replace(/</g, "\\u003c");
   return (

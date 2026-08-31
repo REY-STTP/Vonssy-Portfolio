@@ -35,7 +35,14 @@ export const metadata: Metadata = {
   creator: siteConfig.name,
   publisher: siteConfig.name,
   category: "technology",
-  alternates: { canonical: siteUrl },
+  alternates: {
+    canonical: siteUrl,
+    languages: {
+      "en-US": siteUrl,
+      "id-ID": siteUrl,
+      "x-default": siteUrl,
+    },
+  },
   openGraph: {
     type: "website",
     url: siteUrl,
@@ -73,8 +80,15 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
-    apple: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icon.svg", sizes: "192x192", type: "image/svg+xml" },
+      { url: "/icon.svg", sizes: "512x512", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icon.svg", sizes: "180x180", type: "image/svg+xml" },
+    ],
   },
   manifest: "/manifest.webmanifest",
   appleWebApp: {
@@ -103,7 +117,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" suppressHydrationWarning>
       <head suppressHydrationWarning />
-      <body suppressHydrationWarning className={`${manrope.variable} ${jetbrains.variable}`}>{children}</body>
+      <body suppressHydrationWarning className={`${manrope.variable} ${jetbrains.variable}`}>
+        <a
+          href="#home"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-100 focus:rounded-full focus:bg-accent focus:px-5 focus:py-2.5 focus:text-sm focus:font-semibold focus:text-white"
+        >
+          Skip to content
+        </a>
+        {children}
+      </body>
     </html>
   );
 }

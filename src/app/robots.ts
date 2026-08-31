@@ -43,6 +43,10 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: "Bytespider",
         allow: "/",
       },
+      {
+        userAgent: "Applebot-Extended",
+        allow: "/",
+      },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,
   };
