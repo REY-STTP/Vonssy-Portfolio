@@ -2,7 +2,13 @@ import PortfolioClient from "@/components/portfolio-client";
 import { projects } from "@/data/projects";
 import { philosophyList } from "@/data/philosophy";
 import { stackList } from "@/data/stack";
-import { getPersonJsonLd, getWebSiteJsonLd } from "@/data/site";
+import {
+  getBreadcrumbJsonLd,
+  getPersonJsonLd,
+  getProfilePageJsonLd,
+  getWebSiteJsonLd,
+  siteConfig,
+} from "@/data/site";
 import { faqItems } from "@/data/faq";
 
 function jsonLdScript(data: unknown) {
@@ -15,9 +21,12 @@ function jsonLdScript(data: unknown) {
   );
 }
 
+const siteUrl = siteConfig.siteUrl;
+
 const faqJsonLd = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
+  "@id": `${siteUrl}/#faq`,
   mainEntity: faqItems.map((item) => ({
     "@type": "Question",
     name: item.question,
@@ -28,12 +37,58 @@ const faqJsonLd = {
   })),
 };
 
+const itemListJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Selected Work by Vonssy",
+  description: "A curated selection of Web3, automation, blockchain and web projects by Vonssy.",
+  numberOfItems: projects.length,
+  itemListElement: projects.map((project, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    item: {
+      "@type": "SoftwareSourceCode",
+      name: project.name,
+      description: project.description,
+      codeRepository: project.repo,
+      url: project.repo,
+      programmingLanguage: project.tags.join(", "),
+      keywords: [...project.category, ...project.tags].join(", "),
+      author: { "@id": `${siteUrl}/#person` },
+      ...(project.demo ? { sameAs: project.demo } : {}),
+    },
+  })),
+};
+
+const speakableJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": `${siteUrl}/#webpage`,
+  url: siteUrl,
+  name: "Vonssy | Web3 Builder & Automation Engineer",
+  isPartOf: { "@id": `${siteUrl}/#website` },
+  about: { "@id": `${siteUrl}/#person` },
+  primaryImageOfPage: {
+    "@type": "ImageObject",
+    contentUrl: `${siteUrl}/opengraph-image`,
+  },
+  speakable: {
+    "@type": "SpeakableSpecification",
+    cssSelector: ["#about", "#faq", ".hero-title"],
+  },
+  inLanguage: "en",
+};
+
 export default function Home() {
   return (
     <>
       {jsonLdScript(getWebSiteJsonLd())}
       {jsonLdScript(getPersonJsonLd())}
+      {jsonLdScript(getProfilePageJsonLd())}
+      {jsonLdScript(getBreadcrumbJsonLd())}
       {jsonLdScript(faqJsonLd)}
+      {jsonLdScript(itemListJsonLd)}
+      {jsonLdScript(speakableJsonLd)}
       <PortfolioClient
         projects={projects}
         philosophy={philosophyList}

@@ -35,10 +35,10 @@ export function PhilosophySection({
   };
 
   return (
-    <section className="border-y border-line-soft bg-section section-pad build-section">
+    <section id="philosophy" aria-labelledby="philosophy-heading" className="border-y border-line-soft bg-section section-pad build-section">
       <div className="shell">
         <div className="mb-16 md:mb-20">
-          <h2 className="text-4xl font-bold tracking-tight md:text-5xl">
+          <h2 id="philosophy-heading" className="text-4xl font-bold tracking-tight md:text-5xl">
             How I build
           </h2>
           <p className="mt-5 max-w-sm text-[15px] leading-7 text-muted">

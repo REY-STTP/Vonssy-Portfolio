@@ -1,3 +1,5 @@
+export const CANONICAL_URL = "https://www.vonssy-portfolio.web.id";
+
 export const siteConfig = {
   name: "Reyvaldi Zakaria",
   handle: "vonssy",
@@ -5,7 +7,7 @@ export const siteConfig = {
   tagline: "Software that does things.",
   bio: "I build automation systems, bots, and software that interact with real APIs, wallets, blockchains, and data.",
   email: "rey.zakaria123@gmail.com",
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "https://github.com/vonssy",
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? CANONICAL_URL,
   avatarUrl: "https://avatars.githubusercontent.com/u/86215416?v=4",
   socialLinks: {
     github: "https://github.com/vonssy",
@@ -35,7 +37,11 @@ export function getPersonJsonLd() {
     url: siteConfig.siteUrl,
     description: siteConfig.bio,
     email: siteConfig.email,
-    image: siteConfig.avatarUrl,
+    image: {
+      "@type": "ImageObject",
+      url: siteConfig.avatarUrl,
+      caption: "Vonssy — Reyvaldi Zakaria",
+    },
     jobTitle: siteConfig.jobTitle,
     sameAs: [
       siteConfig.socialLinks.github,
@@ -49,8 +55,16 @@ export function getPersonJsonLd() {
       name: siteConfig.location,
       address: {
         "@type": "PostalAddress",
-        addressCountry: siteConfig.location,
+        addressCountry: "ID",
+        addressLocality: siteConfig.location,
       },
+    },
+    contactPoint: {
+      "@type": "ContactPoint",
+      email: siteConfig.email,
+      contactType: "collaboration inquiry",
+      availableLanguage: ["en", "id"],
+      url: siteConfig.socialLinks.telegram,
     },
   };
 }
@@ -63,10 +77,51 @@ export function getWebSiteJsonLd() {
     "@type": "WebSite",
     "@id": `${siteConfig.siteUrl}/#website`,
     name: "Vonssy",
+    alternateName: "Reyvaldi Zakaria Portfolio",
     url: siteConfig.siteUrl,
     description: siteConfig.tagline,
     inLanguage: "en",
     author: { "@id": personId },
     publisher: { "@id": personId },
+    potentialAction: {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        urlTemplate: `${siteConfig.siteUrl}/#projects?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+}
+
+export function getProfilePageJsonLd() {
+  const personId = `${siteConfig.siteUrl}/#person`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "@id": `${siteConfig.siteUrl}/#profilepage`,
+    url: siteConfig.siteUrl,
+    name: "Vonssy | Web3 Builder & Automation Engineer",
+    description: siteConfig.bio,
+    inLanguage: "en",
+    isPartOf: { "@id": `${siteConfig.siteUrl}/#website` },
+    mainEntity: { "@id": personId },
+    dateCreated: "2024-01-01",
+    dateModified: new Date().toISOString().split("T")[0],
+  };
+}
+
+export function getBreadcrumbJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.siteUrl },
+      { "@type": "ListItem", position: 2, name: "About", item: `${siteConfig.siteUrl}/#about` },
+      { "@type": "ListItem", position: 3, name: "Projects", item: `${siteConfig.siteUrl}/#projects` },
+      { "@type": "ListItem", position: 4, name: "Stack", item: `${siteConfig.siteUrl}/#stack` },
+      { "@type": "ListItem", position: 5, name: "FAQ", item: `${siteConfig.siteUrl}/#faq` },
+      { "@type": "ListItem", position: 6, name: "Contact", item: `${siteConfig.siteUrl}/#contact` },
+    ],
   };
 }

@@ -142,11 +142,13 @@ export function HeroSection({ reduceMotion, introActive }: HeroSectionProps) {
           <div className="profile-photo-wrap">
             <Image
               src={siteConfig.avatarUrl}
-              alt={`${siteConfig.handle} GitHub avatar`}
+              alt="Reyvaldi Zakaria (Vonssy) — Web3 Builder & Automation Engineer, Indonesia"
               width={320}
               height={320}
               className="profile-photo"
               priority
+              fetchPriority="high"
+              sizes="(max-width: 768px) 160px, 320px"
             />
             <span className="profile-status mono">@{siteConfig.handle}</span>
           </div>

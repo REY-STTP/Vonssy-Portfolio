@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Manrope } from "next/font/google";
 import "./globals.css";
-import { siteConfig } from "@/data/site";
+import { CANONICAL_URL, siteConfig } from "@/data/site";
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
 const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains", display: "swap" });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://github.com/vonssy";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? CANONICAL_URL;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -41,13 +41,25 @@ export const metadata: Metadata = {
     url: siteUrl,
     siteName: "Vonssy",
     locale: "en_US",
+    alternateLocale: ["id_ID"],
     title: "Vonssy | Web3 Builder & Automation Engineer",
     description: "Software that does things — Web3, blockchain, and automation systems built by Vonssy.",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Vonssy | Web3 Builder & Automation Engineer — Software that does things.",
+        type: "image/png",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Vonssy | Web3 Builder & Automation Engineer",
     description: "Software that does things — Web3, blockchain, and automation systems built by Vonssy.",
+    creator: "@vonssy",
+    images: ["/opengraph-image"],
   },
   robots: {
     index: true,
@@ -60,6 +72,11 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/icon.svg", type: "image/svg+xml" }],
+  },
+  manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     title: "Vonssy",
@@ -68,6 +85,9 @@ export const metadata: Metadata = {
   formatDetection: { telephone: false },
   verification: {
     google: "0GDhAn2e04C0QlOPsQL285huEN8o4WT9LvJj2XBDlVk",
+  },
+  other: {
+    "google-site-verification": "0GDhAn2e04C0QlOPsQL285huEN8o4WT9LvJj2XBDlVk",
   },
 };
 

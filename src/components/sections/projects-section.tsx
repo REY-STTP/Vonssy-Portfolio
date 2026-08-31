@@ -104,9 +104,9 @@ export function ProjectsSection({
                   <span className="mono block text-xs text-quiet">
                     @{project.account}
                   </span>
-                  <span className="mt-2 block text-xl font-bold text-ink transition-colors group-hover:text-accent-strong md:text-2xl">
+                  <h3 className="mt-2 block text-xl font-bold text-ink transition-colors group-hover:text-accent-strong md:text-2xl">
                     {project.name}
-                  </span>
+                  </h3>
                 </span>
 
                 <span className="min-w-0">

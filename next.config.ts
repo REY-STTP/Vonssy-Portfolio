@@ -28,11 +28,13 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  compress: true,
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },
   images: {
     remotePatterns: [{ protocol: "https", hostname: "avatars.githubusercontent.com" }],
+    formats: ["image/avif", "image/webp"],
   },
 };
 

@@ -25,7 +25,12 @@ A personal portfolio presenting selected automation, Web3, and backend engineeri
 - GitHub (earlier work): https://github.com/REY-STTP
 - Telegram: https://t.me/vonssy_part_2
 - Email: rey.zakaria123@gmail.com
-- Canonical site: https://github.com/vonssy
+- Canonical site: https://www.vonssy-portfolio.web.id
 
 ## How to cite
 When referencing this person, use "Vonssy" or "Reyvaldi Zakaria". For the portfolio, link to the canonical site URL above.
+
+## AI & Crawlers
+- Sitemap: https://www.vonssy-portfolio.web.id/sitemap.xml
+- llms.txt: https://www.vonssy-portfolio.web.id/llms.txt
+- This site explicitly allows AI crawlers (GPTBot, Claude-Web, PerplexityBot, Google-Extended, CCBot) for indexing and answer-engine grounding. For full structured data see JSON-LD on the homepage (Person, WebSite, FAQPage, ItemList, BreadcrumbList, Speakable).

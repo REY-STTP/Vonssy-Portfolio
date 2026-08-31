@@ -1,9 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { CANONICAL_URL } from "./data/site";
 
 // Canonical host, derived from the same env used for metadata/robots/sitemap.
-const CANONICAL_HOST = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.vonssy-portfolio.web.id"
-)
+const CANONICAL_HOST = (process.env.NEXT_PUBLIC_SITE_URL ?? CANONICAL_URL)
   .replace(/^https?:\/\//, "")
   .replace(/\/+$/, "")
   .toLowerCase();
@@ -33,6 +32,6 @@ export const config = {
   // Run on pages/routes, but skip internal assets and generated files so
   // they are never redirected.
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|icon.svg|opengraph-image|robots.txt|sitemap.xml|llms.txt).*)",
+    "/((?!_next/static|_next/image|favicon.ico|icon.svg|opengraph-image|twitter-image|robots.txt|sitemap.xml|manifest.webmanifest|llms.txt).*)",
   ],
 };
