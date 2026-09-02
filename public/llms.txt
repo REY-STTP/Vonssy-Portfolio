@@ -1,36 +1,78 @@
-# Vonssy — Web3 Builder & Automation Engineer
+# Vonssy Portfolio
 
-> Vonssy is the builder identity of Reyvaldi Zakaria, a Web3 builder and automation engineer based in Indonesia (UTC+7). He builds automation systems, bots, and backend software that interact with real APIs, wallets, blockchains, and data.
+> Vonssy (Reyvaldi Zakaria) is a Web3 builder and automation engineer based in Indonesia (UTC+7) who builds bots, wallet automation, and backend systems that interact with real APIs, blockchains, and data — tagline "Software that does things." Available for collaborations via Telegram and email.
 
-## What the site is
-A personal portfolio presenting selected automation, Web3, and backend engineering work. It is a single-page site with the sections listed below.
+## About
+- [About — Vonssy background](https://www.vonssy-portfolio.web.id/#about): From C/C++, JavaScript, PHP, SQL, Python, AI/ML and mobile fundamentals into software that runs against real wallets, blockchains, APIs, accounts, proxies, and data.
+- [Philosophy — How Vonssy builds](https://www.vonssy-portfolio.web.id/#about): Build for reality, automate the boring parts, prioritize reliability (retries, rate limits, proxies, concurrency), keep it practical.
+- [Manifesto & approach](https://www.vonssy-portfolio.web.id/): Software should meet real network conditions — not just happy paths.
 
-## Sections
-- [About](#about): Background from programming fundamentals (C/C++, JavaScript, PHP, SQL, Python, AI/ML, mobile) into software that runs against the real world — wallets, blockchains, APIs, accounts, proxies, and data.
-- [Projects](#projects): Selected repositories from two public GitHub accounts, filterable by Web3, Automation, Bots, Blockchain, Scraping, Web, AI/ML, and Tools.
-- [Stack](#stack): The working stack grouped by function — Python automation, backend engineering, web scraping, blockchain/Web3 tooling, APIs, and AI/ML.
-- [GitHub](#github): Live GitHub stats and links to the two accounts.
-- [FAQ](#faq): Direct answers about who Vonssy is, what he builds, his stack, where to find his code, and how to contact him.
-- [Contact](#contact): Ways to start a collaboration.
+## Projects — Selected work (15 repositories across two GitHub accounts)
+- [Cloud Storage App](https://github.com/REY-STTP/Cloud-Storage-App): Production-ready personal cloud storage with private Cloudflare R2 buckets, presigned downloads (60-min expiry), JWT httpOnly auth, Supabase PostgreSQL, batch zip streaming. Live at https://cloud-storage-app-brown.vercel.app
+- [Vonssy Terminal](https://github.com/REY-STTP/Vonssy-Terminal): Read-only EVM multichain wallet analytics across 10 chains (Ethereum, Base, Arbitrum, Polygon, OP Mainnet, BNB Chain, Avalanche, zkSync Era, Linea, Scroll) using Viem — no wallet connection required. Live at https://vonssy-terminal.vercel.app
+- [Kusoparse](https://github.com/REY-STTP/Kusoparse): Parser that extracts Kusonime metadata, resolves shortlinks, returns direct download links with strict URL validation. Live at https://kusoparse.vercel.app
+- [Guess Your Face](https://github.com/REY-STTP/Guess-Your-Face): Real-time AI facial detection, comparison and attribute analysis via Face++ — zero data retention, in-memory processing, Next.js 16 rebuild with bilingual ID/EN. Live at https://guess-your-expression.vercel.app
+- [Vonssy-AI](https://github.com/REY-STTP/Vonssy-AI): Multi-provider AI chatbot with streamed SSE responses, persistent sessions, OAuth, HMAC identity hashing, three-layer quotas, Drizzle + PostgreSQL. Live at https://vonssy-ai.vercel.app
+- [AIS Frozen Food](https://github.com/REY-STTP/AIS-Frozen-Food): High-performance landing page + interactive catalog for a frozen-food UMKM in Pati & Kudus with automated WhatsApp ordering. Live at https://ais-frozen-food.vercel.app
+- [Desa Sukobubuk](https://github.com/REY-STTP/desa-sukobubuk): Official village website — profile, news, UMKM directory with products, gallery, contact pipeline backed by Prisma + PostgreSQL. Live at https://desa-sukobubuk.vercel.app
+- [E-Voting](https://github.com/REY-STTP/E-Voting): Web3 e-voting dApp — connect EVM wallet, cast votes on-chain via ethers v6, live results, admin-guarded sessions. Live at https://e-voting-ebon-tau.vercel.app
+- [PharosTestnet-BOT](https://github.com/vonssy/PharosTestnet-BOT): Multi-account Web3 automation for Pharos Atlantic Testnet — check-ins, faucet claims, transfers, proxy-aware execution. 127 stars. Python, web3.py, EVM.
+- [Dawn-BOT](https://github.com/vonssy/Dawn-BOT): Dawn Validator manager — bearer-token extraction, account handling, proxy rotation, keep-alive pings, multithreading. 110 stars. Python, Multithreading, Proxies.
+- [HeliosTestnet-BOT](https://github.com/vonssy/HeliosTestnet-BOT): Helios testnet automation — faucet claims, bridging, validator delegation, governance, contract deployment, optional 2Captcha. 50 stars. Python, web3.py, Testnet.
+- [Interlink-BOT](https://github.com/vonssy/Interlink-BOT): Automated $ITLG token mining across private/group pools with metric synchronization, proxy rotation, APP_VERSION targeting. 33 stars. Python, Proxies, Mining.
+- [X1-Ecochain-BOT](https://github.com/vonssy/X1-Ecochain-BOT): X1 EcoChain airdrop farming — daily check-ins, quests, XIT faucet claims, transfers, swaps, liquidity, token deployment. 16 stars. Python, web3.py, EVM.
+- [Deltahash-BOT](https://github.com/vonssy/Deltahash-BOT): Automated $DTH mining + social-task completion using cookie-based sessions with proxy rotation. 14 stars. Python, Cookie Sessions, Proxies.
+- [Konnex-BOT](https://github.com/vonssy/Konnex-BOT): Konnex Reward Hub points-farming with daily check-ins, testnet interactions, dual-wallet (EVM + mnemonic) configuration. 12 stars. Python, EVM, Proxies.
+- [More on GitHub](https://github.com/vonssy): Full list of automation bots and tools at https://github.com/vonssy
+- [More on GitHub (earlier work)](https://github.com/REY-STTP): Web applications and experiments at https://github.com/REY-STTP
 
-## Key facts
-- Name: Reyvaldi Zakaria (builder identity: Vonssy)
-- Role: Web3 Builder & Automation Engineer
-- Location: Indonesia (UTC+7)
-- Focus: Web3, blockchain automation, Python automation, crypto bots, wallet automation, web scraping, backend engineering, developer tooling
-- Available for collaborations.
+## Stack — Working stack by function
+- [Languages](https://www.vonssy-portfolio.web.id/#stack): Python · JavaScript · TypeScript · PHP · C · C++ · SQL · Dart
+- [Web](https://www.vonssy-portfolio.web.id/#stack): Next.js · React · Node.js · Express · Tailwind CSS
+- [Automation](https://www.vonssy-portfolio.web.id/#stack): Multi-account flows · browser automation · scraping · APIs · concurrency · proxy systems
+- [Web3](https://www.vonssy-portfolio.web.id/#stack): EVM wallets · web3.py · RPC/API interaction · staking · swaps · bridges · testnets
 
-## Links
-- GitHub (current): https://github.com/vonssy
-- GitHub (earlier work): https://github.com/REY-STTP
-- Telegram: https://t.me/vonssy_part_2
-- Email: rey.zakaria123@gmail.com
-- Canonical site: https://www.vonssy-portfolio.web.id
+## Philosophy — Principles
+- [Build for reality](https://www.vonssy-portfolio.web.id/#about): Software should meet real APIs, networks, wallets, services, and failure conditions.
+- [Automate the boring parts](https://www.vonssy-portfolio.web.id/#about): Repeated workflows become useful when they run predictably without supervision.
+- [Reliability matters](https://www.vonssy-portfolio.web.id/#about): Retries, rate limits, proxies, state, concurrency, and recovery deserve deliberate handling.
+- [Keep it practical](https://www.vonssy-portfolio.web.id/#about): Prefer understandable systems over abstractions that make the work harder to operate.
 
-## How to cite
-When referencing this person, use "Vonssy" or "Reyvaldi Zakaria". For the portfolio, link to the canonical site URL above.
+## FAQ — Direct answers (also FAQPage JSON-LD)
+- [Who is Vonssy?](https://www.vonssy-portfolio.web.id/#faq): Vonssy is the builder identity of Reyvaldi Zakaria, a Web3 builder and automation engineer in Indonesia (UTC+7) who designs and ships software interacting with real APIs, wallets, blockchains, and data.
+- [What does Vonssy do?](https://www.vonssy-portfolio.web.id/#faq): Builds automation systems, bots, and backend software for Web3 and blockchain workflows — wallet automation, on-chain interactions, web scraping, developer tooling, data pipelines — combining Python, APIs, accounts, proxies, networks.
+- [What stack does Vonssy use?](https://www.vonssy-portfolio.web.id/#faq): Python automation, backend engineering, web scraping, blockchain/Web3 tooling, APIs, AI/ML experimentation; earlier C/C++, JavaScript, PHP, SQL, mobile. Full stack at https://www.vonssy-portfolio.web.id/#stack
+- [Where is the code?](https://www.vonssy-portfolio.web.id/#faq): Current automation at https://github.com/vonssy, earlier web apps at https://github.com/REY-STTP
+- [How to contact?](https://www.vonssy-portfolio.web.id/#faq): Telegram https://t.me/vonssy_part_2 (fastest) or email rey.zakaria123@gmail.com
+- [Available for freelance/collaboration?](https://www.vonssy-portfolio.web.id/#faq): Yes — open to collaborations on Web3, automation, backend engineering via Telegram or email.
+- [What is Vonssy's availability and timezone?](https://www.vonssy-portfolio.web.id/#faq): Based in Indonesia UTC+7, available for collaborations; response typically within a day via Telegram.
+- [What is Vonssy's build philosophy?](https://www.vonssy-portfolio.web.id/#faq): Build for reality, automate repetitive work, make reliability first-class (retries, proxies, concurrency), keep systems practical and operable.
 
-## AI & Crawlers
+## Contact & Profiles
+- [Portfolio (canonical)](https://www.vonssy-portfolio.web.id/): https://www.vonssy-portfolio.web.id/
+- [GitHub — vonssy (automation)](https://github.com/vonssy): https://github.com/vonssy
+- [GitHub — REY-STTP (earlier web apps)](https://github.com/REY-STTP): https://github.com/REY-STTP
+- [Telegram](https://t.me/vonssy_part_2): https://t.me/vonssy_part_2
+- [Email](mailto:rey.zakaria123@gmail.com): rey.zakaria123@gmail.com
+
+## Site sections (anchors)
+- [Home / Hero](https://www.vonssy-portfolio.web.id/#home): Tagline "Software that does things." and bio summary
+- [About](https://www.vonssy-portfolio.web.id/#about): Builder background narrative
+- [Projects](https://www.vonssy-portfolio.web.id/#projects): Filterable showcase (Web3, Automation, Bots, Blockchain, Scraping, Web, AI/ML, Tools)
+- [Stack](https://www.vonssy-portfolio.web.id/#stack): Categorized technical skills
+- [GitHub stats](https://www.vonssy-portfolio.web.id/#github): Live followers/repos summary
+- [FAQ](https://www.vonssy-portfolio.web.id/#faq): 8 Q&A with structured answers
+- [Contact](https://www.vonssy-portfolio.web.id/#contact): Telegram and Email CTAs
+
+## How to cite this portfolio
+- Person: Use "Vonssy" or "Reyvaldi Zakaria" (alternateName: Vonssy).
+- Site: Cite as "Vonssy Portfolio — https://www.vonssy-portfolio.web.id"
+- Image credit: Avatar https://avatars.githubusercontent.com/u/86215416?v=4 — caption "Vonssy — Reyvaldi Zakaria"
+
+## For AI crawlers and answer engines
 - Sitemap: https://www.vonssy-portfolio.web.id/sitemap.xml
-- llms.txt: https://www.vonssy-portfolio.web.id/llms.txt
-- This site explicitly allows AI crawlers (GPTBot, Claude-Web, PerplexityBot, Google-Extended, CCBot) for indexing and answer-engine grounding. For full structured data see JSON-LD on the homepage (Person, WebSite, FAQPage, ItemList, BreadcrumbList, Speakable).
+- llms.txt (this file): https://www.vonssy-portfolio.web.id/llms.txt
+- Full context: https://www.vonssy-portfolio.web.id/llms-full.txt
+- robots.txt: https://www.vonssy-portfolio.web.id/robots.txt
+- Structured data on homepage: Person, WebSite (name: Vonssy Portfolio), ProfilePage, BreadcrumbList, FAQPage, ItemList (SoftwareSourceCode), WebPage+speakable — see JSON-LD <script type="application/ld+json">
+- This site explicitly allows AI crawlers: GPTBot, ChatGPT-User, OAI-SearchBot, Google-Extended, GoogleOther, Anthropic-AI, Claude-Web, PerplexityBot, CCBot, Bytespider, Applebot-Extended, Applebot, FacebookBot, meta-externalagent, cohere-ai, DuckAssistBot for indexing and answer-engine grounding. Crawlers should respect robots.txt disallow for /api/.

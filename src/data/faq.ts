@@ -34,4 +34,14 @@ export const faqItems: FaqItem[] = [
     answer:
       "Yes. The portfolio notes he is available for collaborations on Web3, automation, and backend engineering work. Reach out via Telegram or email to discuss a project.",
   },
+  {
+    question: "What is Vonssy's availability and timezone?",
+    answer:
+      "Vonssy is based in Indonesia (UTC+7) and is available for collaborations. The fastest response is via Telegram at t.me/vonssy_part_2 — replies typically within a day. Email at rey.zakaria123@gmail.com also works.",
+  },
+  {
+    question: "What is Vonssy's build philosophy?",
+    answer:
+      "Build for reality (real APIs, wallets, networks, failure modes), automate the boring parts, treat reliability as first-class (retries, rate limits, proxies, concurrency, recovery), and keep systems practical and operable.",
+  },
 ];

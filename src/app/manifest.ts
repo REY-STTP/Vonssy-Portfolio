@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Vonssy | Web3 Builder & Automation Engineer",
-    short_name: "Vonssy",
+    name: "Vonssy Portfolio",
+    short_name: "Vonssy Portfolio",
     description:
       "Vonssy (Reyvaldi Zakaria) — Web3 builder & automation engineer. Software that does things.",
     start_url: "/",

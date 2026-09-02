@@ -47,6 +47,34 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: "Applebot-Extended",
         allow: "/",
       },
+      {
+        userAgent: "OAI-SearchBot",
+        allow: "/",
+      },
+      {
+        userAgent: "GoogleOther",
+        allow: "/",
+      },
+      {
+        userAgent: "Applebot",
+        allow: "/",
+      },
+      {
+        userAgent: "FacebookBot",
+        allow: "/",
+      },
+      {
+        userAgent: "meta-externalagent",
+        allow: "/",
+      },
+      {
+        userAgent: "cohere-ai",
+        allow: "/",
+      },
+      {
+        userAgent: "DuckAssistBot",
+        allow: "/",
+      },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,
   };

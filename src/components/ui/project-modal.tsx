@@ -156,9 +156,9 @@ export function ProjectModal({
               </div>
             </dl>
 
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-8 flex gap-3">
               <a
-                className="button button-primary"
+                className="button button-primary flex-1 justify-center text-xs sm:flex-none sm:text-[13px]"
                 href={project.repo}
                 target="_blank"
                 rel="noreferrer"
@@ -167,12 +167,12 @@ export function ProjectModal({
               </a>
               {project.demo && (
                 <a
-                  className="button button-ghost"
+                  className="button button-ghost flex-1 justify-center text-xs sm:flex-none sm:text-[13px]"
                   href={project.demo}
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Demo / support <ArrowUpRight />
+                  Demo <ArrowUpRight />
                 </a>
               )}
             </div>

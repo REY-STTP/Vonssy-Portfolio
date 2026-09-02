@@ -33,13 +33,13 @@ Built adhering to **Clean Code** principles, the repository features strict modu
 - **🧭 Smart Sticky Header**: Features ultra-clean glassmorphism (*16px backdrop blur*) that automatically slides up on scroll-down to maximize viewport reading room and reveals instantly on scroll-up.
 - **📜 Scroll-Linked Manifesto Reveal**: Word-by-word opacity lighting synced proportionally to viewport travel using native Framer Motion `useScroll`.
 - **🔄 Smart Floating Scroll Progress**: Circular SVG progress gauge that tracks scroll depth, dynamically flips between *Scroll to Bottom* and *Scroll to Top* based on scroll direction, and auto-hides after 2.2s of inactivity.
-- **📁 Modular Project Showcase**: Interactive categorized project grid with fluid layout animations and an accessible modal dialog complete with keyboard trapping (`Esc` key support). Displays the first 10 projects with a smooth animated *"Show all"* expand toggle.
+- **📁 Modular Project Showcase**: Interactive categorized project grid with fluid layout animations and an accessible modal dialog complete with keyboard trapping (`Esc` key support). Displays the first 10 projects with a smooth animated *"Show all"* expand toggle — modal actions stay side-by-side on mobile with responsive button sizing, plus a `sr-only` fallback list for crawlers.
 - **❓ FAQ Accordion**: Animated expandable FAQ section with smooth height transitions for common visitor questions.
 - **🎬 Staggered Cinematic Intro**: First-visit brand reveal with timed entrance sequence and smooth curtain lift-off.
 - **🏷️ Animated Brand Logo**: Custom SVG brand logo component with smooth entrance animations.
 - **🚫 Custom 404 Page**: Styled not-found page consistent with the portfolio design system.
 - **♿ First-Class Accessibility**: Native `prefers-reduced-motion` detection, ARIA dialog roles, focus management, and keyboard accessibility.
-- **🚀 SEO & Structured Data**: Built-in Schema.org `Person` JSON-LD metadata, dynamic OpenGraph/Twitter cards, automated `sitemap.xml`, and `robots.txt`.
+- **🚀 SEO & AI Discoverability**: `Vonssy Portfolio` site name (`WebSite` JSON-LD + `og:site_name`), full Schema.org (`Person`/`WebSite`/`FAQPage`/`ItemList`/`CollectionPage`/`BreadcrumbList`/`Speakable`), dynamic OG image, `sitemap.xml` (weekly) & `robots.txt` (allow GPTBot/OAI-SearchBot/Claude/Perplexity & 10+ AI crawlers), plus `llms.txt`/`llms-full.txt` for answer engines.
 
 ---
 
@@ -48,32 +48,36 @@ Built adhering to **Clean Code** principles, the repository features strict modu
 The codebase is organized with a strict **Separation of Concerns (SoC)** to ensure maintainability and testability:
 
 ```text
+public/
+├── llms.txt                     # Concise markdown for LLMs (spec llmstxt.org) — 15 projects, stack, FAQ, contact
+└── llms-full.txt                # Full context dump — detailed project overviews/approach/decisions/challenges
+
 src/
 ├── app/
 │   ├── api/
 │   │   └── chat/route.ts        # RAG chat endpoint (Node runtime, SSE streaming, rate limit, answer cache)
 │   ├── globals.css              # Design tokens, variables, and typography rules
 │   ├── icon.svg                 # Favicon / app icon
-│   ├── layout.tsx               # Root layout, Google Fonts (Manrope & JetBrains Mono), SEO
+│   ├── layout.tsx               # Root layout, Google Fonts (Manrope & JetBrains Mono), SEO + llms.txt hint
 │   ├── not-found.tsx            # Custom 404 page
 │   ├── opengraph-image.tsx      # Dynamic OG/Twitter card image (next/og)
-│   ├── page.tsx                 # Lean Server Component (renders JSON-LD + Client orchestrator)
-│   ├── robots.ts                # Search engine crawler configuration
-│   └── sitemap.ts               # Dynamic XML sitemap generation
+│   ├── page.tsx                 # Lean Server Component (renders Person/WebSite/FAQPage/ItemList/CollectionPage JSON-LD)
+│   ├── robots.ts                # Crawler config — wildcard + GPTBot/OAI-SearchBot/Claude/Perplexity & 10+ AI bots
+│   └── sitemap.ts               # Dynamic sitemap — weekly changeFrequency, lastModified = now
 ├── components/
 │   ├── icons.tsx                # Typed, accessible SVG icons
 │   ├── portfolio-client.tsx     # Client orchestrator container (< 120 lines)
 │   ├── layout/
 │   │   ├── header.tsx           # Smart sticky header & theme controller
 │   │   ├── mobile-nav.tsx       # Animated mobile navigation drawer
-│   │   └── footer.tsx           # Footer metadata and external links
+│   │   └── footer.tsx           # Footer — © Vonssy Portfolio + GitHub/Telegram/X links
 │   ├── sections/
 │   │   ├── hero-section.tsx     # Hero banner, pointer glow mesh, profile orbit
 │   │   ├── ticker-section.tsx   # Continuous marquee ticker banner
 │   │   ├── manifesto-section.tsx# Scroll-linked word lighting effect
 │   │   ├── about-section.tsx    # Builder background narrative
 │   │   ├── philosophy-section.tsx # "How I Build" principles cards
-│   │   ├── projects-section.tsx # Filterable project showcase & table (show-10 + expand)
+│   │   ├── projects-section.tsx # Filterable showcase (show-10 + expand) + sr-only full list for AI crawlers
 │   │   ├── stack-section.tsx    # Technical skills categorization
 │   │   ├── github-section.tsx   # GitHub profiles snapshot & statistics
 │   │   ├── faq-section.tsx      # Expandable FAQ accordion section
@@ -83,7 +87,7 @@ src/
 │       ├── chat-markdown.tsx    # Lightweight Markdown renderer (safe React nodes)
 │       ├── chat-widget.tsx      # Floating RAG chat bubble & panel
 │       ├── intro-overlay.tsx    # Timed cinematic intro overlay
-│       ├── project-modal.tsx    # Accessible modal dialog with focus trap
+│       ├── project-modal.tsx    # Accessible modal — focus trap, side-by-side actions on mobile (text-xs → sm:text-[13px])
 │       ├── scroll-progress.tsx  # Directional circular scroll indicator (auto-hide)
 │       ├── stat-card.tsx        # Reusable GitHub stat card component
 │       └── theme-selector.tsx   # Minimalist animated theme toggle button
@@ -96,7 +100,7 @@ src/
 │   │   ├── embeddings.json      # Pre-computed vector embeddings (committed, build-time)
 │   │   ├── manual.ts            # Curated bio/contact sources for ingestion
 │   │   └── repos.ts             # Curated showcase repos (auto-discovery covers the rest)
-│   ├── site.ts                  # Site config & Schema.org JSON-LD generator
+│   ├── site.ts                  # Site config & JSON-LD (WebSite name: Vonssy Portfolio, sameAs includes X)
 │   └── stack.ts                 # Categorized technical stack data
 ├── hooks/
 │   ├── use-chat.ts              # Chat state, SSE streaming, sessionStorage persistence
@@ -239,6 +243,7 @@ Updating your portfolio information is fast and simple thanks to the dedicated `
 
 **Reyvaldi Zakaria (Vonssy)**
 - GitHub: [@vonssy](https://github.com/vonssy) · [@REY-STTP](https://github.com/REY-STTP)
+- X: [@_Vonssy](https://x.com/_Vonssy)
 - Telegram: [@vonssy_part_2](https://t.me/vonssy_part_2)
 - Email: `rey.zakaria123@gmail.com`
 

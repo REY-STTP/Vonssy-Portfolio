@@ -1,0 +1,216 @@
+# Vonssy Portfolio — Full Context for LLMs
+
+> Vonssy (Reyvaldi Zakaria) is a Web3 builder and automation engineer (Indonesia, UTC+7). Tagline "Software that does things." Builds automation systems, bots, and backend software that interact with real APIs, wallets, blockchains, and data. Available for collaborations on Web3, automation, backend engineering via Telegram t.me/vonssy_part_2 or email rey.zakaria123@gmail.com.
+
+## Canonical URLs
+- Portfolio: https://www.vonssy-portfolio.web.id/
+- Sitemap: https://www.vonssy-portfolio.web.id/sitemap.xml
+- llms.txt: https://www.vonssy-portfolio.web.id/llms.txt
+- robots.txt: https://www.vonssy-portfolio.web.id/robots.txt
+
+## Who is Vonssy
+Vonssy is the builder identity of Reyvaldi Zakaria. Work started broad: programming fundamentals, C and C++, JavaScript, PHP, SQL, Python, AI and machine learning, and mobile development. Path moved through web applications and backend systems into software that runs against the real world: wallets, blockchains, external APIs, accounts, proxies, and data. The point is not collecting technologies — it is combining enough of them to make a working system.
+
+Location: Indonesia. Timezone: UTC+7. Contact: Telegram https://t.me/vonssy_part_2, Email rey.zakaria123@gmail.com. GitHub: https://github.com/vonssy (current automation) and https://github.com/REY-STTP (earlier web apps). Avatar: https://avatars.githubusercontent.com/u/86215416?v=4.
+
+## Philosophy — How Vonssy builds
+
+### Build for reality
+Software should meet real APIs, networks, wallets, services, and failure conditions.
+
+### Automate the boring parts
+Repeated workflows become useful when they can run predictably without supervision.
+
+### Reliability matters
+Retries, rate limits, proxies, state, concurrency, and recovery deserve deliberate handling.
+
+### Keep it practical
+Prefer understandable systems over abstractions that make the work harder to operate.
+
+Learning path: learning → experimenting → building → automating
+
+## Stack — Working stack by function
+- Languages: Python · JavaScript · TypeScript · PHP · C · C++ · SQL · Dart
+- Web: Next.js · React · Node.js · Express · Tailwind CSS
+- Automation: Multi-account flows · browser automation · scraping · APIs · concurrency · proxy systems
+- Web3: EVM wallets · web3.py · RPC/API interaction · staking · swaps · bridges · testnets
+
+## Projects — Selected work (15 repositories)
+
+This list is curated and kept in sync with src/data/projects.ts. Each entry includes the canonical description plus structured details (overview, approach, decisions, challenges) as rendered in the portfolio modal.
+
+### 1. Cloud Storage App — REY-STTP
+- GitHub: https://github.com/REY-STTP/Cloud-Storage-App — Demo: https://cloud-storage-app-brown.vercel.app — Tags: Next.js 16, TypeScript, PostgreSQL, Cloudflare R2 — Category: Web, Tools — Signal: Live web tool
+- Description: A production-ready personal cloud storage platform with private R2 buckets, presigned downloads, and an admin panel backed by real-time analytics.
+- Overview: A full-featured cloud storage platform where users upload, organize, rename, download, and delete files from a clean dashboard while administrators manage the entire user base.
+- Approach: Every file lives in a private Cloudflare R2 bucket and downloads are served through presigned URLs that expire in 60 minutes — no permanent public links. Auth runs on JWT sessions in httpOnly cookies with bcrypt-hashed passwords.
+- Decisions: The build leans on Supabase PostgreSQL for users and file records, cursor-based pagination for search, batch operations streamed as a single zip archive, and configurable per-user storage quotas.
+- Challenges: The hard parts are presigned URL lifecycling, cascading user deletion across stored files, email verification and reset-token flows, and keeping admin analytics responsive at scale.
+
+### 2. Vonssy Terminal — REY-STTP
+- GitHub: https://github.com/REY-STTP/Vonssy-Terminal — Demo: https://vonssy-terminal.vercel.app — Tags: Next.js 16, TypeScript, Viem — Category: Web3, Tools — Signal: Live web tool
+- Description: Read-only EVM multichain wallet analytics: paste any address and get portfolio value, asset breakdowns, and classified activity history across 10 chains.
+- Overview: A wallet analytics terminal covering Ethereum, Base, Arbitrum, Polygon, OP Mainnet, BNB Chain, Avalanche, zkSync Era, Linea, and Scroll — no wallet connection, signing, or auth required.
+- Approach: Only public chain data is read through Viem: native and ERC-20 holdings with live prices, transaction history grouped into sends, receives, swaps, and contract interactions, plus per-chain allocation that sums to exactly 100%.
+- Decisions: Chain configuration is centralized so new networks are one-file additions, previously searched wallets persist locally, and the UI never blocks on a single provider.
+- Challenges: Graceful degradation under real conditions: when a chain provider times out or a wallet exceeds index limits, the dashboard keeps working with a partial view and clear error signals instead of crashing.
+
+### 3. Kusoparse — REY-STTP
+- GitHub: https://github.com/REY-STTP/Kusoparse — Demo: https://kusoparse.vercel.app — Tags: Next.js, TypeScript, Framer Motion — Category: Web, Scraping, Tools — Signal: Live web tool
+- Description: A responsive parser that extracts Kusonime metadata, resolves shortlinks, and returns direct download links from validated URLs.
+- Overview: A lightweight web interface for parsing Kusonime pages.
+- Approach: The tool validates Kusonime URLs, extracts anime metadata, and resolves documented shortlink providers into a cleaner download flow.
+- Decisions: The README explicitly positions responsiveness, strict URL validation, and a focused single-purpose interface as core features.
+- Challenges: The project deals with inconsistent external pages, shortlink/ad-locker resolution, and keeping the interaction simple for the visitor.
+
+### 4. Guess Your Face — REY-STTP
+- GitHub: https://github.com/REY-STTP/Guess-Your-Face — Demo: https://guess-your-expression.vercel.app — Tags: Next.js 16, TypeScript, Face++, Tailwind CSS — Category: AI / ML, Web — Signal: v2.0 rebuild · Live
+- Description: Real-time AI facial detection, comparison, and attribute analysis playground powered by Face++ — zero data retention, fully in-memory processing.
+- Overview: A modern playground for AI-powered face analysis: micro-expression detection across seven weighted emotions, demographic and aesthetic profiles, and 1:1 face similarity verification.
+- Approach: All image processing happens in-memory through secure Next.js Route Handlers using Face++ Cognitive Services — images are never stored on the server or in a database (privacy-first, zero retention).
+- Decisions: This is a complete architectural revamp of the original Node.js + Express + MongoDB app into a full-stack Next.js 16 + React 19 codebase, adding multi-face detection and a bilingual ID/EN system with instant toggling.
+- Challenges: Replacing persistent storage with stateless in-memory pipelines while keeping route handlers secure, and rebuilding every detection feature from the legacy stack without regressions.
+
+### 5. Vonssy-AI — REY-STTP
+- GitHub: https://github.com/REY-STTP/Vonssy-AI — Demo: https://vonssy-ai.vercel.app — Tags: Next.js 16, TypeScript, PostgreSQL — Category: Web, Tools, AI / ML — Signal: Current full-stack build
+- Description: A multi-provider AI chatbot with streamed responses, persistent sessions, OAuth, quotas, and provider fallback.
+- Overview: A unified interface for multiple AI gateways and models.
+- Approach: The application combines a Next.js App Router frontend with PostgreSQL, Drizzle, Auth.js, streamed SSE responses, and a provider registry.
+- Decisions: The README documents server-side session revalidation, HMAC identity hashing, a three-layer quota system, cursor pagination, and a fallback gateway for 429 responses.
+- Challenges: The system has to coordinate streaming, persistence, authentication, rate limits, provider differences, and responsive chat UX.
+
+### 6. AIS Frozen Food — REY-STTP
+- GitHub: https://github.com/REY-STTP/AIS-Frozen-Food — Demo: https://ais-frozen-food.vercel.app — Tags: Next.js, TypeScript, Tailwind CSS, Framer Motion — Category: Web — Signal: Live landing page
+- Description: A high-performance landing page and interactive digital catalog for a frozen-food UMKM, with automated WhatsApp ordering built in.
+- Overview: Website profil dan katalog digital untuk AIS Frozen Food, UMKM makanan beku di area Pati & Kudus, dirancang untuk mempermudah pelanggan menjelajahi produk dan memesan.
+- Approach: Order flow lands directly in WhatsApp with smart message templates prefilled per product, while visitors filter the catalog through animated category tabs (dimsum, aneka frozen food, cilok, dan lainnya).
+- Decisions: The design commits to a premium dark aesthetic — warm charcoal with marigold accents — backed by blurred backdrop imagery, floating micro-animations, and a running category ticker.
+- Challenges: Balancing heavy visual effects with performance and accessibility: prefers-reduced-motion support, automatic Next.js image optimization, and structured SEO metadata all had to coexist.
+
+### 7. Desa Sukobubuk — REY-STTP
+- GitHub: https://github.com/REY-STTP/desa-sukobubuk — Demo: https://desa-sukobubuk.vercel.app — Tags: Next.js 15, TypeScript, Prisma, PostgreSQL — Category: Web — Signal: Official village site · Live
+- Description: The official website of Desa Sukobubuk: village profile, news, UMKM directory with products, gallery, and a contact pipeline backed by PostgreSQL.
+- Overview: Situs resmi Desa Sukobubuk, Kecamatan Margorejo, Kabupaten Pati — menghadirkan profil desa, berita, direktori UMKM, produk, galeri kegiatan, dan saluran kontak dalam satu platform.
+- Approach: Dibangun dengan Next.js 15, TypeScript, Tailwind CSS, dan Prisma + PostgreSQL; setiap UMKM punya halaman detail sendiri lengkap dengan produk dan tombol hubungi via WhatsApp.
+- Decisions: Konten sepenuhnya database-driven melalui REST endpoints terdokumentasi (UMKM, berita, produk, galeri, pesan), dengan seeding data sampel agar situs langsung hidup saat pertama dijalankan.
+- Challenges: Menata skema relational lintas tabel (users, umkm, produk, berita, galeri, pesan) sekaligus menjaga halaman publik tetap sederhana bagi pengunjung desa yang belum terbiasa dengan web.
+
+### 8. E-Voting — REY-STTP
+- GitHub: https://github.com/REY-STTP/E-Voting — Demo: https://e-voting-ebon-tau.vercel.app — Tags: Next.js 16, TypeScript, Ethers.js — Category: Web3, Blockchain, Web — Signal: Live dApp
+- Description: A Web3 e-voting dApp: connect an EVM wallet, cast votes on-chain through ethers.js, and watch results update live behind an admin-guarded session.
+- Overview: An on-chain voting application where voters connect an EVM wallet, review candidates, submit votes through smart-contract calls, and follow results in a live results section.
+- Approach: Built on Next.js 16 with ethers v6 handling wallet connection and vote transactions; voting state flows through dedicated hooks (useVoting, useWallet) over a centralized web3 config layer.
+- Decisions: Admin routes are separated behind cookie-based login/logout/session API routes with middleware protection, while the public side stays focused on candidates, voting, and transparent results.
+- Challenges: Coordinating wallet state, transaction confirmation waits, and post-vote UI updates without a backend database — the chain itself is the source of truth.
+
+### 9. PharosTestnet-BOT — vonssy (127 stars · 41 forks)
+- GitHub: https://github.com/vonssy/PharosTestnet-BOT — Telegram: https://t.me/vonssy_part_2 — Tags: Python, web3.py, EVM — Category: Web3, Blockchain, Bots
+- Description: Multi-account Web3 automation for Pharos Atlantic Testnet: check-ins, faucet claims, transfers, and proxy-aware execution.
+- Overview: Automated Web3 interaction for Pharos Atlantic Testnet.
+- Approach: Accounts are supplied as private keys, while the bot runs repeatable network actions across multiple accounts through web3, eth-account, ABI, and utility packages.
+- Decisions: Proxy support and invalid-proxy rotation are first-class runtime choices, alongside daily check-in, faucet, and transfer actions.
+- Challenges: The README reflects the operational edge cases of wallet automation: account lists, network libraries, proxies, and repeated actions.
+
+### 10. Dawn-BOT — vonssy (110 stars · 18 forks)
+- GitHub: https://github.com/vonssy/Dawn-BOT — Telegram: https://t.me/vonssy_part_2 — Tags: Python, Multithreading, Proxies — Category: Automation, Bots
+- Description: A Dawn Validator manager built around token setup, account handling, proxy rotation, keep-alive pings, and concurrent execution.
+- Overview: Automated Dawn Validator management with multi-threading and proxy support.
+- Approach: The repository separates token setup from runtime execution, stores account and proxy inputs in simple files, and exposes proxy mode and rotation choices at startup.
+- Decisions: The README calls out automatic bearer-token extraction, account retrieval, invalid-proxy rotation, ping signals, and multi-account threading.
+- Challenges: The documented runtime is shaped around real service conditions: captcha setup, proxy reliability, and keeping several accounts alive.
+
+### 11. HeliosTestnet-BOT — vonssy (50 stars · 8 forks)
+- GitHub: https://github.com/vonssy/HeliosTestnet-BOT — Telegram: https://t.me/vonssy_part_2 — Tags: Python, web3.py, Testnet — Category: Web3, Blockchain, Bots
+- Description: Helios testnet automation spanning faucet claims, bridging, validator delegation, governance, and smart-contract deployment.
+- Overview: Automated Helios testnet operations across multiple accounts.
+- Approach: The bot chains together faucet claims, fund bridging, validator delegation, reward claims, governance proposals, and contract deployment.
+- Decisions: Optional 2Captcha support enables faucet claims, while proxy mode and rotation are selectable at startup.
+- Challenges: The surface area spans many on-chain actions, captcha configuration, and multi-account state management.
+
+### 12. Interlink-BOT — vonssy (33 stars · 9 forks)
+- GitHub: https://github.com/vonssy/Interlink-BOT — Telegram: https://t.me/vonssy_part_2 — Tags: Python, Proxies, Mining — Category: Automation, Bots, Web3
+- Description: Automated $ITLG token mining across multiple accounts with metric synchronization, proxy rotation, and configurable app-version targeting.
+- Overview: Automated Interlink mining that claims $ITLG from both private and group mining pools across many accounts at once.
+- Approach: Accounts are configured in a JSON file (email, passcode, Interlink ID), with an adjustable APP_VERSION constant kept in .env so requests keep matching the latest Interlink app release.
+- Decisions: Proxy mode and invalid-proxy rotation are startup choices, and metric synchronization runs automatically alongside mining claims.
+- Challenges: The moving target is the upstream app itself: version drift between the bot and the Interlink client is an explicitly documented maintenance concern.
+
+### 13. X1-Ecochain-BOT — vonssy (16 stars)
+- GitHub: https://github.com/vonssy/X1-Ecochain-BOT — Telegram: https://t.me/vonssy_part_2 — Tags: Python, web3.py, EVM — Category: Web3, Blockchain, Bots
+- Description: X1 EcoChain airdrop farming automation: daily check-ins, quests, faucet claims, transfers, swaps, liquidity, and token deployment across accounts.
+- Overview: Automated on-chain farming for the X1 EcoChain network spanning nearly every testnet action a farmer needs.
+- Approach: The bot automates check-ins, quest completion, XIT faucet claims, random token transfers, USDT swaps, liquidity provisioning, and even token deployment — all across multiple EVM wallets.
+- Decisions: New wallets are recommended at registration, and proxy support with smart rotation remains a first-class startup option.
+- Challenges: The breadth of on-chain operations means coordinating faucet timing, swap and liquidity flows, and multi-account state without tripping network limits.
+
+### 14. Deltahash-BOT — vonssy (14 stars · 1 fork)
+- GitHub: https://github.com/vonssy/Deltahash-BOT — Telegram: https://t.me/vonssy_part_2 — Tags: Python, Cookie Sessions, Proxies — Category: Automation, Bots
+- Description: Automated $DTH mining and social-task completion across multiple accounts using cookie-based sessions with proxy rotation.
+- Overview: Automated Deltahash mining that keeps $DTH accumulation running continuously across many accounts.
+- Approach: Authentication reuses captured cookie data stored in a plain text file (with a documented example of how to fetch it), while social tasks are completed automatically alongside mining.
+- Decisions: Proxy mode selection and invalid-proxy rotation mirror the rest of the BOT family, keeping operational behavior consistent across tools.
+- Challenges: Session lifetime is the core constraint: cookie-based auth expires, so the workflow is designed around easy refresh-and-restart cycles.
+
+### 15. Konnex-BOT — vonssy (12 stars · 2 forks)
+- GitHub: https://github.com/vonssy/Konnex-BOT — Telegram: https://t.me/vonssy_part_2 — Tags: Python, EVM, Proxies — Category: Web3, Bots, Automation
+- Description: Konnex Reward Hub points-farming automation with daily check-ins, testnet interactions, dual-wallet configuration, and proxy rotation.
+- Overview: Automated points farming for Konnex Reward Hub that handles daily check-ins and testnet actions across multiple accounts.
+- Approach: Each account pairs an EVM private key with a Konnex wallet mnemonic in accounts.json, letting the bot operate both wallet layers during check-in and testnet routines.
+- Decisions: Registration guidance steers users toward fresh EVM wallets linked to social accounts, and proxy rotation stays consistent with the broader BOT family.
+- Challenges: The dual-wallet setup adds key-management surface area, and the bot must keep both credential types synchronized across long farming runs.
+
+Additional discovered repos are indexed via RAG — see embeddings.json for full coverage beyond the 15 showcase projects.
+
+## FAQ — Complete answers (from src/data/faq.ts — 8 items)
+
+### Who is Vonssy?
+Vonssy is the builder identity of Reyvaldi Zakaria, a Web3 builder and automation engineer based in Indonesia (UTC+7). He designs and ships software that interacts with real APIs, wallets, blockchains, and data.
+
+### What does Vonssy do?
+He builds automation systems, bots, and backend software for Web3 and blockchain workflows — including wallet automation, on-chain interactions, web scraping, developer tooling, and data pipelines. The work combines Python, APIs, accounts, proxies, and networks into systems that keep running when the happy path ends.
+
+### What technologies and stack does Vonssy use?
+His stack spans Python automation, backend engineering, web scraping, blockchain and Web3 tooling, APIs, and AI/ML experimentation. Earlier work also covers C/C++, JavaScript, PHP, SQL, and mobile development. The specific tools are listed in the Stack section of the portfolio at https://www.vonssy-portfolio.web.id/#stack
+
+### Where can I find Vonssy's code?
+His current automation work is published on GitHub at https://github.com/vonssy, and earlier experiments and web applications live at https://github.com/REY-STTP. Both accounts are linked directly from the portfolio.
+
+### How do I contact Vonssy?
+You can reach him on Telegram at https://t.me/vonssy_part_2 or by email at rey.zakaria123@gmail.com. Telegram is usually the fastest way to get a reply.
+
+### Does Vonssy take on freelance or collaboration work?
+Yes. The portfolio notes he is available for collaborations on Web3, automation, and backend engineering work. Reach out via Telegram or email to discuss a project.
+
+### What is Vonssy's availability and timezone?
+Based in Indonesia, timezone UTC+7, available for collaborations. Best contact is Telegram t.me/vonssy_part_2 — responses typically within a day. See https://www.vonssy-portfolio.web.id/#contact
+
+### What is Vonssy's build philosophy?
+Build for reality (real APIs/networks/failure), automate the boring parts, reliability matters (retries, rate limits, proxies, concurrency), keep it practical. Source: Philosophy section https://www.vonssy-portfolio.web.id/#about and src/data/philosophy.ts.
+
+## Contact & Profiles
+- Portfolio: https://www.vonssy-portfolio.web.id/
+- GitHub vonssy: https://github.com/vonssy
+- GitHub REY-STTP: https://github.com/REY-STTP
+- Telegram: https://t.me/vonssy_part_2
+- Email: rey.zakaria123@gmail.com
+- Avatar: https://avatars.githubusercontent.com/u/86215416?v=4
+
+## Sections map
+- Home: https://www.vonssy-portfolio.web.id/#home
+- About: https://www.vonssy-portfolio.web.id/#about
+- Projects: https://www.vonssy-portfolio.web.id/#projects — filterable by Web3, Automation, Bots, Blockchain, Scraping, Web, AI/ML, Tools
+- Stack: https://www.vonssy-portfolio.web.id/#stack
+- GitHub stats: https://www.vonssy-portfolio.web.id/#github
+- FAQ: https://www.vonssy-portfolio.web.id/#faq
+- Contact: https://www.vonssy-portfolio.web.id/#contact
+
+## Technical notes for crawlers
+- Rendering: Server-rendered HTML via Next.js 16 App Router; content is visible without JavaScript execution (view-source contains all text). Client hydration adds animations but does not gate content.
+- Structured data: JSON-LD includes Person (alternateName: Vonssy), WebSite (name: Vonssy Portfolio, publisher Person), ProfilePage, BreadcrumbList, FAQPage, ItemList of SoftwareSourceCode, WebPage+speakableSpecification.
+- Sitemap: weekly changeFrequency, lastModified dynamic.
+- Robots: wildcard allow, disallow only /api/ — AI crawlers explicitly allowed. See /robots.txt
+- CSP: default-src 'self' — does not block crawlers, only browser execution.
+- Canonical: https://www.vonssy-portfolio.web.id via proxy.ts 308 redirect.
+
+## Citation guidance
+When referencing this person, use "Vonssy" or "Reyvaldi Zakaria". For the portfolio, link to https://www.vonssy-portfolio.web.id. For projects, cite the GitHub repo URL and, when helpful, the demo URL listed per project above.

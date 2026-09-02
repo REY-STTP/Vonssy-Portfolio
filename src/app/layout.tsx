@@ -46,7 +46,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: siteUrl,
-    siteName: "Vonssy",
+    siteName: "Vonssy Portfolio",
     locale: "en_US",
     alternateLocale: ["id_ID"],
     title: "Vonssy | Web3 Builder & Automation Engineer",
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Vonssy | Web3 Builder & Automation Engineer",
     description: "Software that does things — Web3, blockchain, and automation systems built by Vonssy.",
-    creator: "@vonssy",
+    creator: "@_Vonssy",
     images: ["/opengraph-image"],
   },
   robots: {
@@ -93,7 +93,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
-    title: "Vonssy",
+    title: "Vonssy Portfolio",
     statusBarStyle: "black-translucent",
   },
   formatDetection: { telephone: false },
@@ -102,6 +102,7 @@ export const metadata: Metadata = {
   },
   other: {
     "google-site-verification": "0GDhAn2e04C0QlOPsQL285huEN8o4WT9LvJj2XBDlVk",
+    "llms-txt": "/llms.txt",
   },
 };
 
@@ -116,7 +117,9 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head suppressHydrationWarning />
+      <head suppressHydrationWarning>
+        <link rel="alternate" type="text/plain" title="LLMs" href="/llms.txt" />
+      </head>
       <body suppressHydrationWarning className={`${manrope.variable} ${jetbrains.variable}`}>
         <a
           href="#home"

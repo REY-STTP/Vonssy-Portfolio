@@ -3,7 +3,7 @@ import { siteConfig } from "@/data/site";
 export function Footer() {
   return (
     <footer className="site-footer shell border-t border-line-soft py-7 text-xs text-quiet">
-      <span className="footer-credit">Built by Vonssy.</span>
+      <span className="footer-credit">© 2026 Vonssy Portfolio — Systems in motion.</span>
       <div className="footer-meta">
         <div className="footer-links">
           <a
@@ -21,6 +21,14 @@ export function Footer() {
             className="hover:text-ink"
           >
             Telegram
+          </a>
+          <a
+            href={siteConfig.socialLinks.x}
+            target="_blank"
+            rel="me noopener noreferrer"
+            className="hover:text-ink"
+          >
+            X
           </a>
         </div>
         <span className="footer-year mono">2026 / systems in motion</span>

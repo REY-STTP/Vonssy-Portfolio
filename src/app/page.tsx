@@ -42,6 +42,7 @@ const faqJsonLd = {
 const itemListJsonLd = {
   "@context": "https://schema.org",
   "@type": "ItemList",
+  "@id": `${siteUrl}/#itemlist`,
   name: "Selected Work by Vonssy",
   description: "A curated selection of Web3, automation, blockchain and web projects by Vonssy.",
   numberOfItems: projects.length,
@@ -76,8 +77,21 @@ const speakableJsonLd = {
   },
   speakable: {
     "@type": "SpeakableSpecification",
-    cssSelector: ["#about", "#faq", ".hero-title"],
+    cssSelector: ["#about", "#faq", "#contact", ".hero-title"],
   },
+  inLanguage: "en",
+};
+
+const collectionPageJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": `${siteUrl}/#collection`,
+  url: `${siteUrl}/#projects`,
+  name: "Selected Work by Vonssy",
+  description: "A curated selection of Web3, automation, blockchain and web projects by Vonssy.",
+  isPartOf: { "@id": `${siteUrl}/#website` },
+  mainEntity: { "@id": `${siteUrl}/#itemlist` },
+  about: { "@id": `${siteUrl}/#person` },
   inLanguage: "en",
 };
 
@@ -90,6 +104,7 @@ export default function Home() {
       {jsonLdScript(getBreadcrumbJsonLd())}
       {jsonLdScript(faqJsonLd)}
       {jsonLdScript(itemListJsonLd)}
+      {jsonLdScript(collectionPageJsonLd)}
       {jsonLdScript(speakableJsonLd)}
       <PortfolioClient
         projects={projects}

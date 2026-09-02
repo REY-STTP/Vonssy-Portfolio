@@ -32,6 +32,6 @@ export const config = {
   // Run on pages/routes, but skip internal assets and generated files so
   // they are never redirected.
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|icon.svg|opengraph-image|twitter-image|robots.txt|sitemap.xml|manifest.webmanifest|llms.txt).*)",
+    "/((?!_next/static|_next/image|favicon.ico|icon.svg|opengraph-image|twitter-image|robots.txt|sitemap.xml|manifest.webmanifest|llms.txt|llms-full.txt).*)",
   ],
 };
