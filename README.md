@@ -39,7 +39,7 @@ Built adhering to **Clean Code** principles, the repository features strict modu
 - **🏷️ Animated Brand Logo**: Custom SVG brand logo component with smooth entrance animations.
 - **🚫 Custom 404 Page**: Styled not-found page consistent with the portfolio design system.
 - **♿ First-Class Accessibility**: Native `prefers-reduced-motion` detection, ARIA dialog roles, focus management, and keyboard accessibility.
-- **🚀 SEO & AI Discoverability**: `Vonssy Portfolio` site name (`WebSite` JSON-LD + `og:site_name`), full Schema.org (`Person`/`WebSite`/`FAQPage`/`ItemList`/`CollectionPage`/`BreadcrumbList`/`Speakable`), dynamic OG image, `sitemap.xml` (weekly) & `robots.txt` (allow GPTBot/OAI-SearchBot/Claude/Perplexity & 10+ AI crawlers), plus `llms.txt`/`llms-full.txt` for answer engines.
+- **🚀 SEO & AI Discoverability**: `Vonssy Portfolio` site name (`WebSite` JSON-LD + `og:site_name`), full Schema.org (`Person`/`WebSite`/`FAQPage`/`ItemList`/`CollectionPage`/`BreadcrumbList`/`Speakable`), static OG image (`public/og-image.png`), `sitemap.xml` (weekly) & `robots.txt` (allow GPTBot/OAI-SearchBot/Claude/Perplexity & 10+ AI crawlers), plus `llms.txt`/`llms-full.txt` for answer engines.
 
 ---
 
@@ -50,7 +50,8 @@ The codebase is organized with a strict **Separation of Concerns (SoC)** to ensu
 ```text
 public/
 ├── llms.txt                     # Concise markdown for LLMs (spec llmstxt.org) — 15 projects, stack, FAQ, contact
-└── llms-full.txt                # Full context dump — detailed project overviews/approach/decisions/challenges
+├── llms-full.txt                # Full context dump — detailed project overviews/approach/decisions/challenges
+└── og-image.png                 # Static 1200x630 Open Graph / Twitter card image
 
 src/
 ├── app/
@@ -58,9 +59,8 @@ src/
 │   │   └── chat/route.ts        # RAG chat endpoint (Node runtime, SSE streaming, rate limit, answer cache)
 │   ├── globals.css              # Design tokens, variables, and typography rules
 │   ├── icon.svg                 # Favicon / app icon
-│   ├── layout.tsx               # Root layout, Google Fonts (Manrope & JetBrains Mono), SEO + llms.txt hint
+│   ├── layout.tsx               # Root layout, Google Fonts (Manrope & JetBrains Mono), SEO + Google/Bing verification
 │   ├── not-found.tsx            # Custom 404 page
-│   ├── opengraph-image.tsx      # Dynamic OG/Twitter card image (next/og)
 │   ├── page.tsx                 # Lean Server Component (renders Person/WebSite/FAQPage/ItemList/CollectionPage JSON-LD)
 │   ├── robots.ts                # Crawler config — wildcard + GPTBot/OAI-SearchBot/Claude/Perplexity & 10+ AI bots
 │   └── sitemap.ts               # Dynamic sitemap — weekly changeFrequency, lastModified = now
@@ -113,7 +113,7 @@ src/
 │       ├── embed.ts             # Provider-agnostic embedding client (Jina default, task-tuned)
 │       ├── prompt.ts            # System persona/voice, history builder, injection sanitizer, guardrail
 │       └── retrieve.ts          # Cosine similarity search + threshold guardrail
-├── proxy.ts                     # Development proxy configuration
+├── proxy.ts                     # Production-only canonical-host redirect (308) — skipped on previews & local dev
 └── types/
     ├── portfolio.ts             # TypeScript domain interfaces and type definitions
     └── rag.ts                   # RAG/chat runtime types (messages, chunks, records)

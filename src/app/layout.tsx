@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     description: "Software that does things — Web3, blockchain, and automation systems built by Vonssy.",
     images: [
       {
-        url: "/opengraph-image",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "Vonssy | Web3 Builder & Automation Engineer — Software that does things.",
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     title: "Vonssy | Web3 Builder & Automation Engineer",
     description: "Software that does things — Web3, blockchain, and automation systems built by Vonssy.",
     creator: "@_Vonssy",
-    images: ["/opengraph-image"],
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,

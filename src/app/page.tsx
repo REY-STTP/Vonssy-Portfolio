@@ -73,7 +73,7 @@ const speakableJsonLd = {
   about: { "@id": `${siteUrl}/#person` },
   primaryImageOfPage: {
     "@type": "ImageObject",
-    contentUrl: `${siteUrl}/opengraph-image`,
+    contentUrl: `${siteUrl}/og-image.png`,
   },
   speakable: {
     "@type": "SpeakableSpecification",
