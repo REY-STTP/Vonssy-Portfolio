@@ -102,6 +102,7 @@ export const metadata: Metadata = {
   },
   other: {
     "google-site-verification": "0GDhAn2e04C0QlOPsQL285huEN8o4WT9LvJj2XBDlVk",
+    "msvalidate.01": "251DD7C241139056B7F36D7E05ABA7E2",
     "llms-txt": "/llms.txt",
   },
 };
