@@ -6,10 +6,12 @@ import {
   getBreadcrumbJsonLd,
   getPersonJsonLd,
   getProfilePageJsonLd,
+  getServiceJsonLd,
   getWebSiteJsonLd,
   siteConfig,
 } from "@/data/site";
 import { faqItems } from "@/data/faq";
+import type { Project } from "@/types/portfolio";
 
 export const revalidate = 86400;
 
@@ -24,6 +26,53 @@ function jsonLdScript(data: unknown) {
 }
 
 const siteUrl = siteConfig.siteUrl;
+
+// --- Schema helpers for SoftwareSourceCode ---
+
+const PURE_LANGUAGES = ["Python", "TypeScript", "JavaScript", "PHP", "C", "C++", "SQL", "Dart"] as const;
+
+function isPureLanguage(tag: string): boolean {
+  return PURE_LANGUAGES.some((lang) => tag === lang);
+}
+
+function getProgrammingLanguages(tags: string[]): string[] {
+  const langs = tags.filter(isPureLanguage);
+  return langs.length > 0 ? langs : ["TypeScript"];
+}
+
+function getRuntimePlatform(tags: string[]): string {
+  return tags.join(", ");
+}
+
+function getApplicationCategory(project: Project): string {
+  if (project.name === "Vonssy Terminal") return "FinanceApplication";
+  if (project.name === "E-Voting") return "BusinessApplication";
+  if (project.category.includes("AI / ML")) return "MultimediaApplication";
+  if (project.category.includes("Bots")) return "UtilitiesApplication";
+  if (project.category.includes("Web") && project.category.length === 1) return "BusinessApplication";
+  if (project.category.includes("Web")) return "BusinessApplication";
+  return "UtilitiesApplication";
+}
+
+function isBotProject(project: Project): boolean {
+  return project.category.includes("Bots") || project.name.endsWith("-BOT");
+}
+
+function isLiveDemo(project: Project): boolean {
+  return !!project.demo && project.demo.includes("vercel.app");
+}
+
+function getKeywords(project: Project): string {
+  const base = [...project.category, ...project.tags].join(", ");
+  if (isBotProject(project)) {
+    return `${base}, EVM multi-wallet bot developer, testnet farming automation, proxy rotation`;
+  }
+  return base;
+}
+
+function getLicense(repo: string): string {
+  return `${repo}#license`;
+}
 
 const faqJsonLd = {
   "@context": "https://schema.org",
@@ -46,21 +95,46 @@ const itemListJsonLd = {
   name: "Selected Work by Vonssy",
   description: "A curated selection of Web3, automation, blockchain and web projects by Vonssy.",
   numberOfItems: projects.length,
-  itemListElement: projects.map((project, index) => ({
-    "@type": "ListItem",
-    position: index + 1,
-    item: {
-      "@type": "SoftwareSourceCode",
-      name: project.name,
-      description: project.description,
-      codeRepository: project.repo,
-      url: project.repo,
-      programmingLanguage: project.tags.join(", "),
-      keywords: [...project.category, ...project.tags].join(", "),
-      author: { "@id": `${siteUrl}/#person` },
-      ...(project.demo ? { sameAs: project.demo } : {}),
-    },
-  })),
+  itemListElement: projects.map((project, index) => {
+    const isTerminal = project.name === "Vonssy Terminal";
+    const live = isLiveDemo(project);
+
+    return {
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": isTerminal ? (["SoftwareSourceCode", "SoftwareApplication"] as unknown as string) : "SoftwareSourceCode",
+        name: project.name,
+        description: project.description,
+        codeRepository: project.repo,
+        url: project.repo,
+        programmingLanguage: getProgrammingLanguages(project.tags),
+        runtimePlatform: getRuntimePlatform(project.tags),
+        applicationCategory: getApplicationCategory(project),
+        keywords: getKeywords(project),
+        author: { "@id": `${siteUrl}/#person` },
+        isAccessibleForFree: true,
+        license: getLicense(project.repo),
+        ...(isTerminal ? { operatingSystem: "Web" } : {}),
+        ...(live
+          ? {
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "USD",
+                availability: "https://schema.org/InStock",
+                url: project.demo,
+              },
+            }
+          : {}),
+        ...(project.demo && !project.demo.includes("t.me")
+          ? { sameAs: project.demo }
+          : project.demo
+            ? { potentialAction: { "@type": "ViewAction", target: project.demo } }
+            : {}),
+      },
+    };
+  }),
 };
 
 const speakableJsonLd = {
@@ -73,7 +147,7 @@ const speakableJsonLd = {
   about: { "@id": `${siteUrl}/#person` },
   primaryImageOfPage: {
     "@type": "ImageObject",
-    contentUrl: `${siteUrl}/og-image.png`,
+    contentUrl: `${siteUrl}/og-image.jpg`,
   },
   speakable: {
     "@type": "SpeakableSpecification",
@@ -95,17 +169,27 @@ const collectionPageJsonLd = {
   inLanguage: "en",
 };
 
+const serviceJsonLd = getServiceJsonLd();
+
+const graphJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    getPersonJsonLd(),
+    getWebSiteJsonLd(),
+    getProfilePageJsonLd(),
+    getBreadcrumbJsonLd(),
+    faqJsonLd,
+    itemListJsonLd,
+    collectionPageJsonLd,
+    speakableJsonLd,
+    serviceJsonLd,
+  ],
+};
+
 export default function Home() {
   return (
     <>
-      {jsonLdScript(getWebSiteJsonLd())}
-      {jsonLdScript(getPersonJsonLd())}
-      {jsonLdScript(getProfilePageJsonLd())}
-      {jsonLdScript(getBreadcrumbJsonLd())}
-      {jsonLdScript(faqJsonLd)}
-      {jsonLdScript(itemListJsonLd)}
-      {jsonLdScript(collectionPageJsonLd)}
-      {jsonLdScript(speakableJsonLd)}
+      {jsonLdScript(graphJsonLd)}
       <PortfolioClient
         projects={projects}
         philosophy={philosophyList}

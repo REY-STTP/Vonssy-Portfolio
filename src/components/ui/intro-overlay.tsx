@@ -20,6 +20,8 @@ export function IntroOverlay({ reduceMotion }: IntroOverlayProps) {
         duration: 0.9,
         ease: [0.76, 0, 0.24, 1],
       }}
+      style={{ pointerEvents: "none" }}
+      aria-hidden="true"
     >
       <div className="flex flex-col items-center text-center select-none pointer-events-none">
         {/* Step 1: Badge PORTFOLIO / 2026 appears first */}

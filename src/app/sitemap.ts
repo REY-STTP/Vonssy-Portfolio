@@ -11,5 +11,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 1,
     },
+    {
+      url: `${siteUrl}/llms.txt`,
+      lastModified: new Date("2026-05-11T00:00:00+07:00"),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${siteUrl}/llms-full.txt`,
+      lastModified: new Date("2026-05-11T00:00:00+07:00"),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${siteUrl}/hire.md`,
+      lastModified: new Date("2026-05-11T00:00:00+07:00"),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
   ];
 }

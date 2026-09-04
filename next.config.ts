@@ -30,7 +30,19 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   compress: true,
   async headers() {
-    return [{ source: "/(.*)", headers: securityHeaders }];
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          ...securityHeaders,
+          {
+            key: "Link",
+            value:
+              '</llms.txt>; rel="alternate"; type="text/markdown", </llms-full.txt>; rel="alternate"; type="text/markdown", </hire.md>; rel="alternate"; type="text/markdown"',
+          },
+        ],
+      },
+    ];
   },
   images: {
     remotePatterns: [{ protocol: "https", hostname: "avatars.githubusercontent.com" }],

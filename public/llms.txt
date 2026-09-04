@@ -2,6 +2,17 @@
 
 > Vonssy (Reyvaldi Zakaria) is a Web3 builder and automation engineer based in Indonesia (UTC+7) who builds bots, wallet automation, and backend systems that interact with real APIs, blockchains, and data — tagline "Software that does things." Available for collaborations via Telegram and email.
 
+> Last updated: 2026-05-11
+
+## What is a Web3 automation engineer?
+A Web3 automation engineer builds bots and backend systems that interact with real wallets, RPCs, APIs and on-chain contracts across EVM, Substrate/Konnex and Canton networks. Vonssy (Reyvaldi Zakaria) in Indonesia (UTC+7) automates multi-wallet flows — faucet claims, bridging, staking/delegation, governance, keep-alive pings — with proxy rotation, retries and concurrency so dozens of accounts run unattended. Available via t.me/vonssy_part_2.
+
+## What is an EVM multi-wallet bot developer?
+An EVM multi-wallet bot developer ships Python automation that drives many EVM wallets in parallel via web3.py/Viem. Vonssy's family (Pharos 127★, Dawn 110★, Helios, X1, Konnex, Deltahash) handles private-key loading, proxy-aware execution with invalid-proxy rotation, multithreading and per-chain RPC fallback — 10 chains in Vonssy Terminal included — without requiring wallet connection.
+
+## What is testnet farming automation?
+Testnet farming automation runs repeatable on-chain actions — daily check-ins, faucet claims, transfers, swaps, liquidity and contract deployment — across multiple wallets to stay active for testnet incentives. Vonssy automates Pharos Atlantic, Helios, X1 EcoChain, Konnex and Canton with daily scheduling, 2Captcha faucet support and centralized chain config where adding a network is one file.
+
 ## About
 - [About — Vonssy background](https://www.vonssy-portfolio.web.id/#about): From C/C++, JavaScript, PHP, SQL, Python, AI/ML and mobile fundamentals into software that runs against real wallets, blockchains, APIs, accounts, proxies, and data.
 - [Philosophy — How Vonssy builds](https://www.vonssy-portfolio.web.id/#about): Build for reality, automate the boring parts, prioritize reliability (retries, rate limits, proxies, concurrency), keep it practical.
@@ -16,13 +27,13 @@
 - [AIS Frozen Food](https://github.com/REY-STTP/AIS-Frozen-Food): High-performance landing page + interactive catalog for a frozen-food UMKM in Pati & Kudus with automated WhatsApp ordering. Live at https://ais-frozen-food.vercel.app
 - [Desa Sukobubuk](https://github.com/REY-STTP/desa-sukobubuk): Official village website — profile, news, UMKM directory with products, gallery, contact pipeline backed by Prisma + PostgreSQL. Live at https://desa-sukobubuk.vercel.app
 - [E-Voting](https://github.com/REY-STTP/E-Voting): Web3 e-voting dApp — connect EVM wallet, cast votes on-chain via ethers v6, live results, admin-guarded sessions. Live at https://e-voting-ebon-tau.vercel.app
-- [PharosTestnet-BOT](https://github.com/vonssy/PharosTestnet-BOT): Multi-account Web3 automation for Pharos Atlantic Testnet — check-ins, faucet claims, transfers, proxy-aware execution. 127 stars. Python, web3.py, EVM.
-- [Dawn-BOT](https://github.com/vonssy/Dawn-BOT): Dawn Validator manager — bearer-token extraction, account handling, proxy rotation, keep-alive pings, multithreading. 110 stars. Python, Multithreading, Proxies.
-- [HeliosTestnet-BOT](https://github.com/vonssy/HeliosTestnet-BOT): Helios testnet automation — faucet claims, bridging, validator delegation, governance, contract deployment, optional 2Captcha. 50 stars. Python, web3.py, Testnet.
-- [Interlink-BOT](https://github.com/vonssy/Interlink-BOT): Automated $ITLG token mining across private/group pools with metric synchronization, proxy rotation, APP_VERSION targeting. 33 stars. Python, Proxies, Mining.
-- [X1-Ecochain-BOT](https://github.com/vonssy/X1-Ecochain-BOT): X1 EcoChain airdrop farming — daily check-ins, quests, XIT faucet claims, transfers, swaps, liquidity, token deployment. 16 stars. Python, web3.py, EVM.
-- [Deltahash-BOT](https://github.com/vonssy/Deltahash-BOT): Automated $DTH mining + social-task completion using cookie-based sessions with proxy rotation. 14 stars. Python, Cookie Sessions, Proxies.
-- [Konnex-BOT](https://github.com/vonssy/Konnex-BOT): Konnex Reward Hub points-farming with daily check-ins, testnet interactions, dual-wallet (EVM + mnemonic) configuration. 12 stars. Python, EVM, Proxies.
+- [PharosTestnet-BOT](https://github.com/vonssy/PharosTestnet-BOT): Multi-account Web3 automation for Pharos Atlantic Testnet — check-ins, faucet claims, transfers, proxy-aware execution. 127 stars · 41 forks (as of 2026-05-11). Python, web3.py, EVM.
+- [Dawn-BOT](https://github.com/vonssy/Dawn-BOT): Dawn Validator manager — bearer-token extraction, account handling, proxy rotation, keep-alive pings, multithreading. 110 stars · 18 forks (as of 2026-05-11). Python, Multithreading, Proxies.
+- [HeliosTestnet-BOT](https://github.com/vonssy/HeliosTestnet-BOT): Helios testnet automation — faucet claims, bridging, validator delegation, governance, contract deployment, optional 2Captcha. 50 stars · 8 forks (as of 2026-05-11). Python, web3.py, Testnet.
+- [Interlink-BOT](https://github.com/vonssy/Interlink-BOT): Automated $ITLG token mining across private/group pools with metric synchronization, proxy rotation, APP_VERSION targeting. 33 stars · 9 forks (as of 2026-05-11). Python, Proxies, Mining.
+- [X1-Ecochain-BOT](https://github.com/vonssy/X1-Ecochain-BOT): X1 EcoChain airdrop farming — daily check-ins, quests, XIT faucet claims, transfers, swaps, liquidity, token deployment. 16 stars · 0 forks (as of 2026-05-11). Python, web3.py, EVM.
+- [Deltahash-BOT](https://github.com/vonssy/Deltahash-BOT): Automated $DTH mining + social-task completion using cookie-based sessions with proxy rotation. 14 stars · 1 fork (as of 2026-05-11). Python, Cookie Sessions, Proxies.
+- [Konnex-BOT](https://github.com/vonssy/Konnex-BOT): Konnex Reward Hub points-farming with daily check-ins, testnet interactions, dual-wallet (EVM + mnemonic) configuration. 12 stars · 2 forks (as of 2026-05-11). Python, EVM, Proxies.
 - [More on GitHub](https://github.com/vonssy): Full list of automation bots and tools at https://github.com/vonssy
 - [More on GitHub (earlier work)](https://github.com/REY-STTP): Web applications and experiments at https://github.com/REY-STTP
 
@@ -30,7 +41,7 @@
 - [Languages](https://www.vonssy-portfolio.web.id/#stack): Python · JavaScript · TypeScript · PHP · C · C++ · SQL · Dart
 - [Web](https://www.vonssy-portfolio.web.id/#stack): Next.js · React · Node.js · Express · Tailwind CSS
 - [Automation](https://www.vonssy-portfolio.web.id/#stack): Multi-account flows · browser automation · scraping · APIs · concurrency · proxy systems
-- [Web3](https://www.vonssy-portfolio.web.id/#stack): EVM wallets · web3.py · RPC/API interaction · staking · swaps · bridges · testnets
+- [Web3](https://www.vonssy-portfolio.web.id/#stack): EVM wallets · Substrate/Konnex · Canton Network · web3.py · RPC/API interaction · staking · swaps · bridges · testnets
 
 ## Philosophy — Principles
 - [Build for reality](https://www.vonssy-portfolio.web.id/#about): Software should meet real APIs, networks, wallets, services, and failure conditions.
@@ -54,6 +65,7 @@
 - [GitHub — REY-STTP (earlier web apps)](https://github.com/REY-STTP): https://github.com/REY-STTP
 - [Telegram](https://t.me/vonssy_part_2): https://t.me/vonssy_part_2
 - [Email](mailto:rey.zakaria123@gmail.com): rey.zakaria123@gmail.com
+- [Hire — Collaboration options](https://www.vonssy-portfolio.web.id/hire.md): https://www.vonssy-portfolio.web.id/hire.md
 
 ## Site sections (anchors)
 - [Home / Hero](https://www.vonssy-portfolio.web.id/#home): Tagline "Software that does things." and bio summary
@@ -73,6 +85,7 @@
 - Sitemap: https://www.vonssy-portfolio.web.id/sitemap.xml
 - llms.txt (this file): https://www.vonssy-portfolio.web.id/llms.txt
 - Full context: https://www.vonssy-portfolio.web.id/llms-full.txt
+- Hire: https://www.vonssy-portfolio.web.id/hire.md
 - robots.txt: https://www.vonssy-portfolio.web.id/robots.txt
 - Structured data on homepage: Person, WebSite (name: Vonssy Portfolio), ProfilePage, BreadcrumbList, FAQPage, ItemList (SoftwareSourceCode), WebPage+speakable — see JSON-LD <script type="application/ld+json">
 - This site explicitly allows AI crawlers: GPTBot, ChatGPT-User, OAI-SearchBot, Google-Extended, GoogleOther, Anthropic-AI, Claude-Web, PerplexityBot, CCBot, Bytespider, Applebot-Extended, Applebot, FacebookBot, meta-externalagent, cohere-ai, DuckAssistBot for indexing and answer-engine grounding. Crawlers should respect robots.txt disallow for /api/.

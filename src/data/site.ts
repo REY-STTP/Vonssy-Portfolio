@@ -16,6 +16,12 @@ export const siteConfig = {
     x: "https://x.com/_Vonssy",
   },
   skills: [
+    "Web3 automation engineer",
+    "EVM multi-wallet bot developer",
+    "testnet farming automation",
+    "Canton Network",
+    "Substrate wallet automation",
+    "proxy rotation",
     "Web3",
     "Python automation",
     "Blockchain automation",
@@ -82,7 +88,8 @@ export function getWebSiteJsonLd() {
     name: "Vonssy Portfolio",
     alternateName: ["Vonssy", "Reyvaldi Zakaria Portfolio"],
     url: siteConfig.siteUrl,
-    description: siteConfig.tagline,
+    description:
+      "Portfolio of Vonssy (Reyvaldi Zakaria) — Web3 automation engineer in Indonesia (UTC+7) shipping EVM multi-wallet bots, testnet farming automation, Canton/Substrate tooling, and production web apps with proxy-aware reliability.",
     inLanguage: "en",
     author: { "@id": personId },
     publisher: { "@id": personId },
@@ -93,11 +100,12 @@ export function getWebSiteJsonLd() {
         urlTemplate: `${siteConfig.siteUrl}/#projects?q={search_term_string}`,
       },
       "query-input": "required name=search_term_string",
+      queryInput: "required name=search_term_string",
     },
   };
 }
 
-const PROFILE_DATE_MODIFIED = "2026-08-31T00:00:00+07:00";
+const PROFILE_DATE_MODIFIED = "2026-05-11T00:00:00+07:00";
 
 export function getProfilePageJsonLd() {
   const personId = `${siteConfig.siteUrl}/#person`;
@@ -128,5 +136,73 @@ export function getBreadcrumbJsonLd() {
       { "@type": "ListItem", position: 5, name: "FAQ", item: `${siteConfig.siteUrl}/#faq` },
       { "@type": "ListItem", position: 6, name: "Contact", item: `${siteConfig.siteUrl}/#contact` },
     ],
+  };
+}
+
+export function getServiceJsonLd() {
+  const siteUrl = siteConfig.siteUrl;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": `${siteUrl}/hire.md#service`,
+    name: "Web3 Automation Engineering",
+    serviceType: "Web3 automation engineer — EVM multi-wallet bot developer, testnet farming automation, Canton Network",
+    description:
+      "Custom multi-wallet bots (EVM/Substrate/Konnex/Canton), proxy rotation, concurrency, RPC handling. Landing pages & advisory. Custom quote per project.",
+    provider: { "@id": `${siteUrl}/#person` },
+    areaServed: { "@type": "AdministrativeArea", name: "Worldwide" },
+    availableChannel: [
+      { "@type": "ServiceChannel", serviceUrl: "https://t.me/vonssy_part_2", name: "Telegram (fastest)" },
+      { "@type": "ServiceChannel", serviceUrl: "mailto:rey.zakaria123@gmail.com", name: "Email" },
+    ],
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Collaboration Options",
+      itemListElement: [
+        {
+          "@type": "Offer",
+          name: "Custom Multi-Wallet Automation",
+          description:
+            "EVM/Substrate/Konnex/Canton bots, proxy rotation, concurrency, RPC handling. Includes private-key/mnemonic/cookie input, .env config, README, 1-week support.",
+          priceSpecification: {
+            "@type": "PriceSpecification",
+            priceCurrency: "USD",
+            price: "0",
+            description: "Custom — contact for quote via t.me/vonssy_part_2",
+          },
+          availability: "https://schema.org/InStock",
+          url: `${siteUrl}/hire.md#custom-multi-wallet-automation`,
+        },
+        {
+          "@type": "Offer",
+          name: "Landing Page / UMKM Catalog",
+          description: "High-performance Next.js landing + catalog with WhatsApp order flow, Prisma/PostgreSQL.",
+          priceSpecification: {
+            "@type": "PriceSpecification",
+            priceCurrency: "USD",
+            price: "0",
+            description: "Custom — contact for quote",
+          },
+          availability: "https://schema.org/InStock",
+          url: `${siteUrl}/hire.md#landing-page-umkm-catalog`,
+        },
+        {
+          "@type": "Offer",
+          name: "Advisory / Code Review",
+          description: "Web3 automation review, trading bot logic, multi-wallet architecture, reliability audit (retries, rate limits, proxy systems).",
+          priceSpecification: {
+            "@type": "PriceSpecification",
+            priceCurrency: "USD",
+            price: "0",
+            description: "Custom — contact for quote",
+          },
+          availability: "https://schema.org/InStock",
+          url: `${siteUrl}/hire.md#advisory-code-review`,
+        },
+      ],
+    },
+    termsOfService: `${siteUrl}/hire.md`,
+    isRelatedTo: { "@id": `${siteUrl}/#itemlist` },
   };
 }

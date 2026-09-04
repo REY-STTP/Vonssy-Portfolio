@@ -15,6 +15,6 @@ export const stackList: StackCategory[] = [
   },
   {
     category: "Web3",
-    items: "EVM wallets · web3.py · RPC/API interaction · staking · swaps · bridges · testnets",
+    items: "EVM wallets · Substrate/Konnex · Canton Network · web3.py · RPC/API interaction · staking · swaps · bridges · testnets",
   },
 ];

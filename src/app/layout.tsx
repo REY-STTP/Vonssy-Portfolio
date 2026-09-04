@@ -3,8 +3,8 @@ import { JetBrains_Mono, Manrope } from "next/font/google";
 import "./globals.css";
 import { CANONICAL_URL, siteConfig } from "@/data/site";
 
-const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
-const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains", display: "swap" });
+const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap", weight: ["400", "700", "800"] });
+const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains", display: "swap", weight: ["400", "700"] });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? CANONICAL_URL;
 
@@ -21,6 +21,12 @@ export const metadata: Metadata = {
     "Vonssy",
     "Reyvaldi Zakaria",
     "Web3 builder",
+    "Web3 automation engineer",
+    "EVM multi-wallet bot developer",
+    "testnet farming automation",
+    "Canton Network",
+    "Substrate wallet automation",
+    "proxy rotation",
     "automation engineer",
     "blockchain automation",
     "Python automation",
@@ -53,11 +59,11 @@ export const metadata: Metadata = {
     description: "Software that does things — Web3, blockchain, and automation systems built by Vonssy.",
     images: [
       {
-        url: "/og-image.png",
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Vonssy | Web3 Builder & Automation Engineer — Software that does things.",
-        type: "image/png",
+        type: "image/jpeg",
       },
     ],
   },
@@ -66,7 +72,7 @@ export const metadata: Metadata = {
     title: "Vonssy | Web3 Builder & Automation Engineer",
     description: "Software that does things — Web3, blockchain, and automation systems built by Vonssy.",
     creator: "@_Vonssy",
-    images: ["/og-image.png"],
+    images: ["/og-image.jpg"],
   },
   robots: {
     index: true,

@@ -2,10 +2,13 @@
 
 > Vonssy (Reyvaldi Zakaria) is a Web3 builder and automation engineer (Indonesia, UTC+7). Tagline "Software that does things." Builds automation systems, bots, and backend software that interact with real APIs, wallets, blockchains, and data. Available for collaborations on Web3, automation, backend engineering via Telegram t.me/vonssy_part_2 or email rey.zakaria123@gmail.com.
 
+> Last updated: 2026-05-11
+
 ## Canonical URLs
 - Portfolio: https://www.vonssy-portfolio.web.id/
 - Sitemap: https://www.vonssy-portfolio.web.id/sitemap.xml
 - llms.txt: https://www.vonssy-portfolio.web.id/llms.txt
+- hire.md: https://www.vonssy-portfolio.web.id/hire.md
 - robots.txt: https://www.vonssy-portfolio.web.id/robots.txt
 
 ## Who is Vonssy
@@ -33,7 +36,7 @@ Learning path: learning → experimenting → building → automating
 - Languages: Python · JavaScript · TypeScript · PHP · C · C++ · SQL · Dart
 - Web: Next.js · React · Node.js · Express · Tailwind CSS
 - Automation: Multi-account flows · browser automation · scraping · APIs · concurrency · proxy systems
-- Web3: EVM wallets · web3.py · RPC/API interaction · staking · swaps · bridges · testnets
+- Web3: EVM wallets · Substrate/Konnex · Canton Network · web3.py · RPC/API interaction · staking · swaps · bridges · testnets
 
 ## Projects — Selected work (15 repositories)
 
@@ -103,7 +106,7 @@ This list is curated and kept in sync with src/data/projects.ts. Each entry incl
 - Decisions: Admin routes are separated behind cookie-based login/logout/session API routes with middleware protection, while the public side stays focused on candidates, voting, and transparent results.
 - Challenges: Coordinating wallet state, transaction confirmation waits, and post-vote UI updates without a backend database — the chain itself is the source of truth.
 
-### 9. PharosTestnet-BOT — vonssy (127 stars · 41 forks)
+### 9. PharosTestnet-BOT — vonssy (127 stars · 41 forks) (as of 2026-05-11)
 - GitHub: https://github.com/vonssy/PharosTestnet-BOT — Telegram: https://t.me/vonssy_part_2 — Tags: Python, web3.py, EVM — Category: Web3, Blockchain, Bots
 - Description: Multi-account Web3 automation for Pharos Atlantic Testnet: check-ins, faucet claims, transfers, and proxy-aware execution.
 - Overview: Automated Web3 interaction for Pharos Atlantic Testnet.
@@ -111,7 +114,7 @@ This list is curated and kept in sync with src/data/projects.ts. Each entry incl
 - Decisions: Proxy support and invalid-proxy rotation are first-class runtime choices, alongside daily check-in, faucet, and transfer actions.
 - Challenges: The README reflects the operational edge cases of wallet automation: account lists, network libraries, proxies, and repeated actions.
 
-### 10. Dawn-BOT — vonssy (110 stars · 18 forks)
+### 10. Dawn-BOT — vonssy (110 stars · 18 forks) (as of 2026-05-11)
 - GitHub: https://github.com/vonssy/Dawn-BOT — Telegram: https://t.me/vonssy_part_2 — Tags: Python, Multithreading, Proxies — Category: Automation, Bots
 - Description: A Dawn Validator manager built around token setup, account handling, proxy rotation, keep-alive pings, and concurrent execution.
 - Overview: Automated Dawn Validator management with multi-threading and proxy support.
@@ -119,7 +122,7 @@ This list is curated and kept in sync with src/data/projects.ts. Each entry incl
 - Decisions: The README calls out automatic bearer-token extraction, account retrieval, invalid-proxy rotation, ping signals, and multi-account threading.
 - Challenges: The documented runtime is shaped around real service conditions: captcha setup, proxy reliability, and keeping several accounts alive.
 
-### 11. HeliosTestnet-BOT — vonssy (50 stars · 8 forks)
+### 11. HeliosTestnet-BOT — vonssy (50 stars · 8 forks) (as of 2026-05-11)
 - GitHub: https://github.com/vonssy/HeliosTestnet-BOT — Telegram: https://t.me/vonssy_part_2 — Tags: Python, web3.py, Testnet — Category: Web3, Blockchain, Bots
 - Description: Helios testnet automation spanning faucet claims, bridging, validator delegation, governance, and smart-contract deployment.
 - Overview: Automated Helios testnet operations across multiple accounts.
@@ -127,7 +130,7 @@ This list is curated and kept in sync with src/data/projects.ts. Each entry incl
 - Decisions: Optional 2Captcha support enables faucet claims, while proxy mode and rotation are selectable at startup.
 - Challenges: The surface area spans many on-chain actions, captcha configuration, and multi-account state management.
 
-### 12. Interlink-BOT — vonssy (33 stars · 9 forks)
+### 12. Interlink-BOT — vonssy (33 stars · 9 forks) (as of 2026-05-11)
 - GitHub: https://github.com/vonssy/Interlink-BOT — Telegram: https://t.me/vonssy_part_2 — Tags: Python, Proxies, Mining — Category: Automation, Bots, Web3
 - Description: Automated $ITLG token mining across multiple accounts with metric synchronization, proxy rotation, and configurable app-version targeting.
 - Overview: Automated Interlink mining that claims $ITLG from both private and group mining pools across many accounts at once.
@@ -135,15 +138,15 @@ This list is curated and kept in sync with src/data/projects.ts. Each entry incl
 - Decisions: Proxy mode and invalid-proxy rotation are startup choices, and metric synchronization runs automatically alongside mining claims.
 - Challenges: The moving target is the upstream app itself: version drift between the bot and the Interlink client is an explicitly documented maintenance concern.
 
-### 13. X1-Ecochain-BOT — vonssy (16 stars)
+### 13. X1-Ecochain-BOT — vonssy (16 stars · 0 forks) (as of 2026-05-11)
 - GitHub: https://github.com/vonssy/X1-Ecochain-BOT — Telegram: https://t.me/vonssy_part_2 — Tags: Python, web3.py, EVM — Category: Web3, Blockchain, Bots
-- Description: X1 EcoChain airdrop farming automation: daily check-ins, quests, faucet claims, transfers, swaps, liquidity, and token deployment across accounts.
+- Description: X1 EcoChain airdrop farming automation: daily check-ins, quests, faucet claims, transfers, swaps, liquidity, token deployment across accounts.
 - Overview: Automated on-chain farming for the X1 EcoChain network spanning nearly every testnet action a farmer needs.
 - Approach: The bot automates check-ins, quest completion, XIT faucet claims, random token transfers, USDT swaps, liquidity provisioning, and even token deployment — all across multiple EVM wallets.
 - Decisions: New wallets are recommended at registration, and proxy support with smart rotation remains a first-class startup option.
 - Challenges: The breadth of on-chain operations means coordinating faucet timing, swap and liquidity flows, and multi-account state without tripping network limits.
 
-### 14. Deltahash-BOT — vonssy (14 stars · 1 fork)
+### 14. Deltahash-BOT — vonssy (14 stars · 1 fork) (as of 2026-05-11)
 - GitHub: https://github.com/vonssy/Deltahash-BOT — Telegram: https://t.me/vonssy_part_2 — Tags: Python, Cookie Sessions, Proxies — Category: Automation, Bots
 - Description: Automated $DTH mining and social-task completion across multiple accounts using cookie-based sessions with proxy rotation.
 - Overview: Automated Deltahash mining that keeps $DTH accumulation running continuously across many accounts.
@@ -151,7 +154,7 @@ This list is curated and kept in sync with src/data/projects.ts. Each entry incl
 - Decisions: Proxy mode selection and invalid-proxy rotation mirror the rest of the BOT family, keeping operational behavior consistent across tools.
 - Challenges: Session lifetime is the core constraint: cookie-based auth expires, so the workflow is designed around easy refresh-and-restart cycles.
 
-### 15. Konnex-BOT — vonssy (12 stars · 2 forks)
+### 15. Konnex-BOT — vonssy (12 stars · 2 forks) (as of 2026-05-11)
 - GitHub: https://github.com/vonssy/Konnex-BOT — Telegram: https://t.me/vonssy_part_2 — Tags: Python, EVM, Proxies — Category: Web3, Bots, Automation
 - Description: Konnex Reward Hub points-farming automation with daily check-ins, testnet interactions, dual-wallet configuration, and proxy rotation.
 - Overview: Automated points farming for Konnex Reward Hub that handles daily check-ins and testnet actions across multiple accounts.
@@ -160,6 +163,18 @@ This list is curated and kept in sync with src/data/projects.ts. Each entry incl
 - Challenges: The dual-wallet setup adds key-management surface area, and the bot must keep both credential types synchronized across long farming runs.
 
 Additional discovered repos are indexed via RAG — see embeddings.json for full coverage beyond the 15 showcase projects.
+
+## Comparison — Vonssy BOT vs Generic GitHub BOT
+
+| Feature | Vonssy BOT | Generic GitHub BOT |
+|---------|------------|--------------------|
+| Proxy rotation | First-class: proxy mode selector + smart rotation at startup | Often missing or manual — single proxy, no fallback |
+| Invalid-proxy handling | Automatic detection + rotation to next proxy, run continues | Crashes or hangs on first invalid proxy |
+| Multithread / concurrency | Multi-account threading built-in (Dawn, Pharos, Helios) | Sequential loop — slow, blocks on RPC timeout |
+| Maintenance | Weekly RAG ingest, APP_VERSION in .env adjustable (Interlink), centralized chain config (Terminal) | Abandoned after 1–2 upstream updates, version drift breaks execution |
+| Docs & setup | Step-by-step README, .env/accounts.json examples, fresh-wallet guidance | Minimal README, unclear account/proxy format |
+| Failure recovery | Retries, rate-limit handling, partial degradation (Terminal keeps working on chain timeout) | No retry — fails on rate limit / RPC error |
+| Proof | 127★/41 forks (Pharos), 110★/18 forks (Dawn), 8 live demos, 210 repos / 1723 followers | Few stars, no live demo, no proof of long-run operation |
 
 ## FAQ — Complete answers (from src/data/faq.ts — 8 items)
 
@@ -207,7 +222,7 @@ Build for reality (real APIs/networks/failure), automate the boring parts, relia
 ## Technical notes for crawlers
 - Rendering: Server-rendered HTML via Next.js 16 App Router; content is visible without JavaScript execution (view-source contains all text). Client hydration adds animations but does not gate content.
 - Structured data: JSON-LD includes Person (alternateName: Vonssy), WebSite (name: Vonssy Portfolio, publisher Person), ProfilePage, BreadcrumbList, FAQPage, ItemList of SoftwareSourceCode, WebPage+speakableSpecification.
-- Sitemap: weekly changeFrequency, lastModified dynamic.
+- Sitemap: weekly changeFrequency, lastModified dynamic. Includes portfolio, llms.txt, llms-full.txt, hire.md.
 - Robots: wildcard allow, disallow only /api/ — AI crawlers explicitly allowed. See /robots.txt
 - CSP: default-src 'self' — does not block crawlers, only browser execution.
 - Canonical: https://www.vonssy-portfolio.web.id via proxy.ts 308 redirect.

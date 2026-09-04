@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { AnimatePresence } from "framer-motion";
 import type { Project, Principle, StackCategory } from "@/types/portfolio";
 import { navItems, githubStats } from "@/data/navigation";
@@ -24,7 +25,11 @@ import { ContactSection } from "@/components/sections/contact-section";
 import { IntroOverlay } from "@/components/ui/intro-overlay";
 import { ProjectModal } from "@/components/ui/project-modal";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
-import { ChatWidget } from "@/components/ui/chat-widget";
+
+const ChatWidget = dynamic(() => import("@/components/ui/chat-widget").then((m) => m.ChatWidget), {
+  ssr: false,
+  loading: () => null,
+});
 
 interface PortfolioClientProps {
   projects: Project[];
@@ -41,7 +46,7 @@ export default function PortfolioClient({
   stack,
 }: PortfolioClientProps) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [isIntroActive, setIsIntroActive] = useState(true);
+  const [isIntroActive, setIsIntroActive] = useState(false);
 
   const reduceMotion = useReducedMotion();
   const { theme, selectTheme } = useTheme();
@@ -53,27 +58,29 @@ export default function PortfolioClient({
     try {
       hasSeenIntro = sessionStorage.getItem(INTRO_STORAGE_KEY) === "1";
     } catch {
-      // Intro will gracefully run if sessionStorage is unavailable
+      // Intro will gracefully skip if sessionStorage is unavailable
     }
 
-    if (hasSeenIntro || reduceMotion) {
-      // Mount-time hydration from sessionStorage: state must start "active"
-      // on the server and correct after mount, so setState here is intentional.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const isBot = typeof navigator !== "undefined" && (navigator as any).webdriver;
+
+    if (!hasSeenIntro && !isBot && !reduceMotion) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setIsIntroActive(false);
-      return;
+      setIsIntroActive(true);
+
+      const timer = window.setTimeout(() => {
+        setIsIntroActive(false);
+        try {
+          sessionStorage.setItem(INTRO_STORAGE_KEY, "1");
+        } catch {
+          // ignore
+        }
+      }, INTRO_DURATION_MS);
+
+      return () => window.clearTimeout(timer);
     }
 
-    const timer = window.setTimeout(() => {
-      setIsIntroActive(false);
-      try {
-        sessionStorage.setItem(INTRO_STORAGE_KEY, "1");
-      } catch {
-        // ignore
-      }
-    }, INTRO_DURATION_MS);
-
-    return () => window.clearTimeout(timer);
+    setIsIntroActive(false);
   }, [reduceMotion]);
 
   return (

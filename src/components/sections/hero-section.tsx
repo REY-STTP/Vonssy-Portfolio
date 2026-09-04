@@ -13,6 +13,7 @@ interface HeroSectionProps {
 
 export function HeroSection({ reduceMotion, introActive }: HeroSectionProps) {
   const heroRef = useRef<HTMLElement>(null);
+  const rafRef = useRef<number | null>(null);
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -35,8 +36,9 @@ export function HeroSection({ reduceMotion, introActive }: HeroSectionProps) {
     mass: 0.5,
   });
 
+  // LCP fix: opacity always 1 in first frame, only y animates (so H1 is paintable immediately for crawler)
   const revealVariants = {
-    hidden: { opacity: 0, y: reduceMotion ? 0 : 34 },
+    hidden: { opacity: 1, y: reduceMotion ? 0 : 34 },
     show: {
       opacity: 1,
       y: 0,
@@ -48,15 +50,21 @@ export function HeroSection({ reduceMotion, introActive }: HeroSectionProps) {
   };
 
   const handlePointerMove = (event: PointerEvent<HTMLElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    event.currentTarget.style.setProperty(
-      "--pointer-x",
-      `${event.clientX - rect.left}px`
-    );
-    event.currentTarget.style.setProperty(
-      "--pointer-y",
-      `${event.clientY - rect.top}px`
-    );
+    // Throttle CSS var updates via rAF to avoid pointermove spam on low-end
+    if (rafRef.current !== null) return;
+    const { clientX, clientY, currentTarget } = event;
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = null;
+      const rect = currentTarget.getBoundingClientRect();
+      currentTarget.style.setProperty(
+        "--pointer-x",
+        `${clientX - rect.left}px`
+      );
+      currentTarget.style.setProperty(
+        "--pointer-y",
+        `${clientY - rect.top}px`
+      );
+    });
   };
 
   return (
