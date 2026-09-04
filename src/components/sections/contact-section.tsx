@@ -32,26 +32,6 @@ export function ContactSection() {
           </a>
         </div>
       </div>
-      <div className="shell mt-8 flex flex-wrap gap-x-4 gap-y-2 border-t border-[var(--line-soft)] pt-6">
-        <a href="/privacy" className="mono text-xs text-[var(--muted)] hover:text-[var(--text)]">
-          Privacy
-        </a>
-        <span className="text-[var(--line)]" aria-hidden="true">
-          ·
-        </span>
-        <a href="/terms" className="mono text-xs text-[var(--muted)] hover:text-[var(--text)]">
-          Terms
-        </a>
-        <span className="text-[var(--line)]" aria-hidden="true">
-          ·
-        </span>
-        <a
-          href="/hire.md"
-          className="mono text-xs text-[var(--muted)] hover:text-[var(--text)]"
-        >
-          Hire
-        </a>
-      </div>
     </section>
   );
 }

@@ -125,8 +125,8 @@ export default function TermsPage() {
               <Link href="/privacy" className="button button-ghost">
                 Privacy
               </Link>
-              <a href="https://github.com/vonssy" target="_blank" rel="noreferrer" className="button button-ghost">
-                GitHub
+              <a href="/hire.md" className="button button-ghost">
+                Hire
               </a>
             </div>
 
