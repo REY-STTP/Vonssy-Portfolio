@@ -32,4 +32,4 @@ Every job is scoped to what you actually need — not a tier you have to fit int
 - Portfolio: https://www.vonssy-portfolio.web.id/
 - GitHub: https://github.com/vonssy and https://github.com/REY-STTP
 
-All pricing is custom per project — no fixed tiers. Contact for a quote with your scope, chain(s), and wallet count. See FAQ Q14 for the plain-English version of the same coverage.
+All pricing is custom per project — no fixed tiers. Contact for a quote with your scope, chain(s), and wallet count. See FAQ Q9 for the plain-English version of the same coverage.
