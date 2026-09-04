@@ -144,13 +144,16 @@ export function ProjectsSection({
           </div>
         )}
 
-        {/* SEO/AI fallback: full project list in plain HTML for crawlers without JS/interaction */}
-        <div className="sr-only" aria-hidden="true">
+        {/* SEO/AI fallback: plain HTML for crawlers without JS — hidden visually but not from accessibility tree; links are tab-skipped to avoid focusable hidden content */}
+        <div className="sr-only" aria-hidden="false">
           <h3>All projects — full list for crawlers</h3>
           <ul>
             {projects.map((project) => (
               <li key={`seo-${project.name}`}>
-                <a href={project.repo}>{project.name}</a> — {project.description} — Tags: {project.tags.join(", ")} — Demo: {project.demo}
+                <a href={project.repo} tabIndex={-1}>
+                  {project.name}
+                </a>{" "}
+                — {project.description} — Tags: {project.tags.join(", ")} — Demo: {project.demo}
               </li>
             ))}
           </ul>
