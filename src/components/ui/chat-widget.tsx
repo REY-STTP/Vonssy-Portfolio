@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { track } from "@vercel/analytics";
 import { motion, AnimatePresence } from "framer-motion";
 import { useChat } from "@/hooks/use-chat";
 import { ChatIcon, CloseIcon, SendIcon } from "@/components/icons";
@@ -37,6 +38,11 @@ export function ChatWidget({ reduceMotion }: ChatWidgetProps) {
 
   useEffect(() => {
     if (!isOpen) return;
+    track("chat_open");
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsOpen(false);
@@ -51,6 +57,7 @@ export function ChatWidget({ reduceMotion }: ChatWidgetProps) {
     if (!value || isStreaming) return;
     setInput("");
     setError(null);
+    track("chat_message_sent");
     sendMessage(value);
   };
 
@@ -63,6 +70,7 @@ export function ChatWidget({ reduceMotion }: ChatWidgetProps) {
 
   const handleSuggestion = (suggestion: string) => {
     setError(null);
+    track("chat_message_sent");
     sendMessage(suggestion);
   };
 
@@ -144,6 +152,7 @@ export function ChatWidget({ reduceMotion }: ChatWidgetProps) {
                                   target="_blank"
                                   rel="noreferrer"
                                   className="chat-source-chip"
+                                  onClick={() => track("chat_source_click", { source: source.name })}
                                 >
                                   {source.name}
                                 </a>

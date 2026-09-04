@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { track } from "@vercel/analytics";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Project } from "@/types/portfolio";
 import { ArrowUpRight, CloseIcon, GitHubIcon } from "@/components/icons";
@@ -171,6 +172,7 @@ export function ProjectModal({
                   href={project.demo}
                   target="_blank"
                   rel="noreferrer"
+                  onClick={() => track("demo_click", { project: project.name })}
                 >
                   Demo <ArrowUpRight />
                 </a>

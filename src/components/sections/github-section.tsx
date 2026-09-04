@@ -1,3 +1,6 @@
+"use client";
+
+import { track } from "@vercel/analytics";
 import type { StatItem } from "@/types/portfolio";
 import { siteConfig } from "@/data/site";
 import { ArrowUpRight, GitHubIcon } from "@/components/icons";
@@ -27,6 +30,7 @@ export function GitHubSection({ stats }: GitHubSectionProps) {
               href={siteConfig.socialLinks.github}
               target="_blank"
               rel="me noreferrer"
+              onClick={() => track("github_profile_click", { profile: "vonssy" })}
             >
               <GitHubIcon /> @{siteConfig.handle} <ArrowUpRight />
             </a>
@@ -35,6 +39,7 @@ export function GitHubSection({ stats }: GitHubSectionProps) {
               href={siteConfig.socialLinks.githubSecondary}
               target="_blank"
               rel="me noreferrer"
+              onClick={() => track("github_profile_click", { profile: "rey-sttp" })}
             >
               @REY-STTP <ArrowUpRight />
             </a>

@@ -1,3 +1,6 @@
+"use client";
+
+import { track } from "@vercel/analytics";
 import { siteConfig } from "@/data/site";
 import { ArrowUpRight } from "@/components/icons";
 
@@ -16,12 +19,14 @@ export function ContactSection() {
             target="_blank"
             rel="noreferrer"
             className="button button-primary"
+            onClick={() => track("cta_telegram_click", { location: "contact" })}
           >
             Telegram <ArrowUpRight />
           </a>
           <a
             href={`mailto:${siteConfig.email}`}
             className="button button-ghost"
+            onClick={() => track("cta_email_click", { location: "contact" })}
           >
             Email <ArrowUpRight />
           </a>

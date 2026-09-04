@@ -25,6 +25,7 @@ import { ContactSection } from "@/components/sections/contact-section";
 import { IntroOverlay } from "@/components/ui/intro-overlay";
 import { ProjectModal } from "@/components/ui/project-modal";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
+import { AnalyticsTracker } from "@/components/analytics-tracker";
 
 const ChatWidget = dynamic(() => import("@/components/ui/chat-widget").then((m) => m.ChatWidget), {
   ssr: false,
@@ -85,6 +86,7 @@ export default function PortfolioClient({
 
   return (
     <main suppressHydrationWarning>
+      <AnalyticsTracker />
       <AnimatePresence>
         {isIntroActive && <IntroOverlay reduceMotion={reduceMotion} />}
       </AnimatePresence>
