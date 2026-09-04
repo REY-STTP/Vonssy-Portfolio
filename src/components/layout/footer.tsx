@@ -5,7 +5,7 @@ export function Footer() {
     <footer className="site-footer shell border-t border-line-soft py-7 text-xs text-quiet">
       <span className="footer-credit">© 2026 Vonssy Portfolio — Systems in motion.</span>
       <div className="footer-meta">
-        <div className="footer-links">
+        <div className="footer-links flex flex-wrap gap-x-5 gap-y-2">
           <a
             href={siteConfig.socialLinks.github}
             target="_blank"
@@ -29,6 +29,12 @@ export function Footer() {
             className="hover:text-ink"
           >
             X
+          </a>
+          <a href="/privacy" className="hover:text-ink">
+            Privacy
+          </a>
+          <a href="/terms" className="hover:text-ink">
+            Terms
           </a>
         </div>
         <span className="footer-year mono">2026 / systems in motion</span>

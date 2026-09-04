@@ -230,6 +230,7 @@ Yes — several projects here are live, not screenshots. Vonssy Terminal (10-cha
 - Telegram: https://t.me/vonssy_part_2
 - Email: rey.zakaria123@gmail.com
 - Avatar: https://avatars.githubusercontent.com/u/86215416?v=4
+- Privacy: https://www.vonssy-portfolio.web.id/privacy | Terms: https://www.vonssy-portfolio.web.id/terms — plain, honest policies (RAG zero-retention, Vercel Analytics anonymous)
 
 ## Sections map
 - Home: https://www.vonssy-portfolio.web.id/#home

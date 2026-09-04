@@ -73,6 +73,7 @@ Testnet farming automation runs repeatable on-chain actions — daily check-ins,
 - [Telegram](https://t.me/vonssy_part_2): https://t.me/vonssy_part_2
 - [Email](mailto:rey.zakaria123@gmail.com): rey.zakaria123@gmail.com
 - [Hire — Collaboration options](https://www.vonssy-portfolio.web.id/hire.md): https://www.vonssy-portfolio.web.id/hire.md
+- [Privacy](https://www.vonssy-portfolio.web.id/privacy) | [Terms](https://www.vonssy-portfolio.web.id/terms): Privacy & Terms — plain, honest policies for this static portfolio (RAG zero-retention, Vercel Analytics anonymous).
 
 ## Site sections (anchors)
 - [Home / Hero](https://www.vonssy-portfolio.web.id/#home): Tagline "Software that does things." and bio summary

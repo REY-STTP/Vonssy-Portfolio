@@ -202,7 +202,7 @@ export function getServiceJsonLd() {
         },
       ],
     },
-    termsOfService: `${siteUrl}/hire.md`,
+    termsOfService: `${siteUrl}/terms`,
     isRelatedTo: { "@id": `${siteUrl}/#itemlist` },
   };
 }
