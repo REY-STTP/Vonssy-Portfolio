@@ -46,7 +46,6 @@ export const metadata: Metadata = {
     canonical: siteUrl,
     languages: {
       "en-US": siteUrl,
-      "id-ID": siteUrl,
       "x-default": siteUrl,
     },
   },
@@ -126,7 +125,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" suppressHydrationWarning>
       <head suppressHydrationWarning>
+        <link rel="preconnect" href="https://avatars.githubusercontent.com" crossOrigin="" />
+        <link rel="dns-prefetch" href="https://avatars.githubusercontent.com" />
         <link rel="alternate" type="text/plain" title="LLMs" href="/llms.txt" />
+        <link rel="alternate" type="text/plain" title="LLMs (full)" href="/llms-full.txt" />
       </head>
       <body suppressHydrationWarning className={`${manrope.variable} ${jetbrains.variable}`}>
         <a

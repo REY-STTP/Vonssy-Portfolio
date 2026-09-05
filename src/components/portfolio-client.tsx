@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { AnimatePresence } from "framer-motion";
 import type { Project, Principle, StackCategory } from "@/types/portfolio";
 import { navItems, githubStats } from "@/data/navigation";
+import { PROJECT_QUERY_PARAM, findProjectBySlug, slugifyProject } from "@/lib/project-slug";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useTheme } from "@/hooks/use-theme";
 import { useScrollProgress } from "@/hooks/use-scroll-progress";
@@ -84,6 +85,66 @@ export default function PortfolioClient({
     setIsIntroActive(false);
   }, [reduceMotion]);
 
+  // Deep-link masuk: ?project=<slug> → buka modal otomatis + scroll ke #projects.
+  // Dijalankan sekali saat mount (pola sama seperti intro overlay di atas).
+  useEffect(() => {
+    try {
+      const slug = new URLSearchParams(window.location.search).get(PROJECT_QUERY_PARAM);
+      if (!slug) return;
+      const match = findProjectBySlug(projects, slug);
+      if (match) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setSelectedProject(match);
+        document.getElementById("projects")?.scrollIntoView({ behavior: "auto", block: "start" });
+      } else {
+        // Slug tidak dikenal → bersihkan param agar URL tidak menyesatkan.
+        const url = new URL(window.location.href);
+        url.searchParams.delete(PROJECT_QUERY_PARAM);
+        window.history.replaceState(null, "", url);
+      }
+    } catch {
+      // ignore — modal tetap berfungsi tanpa deep-link
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Sinkronisasi tombol Back/Forward browser ↔ modal.
+  useEffect(() => {
+    const handlePopState = () => {
+      try {
+        const slug = new URLSearchParams(window.location.search).get(PROJECT_QUERY_PARAM);
+        setSelectedProject(slug ? findProjectBySlug(projects, slug) : null);
+      } catch {
+        // ignore
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [projects]);
+
+  // Handler buka/tutup yang menulis URL (pushState → Back menutup modal).
+  const handleSelectProject = (project: Project) => {
+    setSelectedProject(project);
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set(PROJECT_QUERY_PARAM, slugifyProject(project.name));
+      window.history.pushState(null, "", url);
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleCloseProject = () => {
+    setSelectedProject(null);
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.delete(PROJECT_QUERY_PARAM);
+      window.history.pushState(null, "", url);
+    } catch {
+      // ignore
+    }
+  };
+
   return (
     <main suppressHydrationWarning>
       <AnalyticsTracker />
@@ -115,7 +176,7 @@ export default function PortfolioClient({
 
       <ProjectsSection
         projects={projects}
-        onSelectProject={setSelectedProject}
+        onSelectProject={handleSelectProject}
         reduceMotion={reduceMotion}
       />
 
@@ -135,7 +196,7 @@ export default function PortfolioClient({
 
       <ProjectModal
         project={selectedProject}
-        onClose={() => setSelectedProject(null)}
+        onClose={handleCloseProject}
         reduceMotion={reduceMotion}
       />
     </main>

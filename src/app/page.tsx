@@ -96,14 +96,14 @@ const itemListJsonLd = {
   description: "A curated selection of Web3, automation, blockchain and web projects by Vonssy.",
   numberOfItems: projects.length,
   itemListElement: projects.map((project, index) => {
-    const isTerminal = project.name === "Vonssy Terminal";
     const live = isLiveDemo(project);
 
     return {
       "@type": "ListItem",
       position: index + 1,
+      url: project.repo,
       item: {
-        "@type": isTerminal ? (["SoftwareSourceCode", "SoftwareApplication"] as unknown as string) : "SoftwareSourceCode",
+        "@type": "SoftwareSourceCode",
         name: project.name,
         description: project.description,
         codeRepository: project.repo,
@@ -115,7 +115,6 @@ const itemListJsonLd = {
         author: { "@id": `${siteUrl}/#person` },
         isAccessibleForFree: true,
         license: getLicense(project.repo),
-        ...(isTerminal ? { operatingSystem: "Web" } : {}),
         ...(live
           ? {
               offers: {
@@ -148,6 +147,9 @@ const speakableJsonLd = {
   primaryImageOfPage: {
     "@type": "ImageObject",
     contentUrl: `${siteUrl}/og-image.jpg`,
+    // public/og-image.jpg terukur 1200x630 (2026-09-06), konsisten dengan deklarasi openGraph.
+    width: 1200,
+    height: 630,
   },
   speakable: {
     "@type": "SpeakableSpecification",

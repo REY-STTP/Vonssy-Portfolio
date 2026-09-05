@@ -48,8 +48,17 @@ export function getPersonJsonLd() {
       "@type": "ImageObject",
       url: siteConfig.avatarUrl,
       caption: "Vonssy — Reyvaldi Zakaria",
+      // Diukur 2026-09-06 dari URL avatar live (460x460). Jika avatar GitHub diganti,
+      // ukur ulang dan sesuaikan angka ini.
+      width: 460,
+      height: 460,
     },
     jobTitle: siteConfig.jobTitle,
+    worksFor: {
+      "@type": "Organization",
+      name: "Independent",
+      url: siteConfig.siteUrl,
+    },
     sameAs: [
       siteConfig.siteUrl,
       siteConfig.socialLinks.github,

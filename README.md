@@ -34,14 +34,14 @@ Built adhering to **Clean Code** principles, the repository features strict modu
 - **🧭 Smart Sticky Header**: Features ultra-clean glassmorphism (*16px backdrop blur*) that automatically slides up on scroll-down to maximize viewport reading room and reveals instantly on scroll-up.
 - **📜 Scroll-Linked Manifesto Reveal**: Single `scrollYProgress` listener (1 MotionValue, not 15) with per-word opacity derived in parent — RAF-throttled, `prefers-reduced-motion` safe.
 - **🔄 Smart Floating Scroll Progress**: Circular SVG progress gauge that tracks scroll depth, dynamically flips between *Scroll to Bottom* and *Scroll to Top* based on scroll direction, and auto-hides after 2.2s of inactivity.
-- **📁 Modular Project Showcase**: Interactive categorized project grid with fluid layout animations and an accessible modal dialog complete with keyboard trapping (`Esc` key support). Displays the first 10 projects with a smooth animated *"Show all"* expand toggle — modal demo links fire `demo_click` (`project.name`).
+- **📁 Modular Project Showcase**: Interactive categorized project grid with fluid layout animations and an accessible modal dialog complete with keyboard trapping (`Esc` key support). Displays the first 10 projects with a smooth animated *"Show all"* expand toggle — modal demo links fire `demo_click` (`project.name`). Shareable deep-links via `?project=<slug>` (pushState on open/close, Back-button sync, auto-open + scroll on load, unknown slugs cleaned).
 - **❓ FAQ Accordion (10 Q&A)**: Animated expandable FAQ section (8 → 10: safety/fresh-wallet, multi-wallet steps, proxy rotation vs crash, APP_VERSION maintenance, custom quote scope, live demos) — each answer self-contained for AI citation, synced to `faq.ts` → `FAQPage` JSON-LD + `llms.txt`/`llms-full.txt`.
 - **🔒 Privacy & Terms Pages**: Minimal, honest `/privacy` and `/terms` routes (same design tokens, `shell` + `section-pad`, `max-w-[72ch]` readable, dark/light via `var(--bg)`/`var(--text)`, `Back to home` breadcrumb, linked in footer + contact + `sitemap.xml`).
 - **🎬 Staggered Cinematic Intro**: First-visit brand reveal with decorative overlay (`pointer-events:none`, `aria-hidden`) — `useState(false)` SSR so H1 `opacity:1` in first frame for LCP, crawler skip via `navigator.webdriver`, `sessionStorage` dedupe.
 - **🏷️ Animated Brand Logo**: Custom SVG brand logo component with smooth entrance animations.
 - **🚫 Custom 404 Page**: Styled not-found page consistent with the portfolio design system.
 - **♿ First-Class Accessibility**: Native `prefers-reduced-motion` (global `animation-duration:.01ms`), ARIA dialog roles, focus management, `sr-only` fallback list for crawlers (`aria-hidden="false"` + `tabIndex={-1}` to pass `aria-hidden-focus`), keyboard accessibility.
-- **🚀 SEO & AI Discoverability**: `Vonssy Portfolio` site name (`WebSite` JSON-LD 32-word description, `og:site_name`), full Schema.org `@graph` 9 nodes (`Person`/`WebSite`/`ProfilePage`/`BreadcrumbList`/`FAQPage` 10×`Question`/`ItemList` 15×`SoftwareSourceCode` with `programmingLanguage:["Python"]`+`runtimePlatform`+`applicationCategory`+`Service` 3 Offer `hire.md#service`), static OG `og-image.jpg` (60KB JPEG q85 + `og-image.webp` 29KB, `icon-1024.png` 1024×1024), `sitemap.xml` 6 routes (`/` + `llms.txt`/`llms-full.txt`/`hire.md`/`privacy`/`terms`) & `robots.txt` (allow 16 AI crawlers), plus `llms.txt` (3 definition blocks `Web3 automation engineer` 50w) / `llms-full.txt` (comparison `Vonssy vs Generic` 7 rows) + `hire.md` enriched for AI buying agents.
+- **🚀 SEO & AI Discoverability**: `Vonssy Portfolio` site name (`WebSite` JSON-LD 32-word description, `og:site_name`), full Schema.org `@graph` 9 nodes (`Person`/`WebSite`/`ProfilePage`/`BreadcrumbList`/`FAQPage` 10×`Question`/`ItemList` 15×`SoftwareSourceCode` with `programmingLanguage:["Python"]`+`runtimePlatform`+`applicationCategory`+`Service` 3 Offer `hire.md#service`), static OG `og-image.jpg` (60KB JPEG q85 + `og-image.webp` 29KB, `icon-1024.png` 1024×1024), `sitemap.xml` 6 routes (`/` + `llms.txt`/`llms-full.txt`/`hire.md`/`privacy`/`terms`, content-derived `lastmod`: git commit → mtime → fallback) & `robots.txt` (allow 16 AI crawlers), plus `llms.txt` (3 definition blocks `Web3 automation engineer` 50w) / `llms-full.txt` (comparison `Vonssy vs Generic` 7 rows) + `hire.md` enriched for AI buying agents; `Person` carries `worksFor` + 460×460 avatar dims, each `ListItem` carries its repo `url`, `primaryImageOfPage` 1200×630.
 
 ---
 
@@ -63,19 +63,19 @@ src/
 ├── app/
 │   ├── api/
 │   │   └── chat/route.ts        # RAG chat endpoint (Node runtime, SSE streaming, rate limit, answer cache)
-│   ├── privacy/page.tsx         # Minimal honest privacy — static, RAG zero-retention + Vercel Analytics anon
-│   ├── terms/page.tsx           # Minimal honest terms — personal portfolio, MIT, no warranty
+│   ├── privacy/page.tsx         # Minimal honest privacy — static, RAG zero-retention + Vercel Analytics anon, OG + WebPage/BreadcrumbList JSON-LD
+│   ├── terms/page.tsx           # Minimal honest terms — personal portfolio, MIT, no warranty, OG + WebPage/BreadcrumbList JSON-LD
 │   ├── globals.css              # Design tokens (var(--bg)/--text/--accent), section-pad 124px→88px mobile
 │   ├── icon.svg                 # Favicon / app icon (source for icon-1024.png)
-│   ├── layout.tsx               # Root layout, Google Fonts Manrope [400,700,800] + JetBrains Mono [400,700] display:swap, <Analytics />
+│   ├── layout.tsx               # Root layout, Google Fonts Manrope [400,700,800] + JetBrains Mono [400,700] display:swap, <Analytics />, preconnect avatars, <link rel=alternate llms.txt/llms-full.txt>, hreflang en-US/x-default
 │   ├── not-found.tsx            # Custom 404 page
-│   ├── page.tsx                 # Lean Server Component — single @graph 9 nodes (Person/WebSite/FAQPage 10/ItemList 15/Service)
+│   ├── page.tsx                 # Lean Server Component — single @graph 9 nodes (Person/WebSite/FAQPage 10/ItemList 15/Service), ListItem repo url, primaryImageOfPage 1200×630
 │   ├── robots.ts                # Crawler config — wildcard allow "/" disallow "/api/" + 16 AI bots
-│   └── sitemap.ts               # Dynamic sitemap — 6 routes (/ + llms.txt/llms-full.txt/hire.md/privacy/terms)
+│   └── sitemap.ts               # Dynamic sitemap — 6 routes (/ + llms.txt/llms-full.txt/hire.md/privacy/terms), content-derived lastmod (git → mtime → fallback)
 ├── components/
 │   ├── analytics-tracker.tsx    # Section_view (IntersectionObserver 6 ids, once/session) + page_view_classified (AI vs organic via referrer+utm)
 │   ├── icons.tsx                # Typed, accessible SVG icons
-│   ├── portfolio-client.tsx     # Client orchestrator — dynamic ChatWidget ssr:false, useState(false) LCP, isBot webdriver skip
+│   ├── portfolio-client.tsx     # Client orchestrator — dynamic ChatWidget ssr:false, useState(false) LCP, isBot webdriver skip, ?project=<slug> deep-link (pushState + popstate + auto-open)
 │   ├── layout/
 │   │   ├── header.tsx           # Smart sticky header & theme controller
 │   │   ├── mobile-nav.tsx       # Animated mobile navigation drawer
@@ -109,7 +109,7 @@ src/
 │   │   ├── embeddings.json      # Pre-computed vector embeddings — 1303 chunks from 226 sources (curated + discovered)
 │   │   ├── manual.ts            # Curated bio/contact sources for ingestion
 │   │   └── repos.ts             # Curated showcase repos (auto-discovery covers the rest)
-│   ├── site.ts                  # Site config & JSON-LD (WebSite 32-word desc, Service termsOfService → /terms, 11 knowsAbout)
+│   ├── site.ts                  # Site config & JSON-LD (WebSite 32-word desc, Service termsOfService → /terms, 11 knowsAbout, Person worksFor + 460px avatar dims)
 │   └── stack.ts                 # Categorized technical stack data — Web3: EVM · Substrate/Konnex · Canton
 ├── hooks/
 │   ├── use-chat.ts              # Chat state, SSE streaming, sessionStorage persistence
@@ -118,6 +118,7 @@ src/
 │   └── use-theme.ts             # Theme state management & system color scheme sync
 ├── lib/
 │   ├── analytics.ts             # classifyTrafficSource() — AI domains vs organic vs referrer vs direct via utm_source+referrer
+│   ├── project-slug.ts          # slugifyProject()/findProjectBySlug() — ?project=<slug> deep-link helpers (15 slugs, all unique)
 │   └── rag/
 │       ├── llm.ts              # Generic LLM API client (streaming + completions, model fallback, timeout)
 │       ├── embed.ts             # Provider-agnostic embedding client (Jina default, task-tuned)
@@ -255,7 +256,7 @@ npm -v
 
 Updating your portfolio information is fast and simple thanks to the dedicated `src/data/` layer:
 
-1. **Projects**: Edit [`src/data/projects.ts`](src/data/projects.ts) to add or modify repositories, star counts, descriptions, and technical approaches.
+1. **Projects**: Edit [`src/data/projects.ts`](src/data/projects.ts) to add or modify repositories, star counts, descriptions, and technical approaches. Note: renaming a project changes its `?project=<slug>` deep-link — avoid renames without reason.
 2. **Personal Info & SEO**: Edit [`src/data/site.ts`](src/data/site.ts) to update your name, avatar, bio, email, and social links. `getServiceJsonLd()` `termsOfService` now points to `/terms`.
 3. **Principles & Stack**: Edit [`src/data/philosophy.ts`](src/data/philosophy.ts) and [`src/data/stack.ts`](src/data/stack.ts).
 4. **Navigation & Stats**: Edit [`src/data/navigation.ts`](src/data/navigation.ts).

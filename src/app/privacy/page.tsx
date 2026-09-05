@@ -2,17 +2,76 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight } from "@/components/icons";
 import { BrandLogo } from "@/components/ui/brand-logo";
+import { siteConfig } from "@/data/site";
 
 export const metadata: Metadata = {
   title: "Privacy — Vonssy Portfolio",
   description:
     "Privacy policy for Vonssy Portfolio — what this static site collects via RAG chat and anonymous Vercel Analytics, and what it doesn't.",
   alternates: { canonical: "/privacy" },
+  openGraph: {
+    title: "Privacy — Vonssy Portfolio",
+    description:
+      "Privacy policy for Vonssy Portfolio — what this static site collects via RAG chat and anonymous Vercel Analytics, and what it doesn't.",
+    url: "/privacy",
+    siteName: "Vonssy Portfolio",
+    locale: "en_US",
+    type: "website",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Privacy — Vonssy Portfolio",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Privacy — Vonssy Portfolio",
+    description:
+      "Privacy policy for Vonssy Portfolio — what this static site collects via RAG chat and anonymous Vercel Analytics.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+
+const siteUrl = siteConfig.siteUrl;
+
+const webpageJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": `${siteUrl}/privacy#webpage`,
+  url: `${siteUrl}/privacy`,
+  name: "Privacy — Vonssy Portfolio",
+  description: "Privacy policy for Vonssy Portfolio.",
+  isPartOf: { "@id": `${siteUrl}/#website` },
+  inLanguage: "en",
+};
+
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+    { "@type": "ListItem", position: 2, name: "Privacy", item: `${siteUrl}/privacy` },
+  ],
 };
 
 export default function PrivacyPage() {
   return (
-    <main className="min-h-dvh bg-[var(--bg)] text-[var(--text)]">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webpageJsonLd).replace(/</g, "\\u003c") }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }}
+      />
+      <main className="min-h-dvh bg-[var(--bg)] text-[var(--text)]">
       {/* Minimal header — reuses brand + system tokens */}
       <header className="site-header !static border-b border-[var(--line-soft)] bg-[color-mix(in_srgb,var(--bg)_92%,transparent)]">
         <div className="shell site-header-inner !h-[74px]">
@@ -166,6 +225,7 @@ export default function PrivacyPage() {
         <span>© 2026 Vonssy Portfolio — Systems in motion.</span>
         <span className="mono">privacy / 2026-05-11</span>
       </footer>
-    </main>
+      </main>
+    </>
   );
 }
