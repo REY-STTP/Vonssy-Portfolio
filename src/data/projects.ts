@@ -2,6 +2,111 @@ import type { Project } from "@/types/portfolio";
 
 export const projects: Project[] = [
   {
+    name: "Vonssy Terminal",
+    account: "REY-STTP",
+    description:
+      "Read-only EVM multichain wallet analytics: paste any address and get portfolio value, asset breakdowns, and classified activity history across 10 chains.",
+    category: ["Web3", "Tools"],
+    tags: ["Next.js 16", "TypeScript", "Alchemy", "Viem"],
+    repo: "https://github.com/REY-STTP/Vonssy-Terminal",
+    demo: "https://www.vonssy-terminal.web.id",
+    signal: "Live web tool",
+    details: {
+      overview:
+        "A wallet analytics terminal covering Ethereum, Base, Arbitrum, Polygon, OP Mainnet, BNB Smart Chain, Avalanche, zkSync Era, Linea, and Scroll — no wallet connection, signing, or auth required.",
+      approach:
+        "Public chain data is read server-side through Alchemy (Token API + Asset Transfers API); Viem is used for address checksumming and unit parsing. Native and ERC-20 holdings ship with live prices, the newest 100 transfers are grouped into sends, receives, swaps, and contract interactions (assets 25/page, activity 20/page), plus per-chain allocation that sums to exactly 100%.",
+      decisions:
+        "Chain configuration is centralized in src/lib/constants/networks.ts so new networks are one-file additions, the Alchemy key stays in server-only modules, per-section TTL cache with in-flight deduplication limits redundant calls, Suspense sections stream independently, previously searched wallets persist in localStorage, and 30+ Vitest tests guard normalization and classification.",
+      challenges:
+        "Graceful degradation under real conditions: per-IP sliding-window rate limiting, 10s per-request timeout with bounded jittered retries for 429/5xx, and per-chain partial failure (failedNetworks) so the dashboard keeps working with a partial view and clear error signals instead of crashing.",
+    },
+  },
+  {
+    name: "Vonssy-AI",
+    account: "REY-STTP",
+    description:
+      "A BYOK AI chatbot — connect your own OpenAI-compatible endpoints with streamed responses, persistent sessions, OAuth, and encrypted key storage.",
+    category: ["Web", "Tools", "AI / ML"],
+    tags: ["Next.js 16", "TypeScript", "Drizzle", "PostgreSQL"],
+    repo: "https://github.com/REY-STTP/Vonssy-AI",
+    demo: "https://www.vonssy-ai.web.id",
+    signal: "Live BYOK chatbot",
+    details: {
+      overview:
+        "A unified interface for user-owned AI endpoints: each user stores N custom configs (label, baseUrl, apiKey, model) and chats against any OpenAI-compatible API — no server-side gateway keys required.",
+      approach:
+        "The application combines a Next.js 16 App Router frontend with Supabase PostgreSQL, Drizzle ORM, Auth.js v5 (Google + GitHub OAuth), streamed SSE responses via a per-request OpenAI-SDK client, and cursor-based pagination for sessions and messages.",
+      decisions:
+        "API keys are encrypted at rest with AES-256-GCM (clients only see ****last4), every model and session query is scoped by (id, userId), user-supplied baseUrl passes an SSRF guard (https-only, private-IP/DNS blocking, redirect rejection), abuse is throttled with DB-backed fixed windows, the all-chats list is virtualized with @tanstack/react-virtual, and name/DOB personalization is opt-in and server-injected.",
+      challenges:
+        "Coordinating token-by-token streaming with persistence, edit-and-regenerate truncation, per-message feedback and usage logs, ownership checks on every route, provider response differences, bilingual EN/ID UI, and responsive chat UX with markdown and syntax-highlighted code blocks.",
+    },
+  },
+  {
+    name: "Desa Sukobubuk",
+    account: "REY-STTP",
+    description:
+      "The official website of Desa Sukobubuk (Margorejo, Pati): village profile, news, UMKM directory with products and reviews, gallery, and an SMTP-backed contact pipeline, plus a full admin dashboard.",
+    category: ["Web"],
+    tags: ["Next.js 16", "TypeScript", "Prisma", "PostgreSQL"],
+    repo: "https://github.com/REY-STTP/desa-sukobubuk",
+    demo: "https://www.desa-sukobubuk.web.id",
+    signal: "Official village site · Live",
+    details: {
+      overview:
+        "The official website of Desa Sukobubuk, Margorejo District, Pati Regency — village profile, news, UMKM directory, products with moderated ratings and reviews, activity gallery, and contact channel in a single platform.",
+      approach:
+        "Built with Next.js 16, React 19, TypeScript, Tailwind CSS v4, and Prisma 6 + Supabase PostgreSQL; admin auth uses Auth.js v5 (JWT + Credentials), image uploads go through Cloudinary with cropping, rich text via Tiptap 3, email via Nodemailer SMTP, and Zod validation on every endpoint.",
+      decisions:
+        "A 13-model schema plus Role enum (User, UMKM, Produk, Ulasan, Berita, Galeri, Pesan, ProfilDesa, MisiItem, PejabatDesa, AuditLog, and more) with database-driven content served through public REST endpoints (berita, umkm, produk, galeri, pesan, ulasan) and separate admin APIs, plus an idempotent seeder so the site is alive on first run.",
+      challenges:
+        "Modeling a relational schema across tables while keeping public pages simple, moderating product reviews and inbound messages, logging admin audit activity, optimizing images and SEO (JSON-LD, database-driven sitemap, llms.txt), and protecting PII on admin endpoints."
+    },
+  },
+  {
+    name: "AIS Frozen Food",
+    account: "REY-STTP",
+    description:
+      "A high-performance landing page and interactive digital catalog for a frozen-food UMKM, with automated WhatsApp ordering built in.",
+    category: ["Web"],
+    tags: ["Next.js 16", "TypeScript", "Tailwind CSS", "Motion"],
+    repo: "https://github.com/REY-STTP/AIS-Frozen-Food",
+    demo: "https://www.ais-frozen-food.web.id",
+    signal: "Live landing page",
+    details: {
+      overview:
+        "Profile website and digital catalog for AIS Frozen Food, a frozen-food UMKM serving the Pati & Kudus area — 14 products in 8 poster groups across 5 categories, designed to help customers browse products and order via WhatsApp.",
+      approach:
+        "Order flow lands directly in WhatsApp with smart message templates prefilled per product (plus mini inquiry form, floating WA button, and tel:+6285226122121 fallback), while visitors filter the catalog through animated category tabs: dimsum, frozen food, cilok & cireng, aneka lumer, and complementaries — grouped per poster with variant chips to avoid duplicate cards.",
+      decisions:
+        "The design commits to an artisanal warm palette — cream #F5F1E8, espresso #2A1711, cocoa #5D4037 — with Playfair Display + Poppins, backed by per-card Product + Offer/AggregateOffer JSON-LD plus a collective ItemList, FAQPage and LocalBusiness schemas, static 1200×630 OG image, canonical www host with 308 proxy, and Vercel Analytics event tracking.",
+      challenges:
+        "Hitting LCP <2.5s and CLS <0.1 with heavy visuals: hero priority + fetchPriority high, AVIF/WebP with Next Image, lazy GMaps iframe via IntersectionObserver, strict CSP and caching headers, prefers-reduced-motion support, and accessible dialog, tabs, and product labels.",
+    },
+  },
+  {
+    name: "Kusoparse",
+    account: "REY-STTP",
+    description:
+      "A trilingual parser that extracts Kusonime metadata, resolves shortlinks, and returns direct download links from validated URLs.",
+    category: ["Web", "Scraping", "Tools"],
+    tags: ["Next.js 16", "TypeScript", "Cheerio", "Framer Motion"],
+    repo: "https://github.com/REY-STTP/Kusoparse",
+    demo: "https://www.kusoparse.web.id",
+    signal: "Live web tool",
+    details: {
+      overview:
+        "A lightweight web interface for parsing Kusonime pages in Indonesian, English, and Japanese — tempel URL artikel anime, dapatkan metadata, info episode, dan seluruh link download dalam satu klik. Styled risograph / neo-brutalist with 12 direct hosts + 3 shortlink resolvers from a single source (lib/hosts.ts).",
+      approach:
+        "Cheerio scrapes the article into title, thumbnail, info, synopsis, and episode links; /api/parse strictly validates Kusonime URLs (host, protocol, no port/credentials/query) with manual 3-hop redirect checks, while /api/resolve only processes allowlisted intermediary and direct hosts. SSRF is guarded via pre-fetch DNS checks (private/link-local rejected), 4 MB body cap, and only http(s) output is ever rendered.",
+      decisions:
+        "Each locale renders through its own route group (app/(id), (en), (ja)) with static prerendering, localized slugs (/panduan, /en/guide, /ja/guide), full hreflang (id-ID, en, ja, x-default), an 11-URL sitemap, llms.txt + llms-full.txt for AI agents, and per-locale Open Graph images.",
+      challenges:
+        "Dealing with inconsistent external markup, shortlink/ad-locker drift, SSRF safety without hurting usability, trilingual routing without duplicate-content signals, and keeping the single-purpose flow simple with skeleton, empty, error, and custom 404 states.",
+    },
+  },
+  {
     name: "Cloud Storage App",
     account: "REY-STTP",
     description:
@@ -9,59 +114,17 @@ export const projects: Project[] = [
     category: ["Web", "Tools"],
     tags: ["Next.js 16", "TypeScript", "PostgreSQL", "Cloudflare R2"],
     repo: "https://github.com/REY-STTP/Cloud-Storage-App",
-    demo: "https://cloud-storage-app-brown.vercel.app",
-    signal: "Live web tool",
+    demo: "https://www.cloud-storage.web.id",
+    signal: "Live storage platform",
     details: {
       overview:
-        "A full-featured cloud storage platform where users upload, organize, rename, download, and delete files from a clean dashboard while administrators manage the entire user base.",
+        "A full-featured cloud storage platform where users upload, organize, rename, download, and delete files from a clean dashboard (default 1 GB quota via MAX_STORAGE_BYTES) while administrators manage the entire user base from SQL-aggregated stats.",
       approach:
-        "Every file lives in a private Cloudflare R2 bucket and downloads are served through presigned URLs that expire in 60 minutes — no permanent public links. Auth runs on JWT sessions in httpOnly cookies with bcrypt-hashed passwords.",
+        "Supabase PostgreSQL is accessed via pg with raw parameterized SQL (no ORM); every file lives in a private Cloudflare R2 bucket (S3-compatible via AWS SDK) and downloads are served through presigned URLs that expire in 60 minutes — no permanent public links. Auth runs on JWT sessions (1-day expiry) in httpOnly cookies with bcrypt-hashed passwords (cost 12), plus Nodemailer email flows with Ethereal fallback in development.",
       decisions:
-        "The build leans on Supabase PostgreSQL for users and file records, cursor-based pagination for search, batch operations streamed as a single zip archive, and configurable per-user storage quotas.",
+        "The build leans on keyset pagination (limit ≤ 50) with pg_trgm indexes for ILIKE search, batch operations streamed as a single zip archive via Archiver, RLS enabled with zero policies plus app-level enforcement, a 30s server-cached /api/admin/stats aggregate (<2KB payload), Recharts lazy-loaded via next/dynamic ssr:false, and SWR for client fetching.",
       challenges:
-        "The hard parts are presigned URL lifecycling, cascading user deletion across stored files, email verification and reset-token flows, and keeping admin analytics responsive at scale.",
-    },
-  },
-  {
-    name: "Vonssy Terminal",
-    account: "REY-STTP",
-    description:
-      "Read-only EVM multichain wallet analytics: paste any address and get portfolio value, asset breakdowns, and classified activity history across 10 chains.",
-    category: ["Web3", "Tools"],
-    tags: ["Next.js 16", "TypeScript", "Viem"],
-    repo: "https://github.com/REY-STTP/Vonssy-Terminal",
-    demo: "https://vonssy-terminal.vercel.app",
-    signal: "Live web tool",
-    details: {
-      overview:
-        "A wallet analytics terminal covering Ethereum, Base, Arbitrum, Polygon, OP Mainnet, BNB Chain, Avalanche, zkSync Era, Linea, and Scroll — no wallet connection, signing, or auth required.",
-      approach:
-        "Only public chain data is read through Viem: native and ERC-20 holdings with live prices, transaction history grouped into sends, receives, swaps, and contract interactions, plus per-chain allocation that sums to exactly 100%.",
-      decisions:
-        "Chain configuration is centralized so new networks are one-file additions, previously searched wallets persist locally, and the UI never blocks on a single provider.",
-      challenges:
-        "Graceful degradation under real conditions: when a chain provider times out or a wallet exceeds index limits, the dashboard keeps working with a partial view and clear error signals instead of crashing.",
-    },
-  },
-  {
-    name: "Kusoparse",
-    account: "REY-STTP",
-    description:
-      "A responsive parser that extracts Kusonime metadata, resolves shortlinks, and returns direct download links from validated URLs.",
-    category: ["Web", "Scraping", "Tools"],
-    tags: ["Next.js", "TypeScript", "Framer Motion"],
-    repo: "https://github.com/REY-STTP/Kusoparse",
-    demo: "https://kusoparse.vercel.app",
-    signal: "Live web tool",
-    details: {
-      overview:
-        "A lightweight web interface for parsing Kusonime pages.",
-      approach:
-        "The tool validates Kusonime URLs, extracts anime metadata, and resolves documented shortlink providers into a cleaner download flow.",
-      decisions:
-        "The README explicitly positions responsiveness, strict URL validation, and a focused single-purpose interface as core features.",
-      challenges:
-        "The project deals with inconsistent external pages, shortlink/ad-locker resolution, and keeping the interaction simple for the visitor.",
+        "The hard parts are presigned URL lifecycling, cascading user deletion across R2 + DB, single-use 1-hour reset tokens versus idempotent verification, pwd_changed_at JWT invalidation, UUID validation on every route, and keeping admin analytics responsive without bulk-fetching users.",
     },
   },
   {
@@ -72,87 +135,24 @@ export const projects: Project[] = [
     category: ["AI / ML", "Web"],
     tags: ["Next.js 16", "TypeScript", "Face++", "Tailwind CSS"],
     repo: "https://github.com/REY-STTP/Guess-Your-Face",
-    demo: "https://guess-your-expression.vercel.app",
+    demo: "https://www.guess-your-face.web.id",
     signal: "v2.0 rebuild · Live",
     details: {
       overview:
-        "A modern playground for AI-powered face analysis: micro-expression detection across seven weighted emotions, demographic and aesthetic profiles, and 1:1 face similarity verification.",
+        "A modern playground for AI-powered face analysis across three tools — /detect, /compare, and /analyze: micro-expression detection across seven weighted emotions (anger, disgust, fear, happiness, neutral, sadness, surprise), demographic and aesthetic profiles, and 1:1 face similarity verification with instant ID/EN toggle.",
       approach:
-        "All image processing happens in-memory through secure Next.js Route Handlers using Face++ Cognitive Services — images are never stored on the server or in a database (privacy-first, zero retention).",
+        "All image processing happens in-memory through secure Next.js Route Handlers using Face++ Cognitive Services US v3 — JPEG/PNG up to 2 MB is validated server-side, forwarded as buffer/stream, and never stored on the server or in a database (privacy-first, zero retention).",
       decisions:
-        "This is a complete architectural revamp of the original Node.js + Express + MongoDB app into a full-stack Next.js 16 + React 19 codebase, adding multi-face detection and a bilingual ID/EN system with instant toggling.",
+        "This is a complete v2.0 revamp of REY-STTP/Facial-Expression-Detection-App (Node.js + Express + Multer + MongoDB) into Next.js 16 + React 19 + Tailwind v4, adding multi-face detection with color-coded bounding boxes, confidence thresholds (1e-3, 1e-4, 1e-5), a 5-token deep inspector, an interactive canvas cropper (pan/zoom), and bilingual SEO with an 8-URL sitemap plus llms.txt.",
       challenges:
-        "Replacing persistent storage with stateless in-memory pipelines while keeping route handlers secure, and rebuilding every detection feature from the legacy stack without regressions.",
-    },
-  },
-  {
-    name: "Vonssy-AI",
-    account: "REY-STTP",
-    description:
-      "A multi-provider AI chatbot with streamed responses, persistent sessions, OAuth, quotas, and provider fallback.",
-    category: ["Web", "Tools", "AI / ML"],
-    tags: ["Next.js 16", "TypeScript", "PostgreSQL"],
-    repo: "https://github.com/REY-STTP/Vonssy-AI",
-    demo: "https://vonssy-ai.vercel.app",
-    signal: "Current full-stack build",
-    details: {
-      overview:
-        "A unified interface for multiple AI gateways and models.",
-      approach:
-        "The application combines a Next.js App Router frontend with PostgreSQL, Drizzle, Auth.js, streamed SSE responses, and a provider registry.",
-      decisions:
-        "The README documents server-side session revalidation, HMAC identity hashing, a three-layer quota system, cursor pagination, and a fallback gateway for 429 responses.",
-      challenges:
-        "The system has to coordinate streaming, persistence, authentication, rate limits, provider differences, and responsive chat UX.",
-    },
-  },
-  {
-    name: "AIS Frozen Food",
-    account: "REY-STTP",
-    description:
-      "A high-performance landing page and interactive digital catalog for a frozen-food UMKM, with automated WhatsApp ordering built in.",
-    category: ["Web"],
-    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
-    repo: "https://github.com/REY-STTP/AIS-Frozen-Food",
-    demo: "https://ais-frozen-food.vercel.app",
-    signal: "Live landing page",
-    details: {
-      overview:
-        "Website profil dan katalog digital untuk AIS Frozen Food, UMKM makanan beku di area Pati & Kudus, dirancang untuk mempermudah pelanggan menjelajahi produk dan memesan.",
-      approach:
-        "Order flow lands directly in WhatsApp with smart message templates prefilled per product, while visitors filter the catalog through animated category tabs (dimsum, aneka frozen food, cilok, dan lainnya).",
-      decisions:
-        "The design commits to a premium dark aesthetic — warm charcoal with marigold accents — backed by blurred backdrop imagery, floating micro-animations, and a running category ticker.",
-      challenges:
-        "Balancing heavy visual effects with performance and accessibility: prefers-reduced-motion support, automatic Next.js image optimization, and structured SEO metadata all had to coexist.",
-    },
-  },
-  {
-    name: "Desa Sukobubuk",
-    account: "REY-STTP",
-    description:
-      "The official website of Desa Sukobubuk: village profile, news, UMKM directory with products, gallery, and a contact pipeline backed by PostgreSQL.",
-    category: ["Web"],
-    tags: ["Next.js 15", "TypeScript", "Prisma", "PostgreSQL"],
-    repo: "https://github.com/REY-STTP/desa-sukobubuk",
-    demo: "https://desa-sukobubuk.vercel.app",
-    signal: "Official village site · Live",
-    details: {
-      overview:
-        "Situs resmi Desa Sukobubuk, Kecamatan Margorejo, Kabupaten Pati — menghadirkan profil desa, berita, direktori UMKM, produk, galeri kegiatan, dan saluran kontak dalam satu platform.",
-      approach:
-        "Dibangun dengan Next.js 15, TypeScript, Tailwind CSS, dan Prisma + PostgreSQL; setiap UMKM punya halaman detail sendiri lengkap dengan produk dan tombol hubungi via WhatsApp.",
-      decisions:
-        "Konten sepenuhnya database-driven melalui REST endpoints terdokumentasi (UMKM, berita, produk, galeri, pesan), dengan seeding data sampel agar situs langsung hidup saat pertama dijalankan.",
-      challenges:
-        "Menata skema relational lintas tabel (users, umkm, produk, berita, galeri, pesan) sekaligus menjaga halaman publik tetap sederhana bagi pengunjung desa yang belum terbiasa dengan web."
+        "Replacing persistent storage with stateless in-memory pipelines while keeping credentials server-only with friendly error mapping, enforcing the canonical www host via proxy.ts without breaking RSC navigation, and rebuilding every legacy detection feature with WCAG AA contrast and Sonner feedback without regressions.",
     },
   },
   {
     name: "E-Voting",
     account: "REY-STTP",
     description:
-      "A Web3 e-voting dApp: connect an EVM wallet, cast votes on-chain through ethers.js, and watch results update live behind an admin-guarded session.",
+      "A Web3 e-voting dApp: connect an EVM wallet, cast votes on-chain through ethers.js v6, and watch results update live behind an admin-guarded session.",
     category: ["Web3", "Blockchain", "Web"],
     tags: ["Next.js 16", "TypeScript", "Ethers.js"],
     repo: "https://github.com/REY-STTP/E-Voting",
@@ -160,13 +160,13 @@ export const projects: Project[] = [
     signal: "Live dApp",
     details: {
       overview:
-        "An on-chain voting application where voters connect an EVM wallet, review candidates, submit votes through smart-contract calls, and follow results in a live results section.",
+        "An on-chain voting application where voters connect an EVM wallet, review candidates from constants/candidates.ts, submit votes through smart-contract calls, and follow results in a live results section — the chain itself is the source of truth, no app database.",
       approach:
-        "Built on Next.js 16 with ethers v6 handling wallet connection and vote transactions; voting state flows through dedicated hooks (useVoting, useWallet) over a centralized web3 config layer.",
+        "Built on Next.js 16.0.7 with React 19, Tailwind v4, and ethers v6 handling wallet connection and vote transactions; voting state flows through dedicated hooks (hooks/useVoting.ts, hooks/useWallet.ts) over a centralized lib/web3 config layer.",
       decisions:
-        "Admin routes are separated behind cookie-based login/logout/session API routes with middleware protection, while the public side stays focused on candidates, voting, and transparent results.",
+        "Admin routes are separated behind cookie-based login/logout/session API routes with middleware.ts protection, while the public side stays focused on candidates, voting, and transparent results.",
       challenges:
-        "Coordinating wallet state, transaction confirmation waits, and post-vote UI updates without a backend database — the chain itself is the source of truth.",
+        "Coordinating wallet state, network/account changes, transaction confirmation waits, and post-vote UI updates without a backend database — every read after a vote must reconcile with on-chain state.",
     },
   },
   {

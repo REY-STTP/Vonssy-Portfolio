@@ -25,14 +25,14 @@ export const ragRepos: RepoConfig[] = [
     name: "Vonssy-Terminal",
     description:
       "Read-only EVM multichain wallet analytics across 10 chains: portfolio value, asset breakdowns, and classified activity history.",
-    tags: ["Next.js 16", "TypeScript", "Viem"],
+    tags: ["Next.js 16", "TypeScript", "Alchemy", "Viem"],
   },
   {
     owner: "REY-STTP",
     name: "Kusoparse",
     description:
-      "A responsive parser that extracts Kusonime metadata, resolves shortlinks, and returns direct download links from validated URLs.",
-    tags: ["Next.js", "TypeScript", "Framer Motion"],
+      "A trilingual parser that extracts Kusonime metadata, resolves shortlinks, and returns direct download links from validated URLs.",
+    tags: ["Next.js 16", "TypeScript", "Cheerio", "Framer Motion"],
   },
   {
     owner: "REY-STTP",
@@ -45,28 +45,28 @@ export const ragRepos: RepoConfig[] = [
     owner: "REY-STTP",
     name: "Vonssy-AI",
     description:
-      "A multi-provider AI chatbot with streamed responses, persistent sessions, OAuth, quotas, and provider fallback.",
-    tags: ["Next.js 16", "TypeScript", "PostgreSQL"],
+      "A BYOK AI chatbot — connect your own OpenAI-compatible endpoints with streamed responses, persistent sessions, OAuth, and encrypted key storage.",
+    tags: ["Next.js 16", "TypeScript", "Drizzle", "PostgreSQL"],
   },
   {
     owner: "REY-STTP",
     name: "AIS-Frozen-Food",
     description:
       "A high-performance landing page and interactive digital catalog for a frozen-food UMKM, with automated WhatsApp ordering built in.",
-    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
+    tags: ["Next.js 16", "TypeScript", "Tailwind CSS", "Motion"],
   },
   {
     owner: "REY-STTP",
     name: "desa-sukobubuk",
     description:
-      "The official website of Desa Sukobubuk: village profile, news, UMKM directory with products, gallery, and a contact pipeline backed by PostgreSQL.",
-    tags: ["Next.js 15", "TypeScript", "Prisma", "PostgreSQL"],
+      "The official website of Desa Sukobubuk (Margorejo, Pati): village profile, news, UMKM directory with products and reviews, gallery, and an SMTP-backed contact pipeline, plus a full admin dashboard.",
+    tags: ["Next.js 16", "TypeScript", "Prisma", "PostgreSQL"],
   },
   {
     owner: "REY-STTP",
     name: "E-Voting",
     description:
-      "A Web3 e-voting dApp: connect an EVM wallet, cast votes on-chain through ethers.js, and watch results update live behind an admin-guarded session.",
+      "A Web3 e-voting dApp: connect an EVM wallet, cast votes on-chain through ethers.js v6, and watch results update live behind an admin-guarded session.",
     tags: ["Next.js 16", "TypeScript", "Ethers.js"],
   },
   {
