@@ -82,9 +82,6 @@ export default function PrivacyPage() {
               <span className="brand-index">/26</span>
             </span>
           </Link>
-          <Link href="/" className="button button-ghost text-xs">
-            ← Back to home
-          </Link>
         </div>
       </header>
 
