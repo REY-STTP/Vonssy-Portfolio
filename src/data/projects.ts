@@ -149,24 +149,24 @@ export const projects: Project[] = [
     },
   },
   {
-    name: "E-Voting",
+    name: "Confession Booth",
     account: "REY-STTP",
     description:
-      "A Web3 e-voting dApp: connect an EVM wallet, cast votes on-chain through ethers.js v6, and watch results update live behind an admin-guarded session.",
-    category: ["Web3", "Blockchain", "Web"],
-    tags: ["Next.js 16", "TypeScript", "Ethers.js"],
-    repo: "https://github.com/REY-STTP/E-Voting",
-    demo: "https://e-voting-ebon-tau.vercel.app",
+      "A decentralized, privacy-first anonymous confession sanctuary using Zero-Knowledge cryptography and Ethereum Sepolia on-chain anchoring — plaintext never touches the chain, authors stay unlinkable.",
+    category: ["Web3", "Privacy", "Web"],
+    tags: ["Next.js 16", "TypeScript", "Fastify", "Zero-Knowledge", "Ethereum Sepolia"],
+    repo: "https://github.com/REY-STTP/Confession-Booth",
+    demo: "https://www.confession-booth.web.id",
     signal: "Live dApp",
     details: {
       overview:
-        "An on-chain voting application where voters connect an EVM wallet, review candidates from constants/candidates.ts, submit votes through smart-contract calls, and follow results in a live results section — the chain itself is the source of truth, no app database.",
+        "An encrypted anonymous confession platform where anyone can browse and read confessions without a wallet, while authors publish via ZK Stealth Mode — Merkle proofs and epoch nullifiers generated locally in the browser, dispatched to the API without auth headers, making it mathematically impossible to correlate a confession with a wallet address. Only SHA-256 content hashes, IPFS CIDs, timestamps, and policy versions are anchored on Sepolia.",
       approach:
-        "Built on Next.js 16.0.7 with React 19, Tailwind v4, and ethers v6 handling wallet connection and vote transactions; voting state flows through dedicated hooks (hooks/useVoting.ts, hooks/useWallet.ts) over a centralized lib/web3 config layer.",
+        "Monorepo with Next.js 16 App Router (web), Fastify + Drizzle ORM (api), shared TypeScript package, and Solidity contracts (ConfessionRegistry.sol) on Sepolia. Features include empathy reactions (Resonance, Support, Shared Sorrow, Disbelief, Dark Humor Relief), anonymous whisper threads with OP badges, themed community rooms, Midnight Archive (00:00–04:00 WIB), soulbound reputation badges, cryptographic Proof Inspector, Proof-of-Work spam protection, and transparent moderation with immutable audit trails.",
       decisions:
-        "Admin routes are separated behind cookie-based login/logout/session API routes with middleware.ts protection, while the public side stays focused on candidates, voting, and transparent results.",
+        "Zero plaintext on-chain — only digests and CIDs anchored; in-memory ephemeral sessions (no localStorage/sessionStorage tokens) with HttpOnly refresh cookies; ZK proof generation runs client-side; PoW Hashcash challenge mitigates bot spam; dual-layer rate limiting by IP and nullifier; deterministic nullifiers prevent replay without identity linkage; HTML/Markdown disallowed — strict plaintext with character limits.",
       challenges:
-        "Coordinating wallet state, network/account changes, transaction confirmation waits, and post-vote UI updates without a backend database — every read after a vote must reconcile with on-chain state.",
+        "Balancing radical privacy with abuse resistance: coordinating client-side ZK proof generation, on-chain anchoring latency, PoW difficulty tuning, session security without token storage, and honest privacy boundaries (network metadata, RPC endpoints, writing patterns can create correlation risks).",
     },
   },
   {

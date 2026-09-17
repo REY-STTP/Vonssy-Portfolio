@@ -64,10 +64,10 @@ export const ragRepos: RepoConfig[] = [
   },
   {
     owner: "REY-STTP",
-    name: "E-Voting",
+    name: "Confession-Booth",
     description:
-      "A Web3 e-voting dApp: connect an EVM wallet, cast votes on-chain through ethers.js v6, and watch results update live behind an admin-guarded session.",
-    tags: ["Next.js 16", "TypeScript", "Ethers.js"],
+      "A decentralized, privacy-first anonymous confession sanctuary using Zero-Knowledge cryptography and Ethereum Sepolia on-chain anchoring — plaintext never touches the chain, authors stay unlinkable.",
+    tags: ["Next.js 16", "TypeScript", "Fastify", "Zero-Knowledge", "Ethereum Sepolia", "Drizzle ORM"],
   },
   {
     owner: "vonssy",
